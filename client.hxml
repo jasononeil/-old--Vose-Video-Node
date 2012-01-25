@@ -1,0 +1,8 @@
+-lib erazor
+-lib xirsys_stdjs
+-lib domtools
+-lib autoform
+-lib remoting
+-cp src
+-js bin/static/js/voseproduction.js
+-main VoseProductionGUI 
