@@ -23,7 +23,7 @@ class ProjectController
 	public function listProjects()
 	{
 		trace (AppConfig.projectDir);
-		projectAPI.listProjects(function (a:Array<String>) 
+		projectAPI.listProjects(function (a:Array<Project>) 
 		{
 			for (project in a)
 			{

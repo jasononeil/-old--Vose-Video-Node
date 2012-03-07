@@ -15,18 +15,18 @@ class ProjectAPI
 		
 	}
 
-	@remote public function listProjects(cb:Array<String>->Void)
+	@remote public function listProjects(cb:Array<app.project.model.Project>->Void)
 	{
 		var projects = new Array();
 		cb(projects);
 	}
 
-	@remote public function addProject(p:String, cb:Bool->Void)
+	@remote public function addProject(p:app.project.model.Project, cb:Bool->Void)
 	{
 		cb(true);
 	}
 
-	@remote public function updateProject(currentProjectName:String, newProjectDetails:String, cb:Bool->Void)
+	@remote public function updateProject(currentProjectName:String, newProjectDetails:app.project.model.Project, cb:Bool->Void)
 	{
 		cb(true);
 	}
@@ -37,7 +37,7 @@ class ProjectAPI
 	}
 
 	
-	public function listVideos(projectName, cb:Array<Video>->Void)
+	public function listVideos(projectName:String, cb:Array<app.video.model.Video>->Void)
 	{
 		throw "this should be part of the model, using #if js & #if nodejs";
 		var videos = new Array();
