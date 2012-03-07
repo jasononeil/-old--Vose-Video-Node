@@ -1,3 +1,6 @@
-[submodule "out/static/bootstrap"]
-	path = out/static/bootstrap
-	url = https://github.com/twitter/bootstrap.git
+[submodule "lib/nodejs_externs"]
+	path = lib/nodejs_externs
+	url = git@github.com:dionjwa/nodejs_externs.git
+[submodule "lib/haxe_remoting"]
+	path = lib/haxe_remoting
+	url = https://github.com/dionjwa/haxe_remoting
