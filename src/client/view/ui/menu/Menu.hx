@@ -1,5 +1,5 @@
-package client.ui.menu;
-import client.ui.menu.MenuItem;
+package client.view.ui.menu;
+import client.view.ui.menu.MenuItem;
 import domtools.Query;
 using domtools.ElementManipulation;
 using domtools.DOMManipulation;

@@ -1,4 +1,4 @@
-package client.macros;
+package macros;
 import haxe.macro.Expr;
 
 class CompileTimeLoad 

@@ -1,15 +1,15 @@
 package client.controller;
 
-import client.view.ProjectView;
+import client.view.SlideView;
 import domtools.Query;
 
-class ProjectController
+class SlideController
 {
-	public var view:ProjectView;
+	public var view:SlideView;
 
 	public function new() 
 	{
-		view = new ProjectView(this);
+		view = new SlideView(this);
 
 		Query.document.body.appendChild(view.getNode());
 	}

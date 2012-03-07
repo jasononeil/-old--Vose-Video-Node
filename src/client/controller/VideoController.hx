@@ -1,15 +1,15 @@
 package client.controller;
 
-import client.view.ProjectView;
+import client.view.VideoView;
 import domtools.Query;
 
-class ProjectController
+class VideoController
 {
-	public var view:ProjectView;
+	public var view:VideoView;
 
 	public function new() 
 	{
-		view = new ProjectView(this);
+		view = new VideoView(this);
 
 		Query.document.body.appendChild(view.getNode());
 	}

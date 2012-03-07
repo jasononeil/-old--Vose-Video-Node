@@ -1,5 +1,15 @@
+#
+# Compile the Server
+#
+
+# Classpath and Libraries
+-lib transition9
 -lib nodejs
--lib remoting
+-cp lib/haxe_remoting/src/
+-cp lib/nodejs_externs/
 -cp src/
--js bin/node.js 
--main server.VoseProductionNode
+-D nodejs
+
+# Output
+-main server.Server
+-js out/node.js

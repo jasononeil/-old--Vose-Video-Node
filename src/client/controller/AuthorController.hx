@@ -1,15 +1,15 @@
 package client.controller;
 
-import client.view.ProjectView;
+import client.view.AuthorView;
 import domtools.Query;
 
-class ProjectController
+class AuthorController
 {
-	public var view:ProjectView;
+	public var view:AuthorView;
 
 	public function new() 
 	{
-		view = new ProjectView(this);
+		view = new AuthorView(this);
 
 		Query.document.body.appendChild(view.getNode());
 	}
