@@ -54,7 +54,7 @@ var app = app || {}
 if(!app.slide) app.slide = {}
 app.slide.SlideController = $hxClasses["app.slide.SlideController"] = function() {
 	this.view = new app.slide.SlideView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 };
 app.slide.SlideController.__name__ = ["app","slide","SlideController"];
 app.slide.SlideController.prototype = {
@@ -937,6 +937,31 @@ domtools.QueryElementManipulation.clone = function(query,deep) {
 domtools.QueryElementManipulation.prototype = {
 	__class__: domtools.QueryElementManipulation
 }
+client.ui.menu.NavBar = $hxClasses["client.ui.menu.NavBar"] = function(brand,fixed) {
+	if(fixed == null) fixed = true;
+	if(brand == null) brand = "";
+	domtools.AbstractCustomElement.call(this,"div");
+	domtools.QueryElementManipulation.addClass(this,"navbar");
+	domtools.QueryElementManipulation.addClass(this,"navbar-fixed-top");
+	var navbarInner = domtools.ElementManipulation.addClass(document.createElement("div"),"navbar-inner");
+	var container = domtools.ElementManipulation.addClass(document.createElement("div"),"container");
+	if(brand != "") {
+		var link = new client.ui.basic.Link(brand,"/#","Homepage: " + brand);
+		domtools.QueryElementManipulation.addClass(link,"brand");
+		domtools.DOMManipulation.append(container,null,link);
+	}
+	this.menu = new client.ui.menu.Menu();
+	domtools.QueryElementManipulation.addClass(this.menu,"nav");
+	domtools.DOMManipulation.append(container,null,this.menu);
+	domtools.DOMManipulation.append(navbarInner,container);
+	domtools.QueryDOMManipulation.append(this,navbarInner);
+};
+client.ui.menu.NavBar.__name__ = ["client","ui","menu","NavBar"];
+client.ui.menu.NavBar.__super__ = domtools.AbstractCustomElement;
+client.ui.menu.NavBar.prototype = $extend(domtools.AbstractCustomElement.prototype,{
+	menu: null
+	,__class__: client.ui.menu.NavBar
+});
 domtools.EventManagement = $hxClasses["domtools.EventManagement"] = function() { }
 domtools.EventManagement.__name__ = ["domtools","EventManagement"];
 domtools.EventManagement.triggerHandler = function(target,event) {
@@ -1455,14 +1480,14 @@ domtools.DOMManipulation.prototype = {
 domtools.QueryDOMManipulation = $hxClasses["domtools.QueryDOMManipulation"] = function() { }
 domtools.QueryDOMManipulation.__name__ = ["domtools","QueryDOMManipulation"];
 domtools.QueryDOMManipulation.append = function(parentCollection,childNode,childCollection) {
-	var firstChildUsed = false;
+	var firstChildUsed = true;
 	var $it0 = parentCollection.collection.iterator();
 	while( $it0.hasNext() ) {
 		var parent = $it0.next();
 		childNode = firstChildUsed || childNode == null?childNode:childNode.cloneNode(true);
 		childCollection = firstChildUsed || childCollection == null?childCollection:childCollection.clone();
 		domtools.DOMManipulation.append(parent,childNode,childCollection);
-		firstChildUsed = true;
+		firstChildUsed = false;
 	}
 	return parentCollection;
 }
@@ -2881,7 +2906,7 @@ erazor.Template.prototype = {
 if(!app.author) app.author = {}
 app.author.AuthorController = $hxClasses["app.author.AuthorController"] = function() {
 	this.view = new app.author.AuthorView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 };
 app.author.AuthorController.__name__ = ["app","author","AuthorController"];
 app.author.AuthorController.prototype = {
@@ -3216,19 +3241,20 @@ client.Client.prototype = {
 }
 app.project.ProjectController = $hxClasses["app.project.ProjectController"] = function() {
 	this.view = new app.project.ProjectView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 	this.listProjects();
 };
 app.project.ProjectController.__name__ = ["app","project","ProjectController"];
 app.project.ProjectController.prototype = {
 	view: null
 	,listProjects: function() {
-		haxe.Log.trace(AppConfig.projectDir,{ fileName : "ProjectController.hx", lineNumber : 25, className : "app.project.ProjectController", methodName : "listProjects"});
+		var me = this;
 		app.project.ProjectController.projectAPI.listProjects(function(a) {
 			var _g = 0;
 			while(_g < a.length) {
 				var project = a[_g];
 				++_g;
+				me.view.addProject(project);
 			}
 		});
 	}
@@ -4208,7 +4234,7 @@ IntHash.prototype = {
 if(!app.video) app.video = {}
 app.video.VideoController = $hxClasses["app.video.VideoController"] = function() {
 	this.view = new app.video.VideoView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 };
 app.video.VideoController.__name__ = ["app","video","VideoController"];
 app.video.VideoController.prototype = {
@@ -4691,7 +4717,7 @@ domtools.QueryStyle.prototype = {
 }
 app.copy.CopyController = $hxClasses["app.copy.CopyController"] = function() {
 	this.view = new app.copy.CopyView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 };
 app.copy.CopyController.__name__ = ["app","copy","CopyController"];
 app.copy.CopyController.prototype = {
@@ -4774,23 +4800,16 @@ client.Interface = $hxClasses["client.Interface"] = function() {
 	this.setTitle("Vose");
 };
 client.Interface.__name__ = ["client","Interface"];
+client.Interface.currentControllerShowing = null;
 client.Interface.templateFile = null;
-client.Interface.prototype = {
-	title: null
-	,currentControllerShowing: null
-	,drawMenu: function() {
-		var menu = new client.ui.menu.Menu();
-		menu.addMenuItem("copy","Copy Clips");
-		menu.addMenuItem("edit","Edit Video");
-		menu.addMenuItem("slides","Create Slides");
-		menu.addMenuItem("dvd","Author DVD");
-		document.body.appendChild(menu.collection[0]);
-		domtools.QueryEventManagement.on(new domtools.Query(".menu li"),"click",this.activateMenuItem.$bind(this));
-	}
-	,activateMenuItem: function(e) {
-		var menuItem = e.currentTarget;
-		var id = StringTools.replace(domtools.ElementManipulation.attr(menuItem.firstChild,"href"),"#","");
-		if(this.currentControllerShowing != id) switch(id) {
+client.Interface.activateMenuItem = function(e) {
+	var menuItem = e.currentTarget;
+	var id = StringTools.replace(domtools.ElementManipulation.attr(menuItem.firstChild,"href"),"#","");
+	if(client.Interface.currentControllerShowing != id) {
+		domtools.QueryStyle.setCSS(new domtools.Query(".controller"),"display","none");
+		haxe.Log.trace(id,{ fileName : "Interface.hx", lineNumber : 76, className : "client.Interface", methodName : "activateMenuItem"});
+		domtools.QueryStyle.setCSS(new domtools.Query(".controller." + id),"display","block");
+		switch(id) {
 		case "copy":
 			break;
 		case "edit":
@@ -4801,7 +4820,22 @@ client.Interface.prototype = {
 			break;
 		default:
 		}
-		this.currentControllerShowing = id;
+	}
+	client.Interface.currentControllerShowing = id;
+}
+client.Interface.prototype = {
+	title: null
+	,drawMenu: function() {
+		var nav = new client.ui.menu.NavBar("Vose Video");
+		var menu = nav.menu;
+		menu.addMenuItem("project","Project");
+		menu.addMenuItem("video","Video");
+		menu.addMenuItem("copy","Copy Clips");
+		menu.addMenuItem("edit","Edit Video");
+		menu.addMenuItem("slide","Create Slides");
+		menu.addMenuItem("author","Author DVD");
+		document.body.appendChild(nav.collection[0]);
+		domtools.QueryEventManagement.on(new domtools.Query(".menu li"),"click",client.Interface.activateMenuItem);
 	}
 	,getTitle: function() {
 		return js.Lib.document.title;
@@ -5303,7 +5337,7 @@ server.api.NotificationsProxy.prototype = {
 }
 app.edit.EditController = $hxClasses["app.edit.EditController"] = function() {
 	this.view = new app.edit.EditView(this);
-	document.body.appendChild(this.view.collection[0]);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 };
 app.edit.EditController.__name__ = ["app","edit","EditController"];
 app.edit.EditController.prototype = {

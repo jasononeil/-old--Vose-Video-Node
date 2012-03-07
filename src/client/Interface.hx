@@ -14,6 +14,7 @@ import app.author.AuthorController;
 import domtools.Query;
 
 import client.ui.menu.Menu;
+import client.ui.menu.NavBar;
 using domtools.ElementManipulation;
 using domtools.EventManagement;
 using domtools.Traversing;
@@ -24,9 +25,11 @@ class Interface
 {
 	public var title(getTitle, setTitle):String;
 
-	private var currentControllerShowing:String;
+	static var currentControllerShowing:String;
 
 	public static var templateFile:String;
+
+
 
 	public function new()
 	{
@@ -40,22 +43,26 @@ class Interface
 
 	private function drawMenu()
 	{
-		var menu = new Menu();
+
+		var nav = new NavBar("Vose Video");
+		var menu = nav.menu;
 
 		// add menu items
+		menu.addMenuItem("project", "Project");
+		menu.addMenuItem("video", "Video");
 		menu.addMenuItem("copy", "Copy Clips");
 		menu.addMenuItem("edit", "Edit Video");
-		menu.addMenuItem("slides", "Create Slides");
-		menu.addMenuItem("dvd", "Author DVD");
+		menu.addMenuItem("slide", "Create Slides");
+		menu.addMenuItem("author", "Author DVD");
 
-		Query.document.body.appendChild(menu.getNode());
+
+		Query.document.body.appendChild(nav.getNode());
 		
 		// currently call via the "click" handler, later use SWFAddress.
 		new Query(".menu li").click(activateMenuItem);
-
 	}
 
-	private function activateMenuItem(e:Event)
+	private static function activateMenuItem(e:Event)
 	{
 		// Get the ID of the menu item that was activated.
 		// Later we'll try use SWFAddress
@@ -64,7 +71,11 @@ class Interface
 
 		if (currentControllerShowing != id)
 		{
-			//new Query(".controller").setCSS("display","hidden");
+
+			new Query(".controller").setCSS("display","none");
+			trace (id);
+			new Query(".controller." + id).setCSS("display","block");
+			
 			switch (id)
 			{
 				case "copy":

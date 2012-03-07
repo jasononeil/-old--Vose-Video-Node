@@ -2,6 +2,7 @@ package app.slide;
 
 import app.slide.SlideView;
 import domtools.Query;
+using domtools.DOMManipulation;
 
 class SlideController
 {
@@ -10,8 +11,7 @@ class SlideController
 	public function new() 
 	{
 		view = new SlideView(this);
-
-		Query.document.body.appendChild(view.getNode());
+		new Query("#controllerarea").append(view);
 	}
 
 }

@@ -2,6 +2,7 @@ package app.copy;
 
 import app.copy.CopyView;
 import domtools.Query;
+using domtools.DOMManipulation;
 
 class CopyController
 {
@@ -10,8 +11,7 @@ class CopyController
 	public function new() 
 	{
 		view = new CopyView(this);
-
-		Query.document.body.appendChild(view.getNode());
+		new Query("#controllerarea").append(view);
 	}
 
 }

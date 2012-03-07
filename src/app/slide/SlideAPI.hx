@@ -1,5 +1,7 @@
 package app.slide;
 
+import app.project.model.Project;
+
 /**
 * - everything we need to do on the server for slides
 * - provide a list of slide templates for the given project
@@ -7,6 +9,8 @@ package app.slide;
 * - receive the slide template and data object back, compile and save
 * - open in inkscape to edit
 */
+
+
 class SlideAPI 
 {
 	public function new()
@@ -26,6 +30,4 @@ class SlideAPI
 	{
 		return "";
 	}
-
-	public function saveSlide(v:Video, data:Dynamic, 
 }

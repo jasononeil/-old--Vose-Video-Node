@@ -2,6 +2,7 @@ package app.video;
 
 import app.video.VideoView;
 import domtools.Query;
+using domtools.DOMManipulation;
 
 class VideoController
 {
@@ -10,8 +11,7 @@ class VideoController
 	public function new() 
 	{
 		view = new VideoView(this);
-
-		Query.document.body.appendChild(view.getNode());
+		new Query("#controllerarea").append(view);
 	}
 
 }

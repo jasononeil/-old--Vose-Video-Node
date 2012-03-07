@@ -1,4 +1,4 @@
-package server.controller;
+package app.video;
 
 /**
 * Creating a video within a project

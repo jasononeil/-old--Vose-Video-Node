@@ -24,6 +24,7 @@ class ProjectView extends domtools.AbstractCustomElement
 	public function addProject(p:Project)
 	{
 		var projectLine = new ProjectItem(p);
+		//trace (projectLine.innerHTML());
 		this.find("ul").append(projectLine);
 	}
 

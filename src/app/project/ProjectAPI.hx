@@ -6,18 +6,36 @@ package app.project;
 * View progress details across all videos
 */
 import app.project.model.Project;
-import model.Video;
+import app.video.model.Video;
+import js.Node;
+import server.api.FileSystem;
+import server.Server;
 
 class ProjectAPI 
 {
+	static var api:ProjectAPI = new ProjectAPI();
+
 	public function new()
 	{
-		
 	}
 
 	@remote public function listProjects(cb:Array<app.project.model.Project>->Void)
 	{
 		var projects = new Array();
+
+		var folders = Node.fs.readdirSync(AppConfig.projectDir);
+
+		for (folder in folders)
+		{
+			if (FileSystem.existsSync(AppConfig.projectDir + '/' + folder + "/project.xml"))
+			{
+				var p = new Project();
+				p.id = folder;
+				p.title = folder + "unit";
+				projects.push(p);
+			}
+		}
+
 		cb(projects);
 	}
 

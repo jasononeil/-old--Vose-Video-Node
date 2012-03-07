@@ -12,16 +12,34 @@ import server.api.Launcher;
 import server.api.Notifications;
 import server.api.Scheduler;
 
+// Controller API imports
+import app.project.ProjectAPI;
+import app.video.VideoAPI;
+import app.copy.CopyAPI;
+import app.edit.EditAPI;
+import app.slide.SlideAPI;
+import app.author.AuthorAPI;
+
 class Server
 {
 	var address:String;
 	var port:Int;
 
-	var context:haxe.remoting.Context;
+	public var context:haxe.remoting.Context;
+
 	var fileSystemAPI:FileSystem; 
 	var launcherAPI:Launcher; 
 	var notificationsAPI:Notifications; 
 	var schedulerAPI:Scheduler; 
+
+	var projectAPI:ProjectAPI;
+	var videoAPI:VideoAPI;
+	var copyAPI:CopyAPI;
+	var editAPI:EditAPI;
+	var slideAPI:SlideAPI;
+	var authorAPI:AuthorAPI;
+
+	static public var inst:Server = null;
 
 	public static function main ()
 	{
@@ -30,6 +48,9 @@ class Server
 
 	public function new(address, port)
 	{
+		// prevent multiple creations of this
+		if (inst != null) { throw "Server is a singleton, you should only create this once... "; }
+
 		this.address = address;
 		this.port = port;
 
@@ -48,7 +69,7 @@ class Server
 		// Launch firefox.  Uncomment to enable this...
 		//launcherAPI.launch("firefox",["-new-window","http://localhost:1337/"]);
 		
-		
+		inst = this;
 	}
 	
 	function createServer() :Void
@@ -109,12 +130,12 @@ class Server
 		context = new haxe.remoting.Context();
 
 		// add the FileSystem API
-		fileSystemAPI = new server.api.FileSystem();
-		context.addObject(haxe.remoting.Macros.getRemotingId(server.api.FileSystem), fileSystemAPI);
+		//fileSystemAPI = new server.api.FileSystem();
+		//context.addObject(haxe.remoting.Macros.getRemotingId(server.api.FileSystem), fileSystemAPI);
 
 		// add the Launcher API
-		launcherAPI = new server.api.Launcher();
-		context.addObject(haxe.remoting.Macros.getRemotingId(server.api.Launcher), launcherAPI);
+		//launcherAPI = new server.api.Launcher();
+		//context.addObject(haxe.remoting.Macros.getRemotingId(server.api.Launcher), launcherAPI);
 
 		// add the Notifications API
 		notificationsAPI = new server.api.Notifications();
@@ -123,6 +144,16 @@ class Server
 		// add the Scheduler API
 		schedulerAPI = new server.api.Scheduler();
 		context.addObject(haxe.remoting.Macros.getRemotingId(server.api.Scheduler), schedulerAPI);
+
+		////////
+		// Add the APIs for each part of the App
+		////////
+
+		// Add the project API
+		projectAPI = new ProjectAPI();
+		context.addObject(haxe.remoting.Macros.getRemotingId(app.project.ProjectAPI), projectAPI);
+
+
 
 	}
 	

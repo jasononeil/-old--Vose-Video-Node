@@ -2,6 +2,7 @@ package app.author;
 
 import app.author.AuthorView;
 import domtools.Query;
+using domtools.DOMManipulation;
 
 class AuthorController
 {
@@ -10,8 +11,7 @@ class AuthorController
 	public function new() 
 	{
 		view = new AuthorView(this);
-
-		Query.document.body.appendChild(view.getNode());
+		new Query("#controllerarea").append(view);
 	}
 
 }

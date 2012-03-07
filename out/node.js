@@ -4,6 +4,19 @@ function $extend(from, fields) {
 	for (var name in fields) proto[name] = fields[name];
 	return proto;
 }
+var app = app || {}
+if(!app.copy) app.copy = {}
+app.copy.CopyAPI = $hxClasses["app.copy.CopyAPI"] = function() {
+};
+app.copy.CopyAPI.__name__ = ["app","copy","CopyAPI"];
+app.copy.CopyAPI.prototype = {
+	__class__: app.copy.CopyAPI
+}
+var AppConfig = $hxClasses["AppConfig"] = function() { }
+AppConfig.__name__ = ["AppConfig"];
+AppConfig.prototype = {
+	__class__: AppConfig
+}
 var js = js || {}
 js.NodeC = $hxClasses["js.NodeC"] = function() { }
 js.NodeC.__name__ = ["js","NodeC"];
@@ -50,6 +63,13 @@ js.Node.newSocket = function(options) {
 }
 js.Node.prototype = {
 	__class__: js.Node
+}
+if(!app.author) app.author = {}
+app.author.AuthorAPI = $hxClasses["app.author.AuthorAPI"] = function() {
+};
+app.author.AuthorAPI.__name__ = ["app","author","AuthorAPI"];
+app.author.AuthorAPI.prototype = {
+	__class__: app.author.AuthorAPI
 }
 var StringTools = $hxClasses["StringTools"] = function() { }
 StringTools.__name__ = ["StringTools"];
@@ -250,11 +270,33 @@ js.node.JsHelper.ifNull = function(alt,v) {
 js.node.JsHelper.prototype = {
 	__class__: js.node.JsHelper
 }
+if(!app.slide) app.slide = {}
+app.slide.SlideAPI = $hxClasses["app.slide.SlideAPI"] = function() {
+};
+app.slide.SlideAPI.__name__ = ["app","slide","SlideAPI"];
+app.slide.SlideAPI.prototype = {
+	slideTemplates: function(p) {
+		var templates = new Hash();
+		return templates;
+	}
+	,singleTemplate: function(p,templateName) {
+		return "";
+	}
+	,__class__: app.slide.SlideAPI
+}
 if(!haxe.remoting) haxe.remoting = {}
 haxe.remoting.Macros = $hxClasses["haxe.remoting.Macros"] = function() { }
 haxe.remoting.Macros.__name__ = ["haxe","remoting","Macros"];
 haxe.remoting.Macros.prototype = {
 	__class__: haxe.remoting.Macros
+}
+if(!app.video) app.video = {}
+if(!app.video.model) app.video.model = {}
+app.video.model.Video = $hxClasses["app.video.model.Video"] = function() {
+};
+app.video.model.Video.__name__ = ["app","video","model","Video"];
+app.video.model.Video.prototype = {
+	__class__: app.video.model.Video
 }
 var StringBuf = $hxClasses["StringBuf"] = function() {
 	this.b = new Array();
@@ -275,6 +317,47 @@ StringBuf.prototype = {
 	}
 	,b: null
 	,__class__: StringBuf
+}
+if(!app.edit) app.edit = {}
+app.edit.EditAPI = $hxClasses["app.edit.EditAPI"] = function() {
+};
+app.edit.EditAPI.__name__ = ["app","edit","EditAPI"];
+app.edit.EditAPI.prototype = {
+	__class__: app.edit.EditAPI
+}
+if(!app.project) app.project = {}
+if(!app.project.model) app.project.model = {}
+app.project.model.Project = $hxClasses["app.project.model.Project"] = function() {
+};
+app.project.model.Project.__name__ = ["app","project","model","Project"];
+app.project.model.Project.getAll = function(path) {
+	var folderList = js.Node.fs.readdirSync(path);
+	var projectList = new Array();
+	var _g = 0;
+	while(_g < folderList.length) {
+		var folder = folderList[_g];
+		++_g;
+		projectList.push(app.project.model.Project.get(folder));
+	}
+	return projectList;
+}
+app.project.model.Project.get = function(id) {
+	var o = new app.project.model.Project();
+	o.id = o.oldID = id;
+	o.title = "The unit titled " + id;
+	o.lecturer = "Jason";
+	o.notes = new Array();
+	return o;
+}
+app.project.model.Project.prototype = {
+	id: null
+	,title: null
+	,lecturer: null
+	,notes: null
+	,oldID: null
+	,save: function() {
+	}
+	,__class__: app.project.model.Project
 }
 if(!haxe.io) haxe.io = {}
 haxe.io.Bytes = $hxClasses["haxe.io.Bytes"] = function(length,b) {
@@ -1391,6 +1474,42 @@ List.prototype = {
 	}
 	,__class__: List
 }
+app.project.ProjectAPI = $hxClasses["app.project.ProjectAPI"] = function() {
+};
+app.project.ProjectAPI.__name__ = ["app","project","ProjectAPI"];
+app.project.ProjectAPI.prototype = {
+	listProjects: function(cb) {
+		var projects = new Array();
+		var folders = js.Node.fs.readdirSync(AppConfig.projectDir);
+		var _g = 0;
+		while(_g < folders.length) {
+			var folder = folders[_g];
+			++_g;
+			if(server.api.FileSystem.existsSync(AppConfig.projectDir + "/" + folder + "/project.xml")) {
+				var p = new app.project.model.Project();
+				p.id = folder;
+				p.title = folder + "unit";
+				projects.push(p);
+			}
+		}
+		cb(projects);
+	}
+	,addProject: function(p,cb) {
+		cb(true);
+	}
+	,updateProject: function(currentProjectName,newProjectDetails,cb) {
+		cb(true);
+	}
+	,archiveProject: function(projectName,cb) {
+		cb(true);
+	}
+	,listVideos: function(projectName,cb) {
+		throw "this should be part of the model, using #if js & #if nodejs";
+		var videos = new Array();
+		cb(videos);
+	}
+	,__class__: app.project.ProjectAPI
+}
 var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
 ValueType.TNull.toString = $estr;
@@ -1717,6 +1836,12 @@ server.api.Launcher.prototype = {
 	}
 	,__class__: server.api.Launcher
 }
+app.video.VideoAPI = $hxClasses["app.video.VideoAPI"] = function() {
+};
+app.video.VideoAPI.__name__ = ["app","video","VideoAPI"];
+app.video.VideoAPI.prototype = {
+	__class__: app.video.VideoAPI
+}
 server.api.Scheduler = $hxClasses["server.api.Scheduler"] = function() {
 };
 server.api.Scheduler.__name__ = ["server","api","Scheduler"];
@@ -1729,11 +1854,28 @@ server.api.Scheduler.prototype = {
 server.api.FileSystem = $hxClasses["server.api.FileSystem"] = function() {
 };
 server.api.FileSystem.__name__ = ["server","api","FileSystem"];
-server.api.FileSystem.prototype = {
-	getTheFoo: function(fooId,cb) {
-		cb("someFoo");
+server.api.FileSystem.existsSync = function(path) {
+	var exists = false;
+	try {
+		var stats = js.Node.fs.lstatSync(path);
+		exists = true;
+	} catch( e ) {
+		exists = false;
 	}
-	,__class__: server.api.FileSystem
+	return exists;
+}
+server.api.FileSystem.isDirSync = function(path) {
+	var isDir = false;
+	try {
+		var stats = js.Node.fs.lstatSync(path);
+		isDir = stats.isDirectory();
+	} catch( e ) {
+		isDir = false;
+	}
+	return isDir;
+}
+server.api.FileSystem.prototype = {
+	__class__: server.api.FileSystem
 }
 server.api.Notifications = $hxClasses["server.api.Notifications"] = function() {
 };
@@ -1804,6 +1946,7 @@ Hash.prototype = {
 	,__class__: Hash
 }
 server.Server = $hxClasses["server.Server"] = function(address,port) {
+	if(server.Server.inst != null) throw "Server is a singleton, you should only create this once... ";
 	this.address = address;
 	this.port = port;
 	var isServerAlreadyRunning = false;
@@ -1811,6 +1954,7 @@ server.Server = $hxClasses["server.Server"] = function(address,port) {
 		this.setupAPIContext();
 		this.createServer();
 	}
+	server.Server.inst = this;
 };
 server.Server.__name__ = ["server","Server"];
 server.Server.main = function() {
@@ -1824,6 +1968,12 @@ server.Server.prototype = {
 	,launcherAPI: null
 	,notificationsAPI: null
 	,schedulerAPI: null
+	,projectAPI: null
+	,videoAPI: null
+	,copyAPI: null
+	,editAPI: null
+	,slideAPI: null
+	,authorAPI: null
 	,createServer: function() {
 		var remotingHandler = new haxe.remoting.NodeJsHtmlConnection(this.context);
 		var remotingMiddleWare = function(req,res,next) {
@@ -1831,21 +1981,19 @@ server.Server.prototype = {
 			if(result == false) next();
 		};
 		var connect = js.Node.require("connect");
-		haxe.Log.trace(js.Node.__dirname,{ fileName : "Server.hx", lineNumber : 83, className : "server.Server", methodName : "createServer"});
+		haxe.Log.trace(js.Node.__dirname,{ fileName : "Server.hx", lineNumber : 104, className : "server.Server", methodName : "createServer"});
 		var server = connect.createServer(connect.errorHandler({ showStack : true, showMessage : true, dumpExceptions : true}),connect.logger(),remotingMiddleWare,(Reflect.field(connect,"static"))(js.Node.__dirname + "/static/",{ redirect : true}));
 		server.listen(this.port,this.address);
-		haxe.Log.trace("Listening on " + this.address + ": " + this.port,{ fileName : "Server.hx", lineNumber : 103, className : "server.Server", methodName : "createServer"});
+		haxe.Log.trace("Listening on " + this.address + ": " + this.port,{ fileName : "Server.hx", lineNumber : 124, className : "server.Server", methodName : "createServer"});
 	}
 	,setupAPIContext: function() {
 		this.context = new haxe.remoting.Context();
-		this.fileSystemAPI = new server.api.FileSystem();
-		this.context.addObject("server.api.FileSystemService",this.fileSystemAPI);
-		this.launcherAPI = new server.api.Launcher();
-		this.context.addObject("server.api.LauncherService",this.launcherAPI);
 		this.notificationsAPI = new server.api.Notifications();
 		this.context.addObject("server.api.NotificationsService",this.notificationsAPI);
 		this.schedulerAPI = new server.api.Scheduler();
 		this.context.addObject("server.api.SchedulerService",this.schedulerAPI);
+		this.projectAPI = new app.project.ProjectAPI();
+		this.context.addObject("app.project.ProjectAPIService",this.projectAPI);
 	}
 	,__class__: server.Server
 }
@@ -1955,6 +2103,7 @@ js.Boot.__init();
 		return isNaN(i);
 	};
 }
+AppConfig.projectDir = "/home/jason/VoseProjects/";
 js.NodeC.UTF8 = "utf8";
 js.NodeC.ASCII = "ascii";
 js.NodeC.BINARY = "binary";
@@ -2000,9 +2149,11 @@ haxe.Unserializer.CODES = null;
 haxe.Serializer.USE_CACHE = false;
 haxe.Serializer.USE_ENUM_INDEX = false;
 haxe.Serializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
+app.project.ProjectAPI.__meta__ = { fields : { listProjects : { remote : null}, addProject : { remote : null}, updateProject : { remote : null}}};
+app.project.ProjectAPI.api = new app.project.ProjectAPI();
 haxe.remoting.NodeJsHtmlConnection.querystring = js.Node.require("querystring");
 server.api.Launcher.__meta__ = { fields : { launch : { remote : null}}};
 server.api.Scheduler.__meta__ = { fields : { getTheFoo : { remote : null}}};
-server.api.FileSystem.__meta__ = { fields : { getTheFoo : { remote : null}}};
 server.api.Notifications.__meta__ = { fields : { getTheFoo : { remote : null}}};
+server.Server.inst = null;
 server.Server.main()

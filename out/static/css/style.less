@@ -51,6 +51,12 @@ table {
 /*-------------------*/
 
 @gutter: 10px;
+
+html body
+{
+	padding-top: 40px + @gutter;
+}
+
 .rounded-corners (@radius: 5px) 
 {
 	border-radius: @radius;
@@ -80,43 +86,9 @@ a
 	
 }
 
-@menuWidth: 200px;
-.menu
-{
-	float: left;
-	display: block;
-	width: @menuWidth;
-	margin: 0 @gutter;
-
-	background: rgb(200,200,200);
-	.rounded-corners(20px);
-	padding: 20px 0;
-
-	list-style: none;
-
-	li
-	{
-
-		a
-		{
-			text-decoration: none;
-			display: block;
-			text-align:center;
-			padding: 5px;
-
-			&:hover
-			{
-				background: rgb(175,175,175);
-			}
-		}
-	}
-}
-
 .controller
 {
-	min-width: 800px;
 	background: rgb(230,230,230);
-	margin: 0 @gutter 0 (@menuWidth + @gutter*2);
 	.rounded-corners(20px);
 	padding: 20px 20px;
 

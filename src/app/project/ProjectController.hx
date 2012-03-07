@@ -6,6 +6,8 @@ import domtools.Query;
 import AppConfig;
 import js.JQuery;
 import app.project.model.Project;
+using domtools.DOMManipulation;
+using domtools.ElementManipulation;
 
 class ProjectController
 {
@@ -15,19 +17,18 @@ class ProjectController
 	public function new() 
 	{
 		view = new ProjectView(this);
-		Query.document.body.appendChild(view.getNode());
+		new Query("#controllerarea").append(view);
 		
 		listProjects();
 	}
 
 	public function listProjects()
 	{
-		trace (AppConfig.projectDir);
 		projectAPI.listProjects(function (a:Array<Project>) 
 		{
 			for (project in a)
 			{
-				//view.addProject(project);
+				view.addProject(project);
 			}
 		});
 	}
