@@ -1,0 +1,19 @@
+.hero-unit
+{
+	margin-top: 60px;
+	background-color: rgb(200,200,255);
+	border-radius: 30px;
+}
+
+.hero-unit em
+{
+	font-size: 75%;
+}
+
+article > section h2
+{
+	text-align: center;
+	border-bottom: 1px dotted rgb(200,200,200);
+	border-top: 1px dotted rgb(200,200,200);
+	margin-bottom: 10px;
+}
