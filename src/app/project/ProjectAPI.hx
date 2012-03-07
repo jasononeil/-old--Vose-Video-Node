@@ -1,22 +1,46 @@
 package app.project;
-import js.Node;
-import app.project.model.Project;
 
-class ProjectAPI
+/** 
+* List projects, view details, create & edit projects, archive projects
+* List videos inside project
+* View progress details across all videos
+*/
+import app.project.model.Project;
+import model.Video;
+
+class ProjectAPI 
 {
 	public function new()
 	{
+		
 	}
 
-	@remote public function getProjectList(parentPath:String, ?cb:Array<app.project.model.Project>->Void):Void
+	@remote public function listProjects(cb:Array<String>->Void)
 	{
-		var projects = Project.getAll(parentPath);
+		var projects = new Array();
 		cb(projects);
 	}
 
-	@remote public function getProject(projectID:String, ?cb:app.project.model.Project->Void):Void
+	@remote public function addProject(p:String, cb:Bool->Void)
 	{
-		var p = Project.get(projectID);
-		cb(p);
+		cb(true);
+	}
+
+	@remote public function updateProject(currentProjectName:String, newProjectDetails:String, cb:Bool->Void)
+	{
+		cb(true);
+	}
+
+	public function archiveProject(projectName:String, cb:Bool->Void)
+	{
+		cb(true);
+	}
+
+	
+	public function listVideos(projectName, cb:Array<Video>->Void)
+	{
+		throw "this should be part of the model, using #if js & #if nodejs";
+		var videos = new Array();
+		cb(videos);
 	}
 }

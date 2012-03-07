@@ -2,17 +2,18 @@ package client;
 
 import erazor.Template;
 
-import client.controller.ProjectController;
-import client.controller.VideoController;
-import client.controller.CopyController;
-import client.controller.EditController;
-import client.controller.SlideController;
-import client.controller.AuthorController;
+import app.project.ProjectController;
+import app.video.VideoController;
+import app.copy.CopyController;
+import app.edit.EditController;
+import app.slide.SlideController;
+import app.author.AuthorController;
+
 
 
 import domtools.Query;
 
-import client.view.ui.menu.Menu;
+import client.ui.menu.Menu;
 using domtools.ElementManipulation;
 using domtools.EventManagement;
 using domtools.Traversing;

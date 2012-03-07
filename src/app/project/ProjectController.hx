@@ -1,4 +1,5 @@
 package app.project;
+
 import client.Client;
 import app.project.ProjectView;
 import domtools.Query;
@@ -22,11 +23,11 @@ class ProjectController
 	public function listProjects()
 	{
 		trace (AppConfig.projectDir);
-		projectAPI.getProjectList(AppConfig.projectDir, function (a:Array<Project>) 
+		projectAPI.listProjects(function (a:Array<String>) 
 		{
 			for (project in a)
 			{
-				view.addProject(project);
+				//view.addProject(project);
 			}
 		});
 	}
