@@ -6,8 +6,7 @@ import domtools.Query;
 import AppConfig;
 import js.JQuery;
 import app.project.model.Project;
-using domtools.DOMManipulation;
-using domtools.ElementManipulation;
+using domtools.Tools;
 
 class ProjectController
 {
@@ -26,10 +25,11 @@ class ProjectController
 	{
 		projectAPI.listProjects(function (a:Array<Project>) 
 		{
-			for (project in a)
-			{
-				view.addProject(project);
-			}
+			view.listProjects(a);
+			// for (project in a)
+			// {
+			// 	view.addProject(project);
+			// }
 		});
 	}
 }

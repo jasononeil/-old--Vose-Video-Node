@@ -1,7 +1,6 @@
 package app.copy;
 import app.copy.CopyController;
-using domtools.ElementManipulation;
-using domtools.Traversing;
+using domtools.Tools;
 
 class CopyView extends domtools.AbstractCustomElement
 {

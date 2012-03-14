@@ -2,7 +2,7 @@ package app.slide;
 
 import app.slide.SlideView;
 import domtools.Query;
-using domtools.DOMManipulation;
+using domtools.Tools;
 
 class SlideController
 {

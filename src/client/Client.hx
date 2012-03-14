@@ -45,6 +45,7 @@ class Client
 		Client.editController = new EditController();
 		Client.slideController = new SlideController();
 		Client.authorController = new AuthorController();
+		Client.ui.showController("project");
 	}
 
 	/** Launch the remoting API.  Keep them as statics of the client.  So you call Client.launcher.launch(...) */

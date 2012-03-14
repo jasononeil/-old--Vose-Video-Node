@@ -1,7 +1,6 @@
 package app.edit;
 import app.edit.EditController;
-using domtools.ElementManipulation;
-using domtools.Traversing;
+using domtools.Tools;
 
 class EditView extends domtools.AbstractCustomElement
 {

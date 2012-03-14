@@ -2,7 +2,7 @@ package app.video;
 
 import app.video.VideoView;
 import domtools.Query;
-using domtools.DOMManipulation;
+using domtools.Tools;
 
 class VideoController
 {

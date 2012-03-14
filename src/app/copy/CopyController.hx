@@ -2,7 +2,7 @@ package app.copy;
 
 import app.copy.CopyView;
 import domtools.Query;
-using domtools.DOMManipulation;
+using domtools.Tools;
 
 class CopyController
 {

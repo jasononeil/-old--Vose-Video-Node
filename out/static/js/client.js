@@ -1,72 +1,64 @@
-var $_, $hxClasses = $hxClasses || {}, $estr = function() { return js.Boot.__string_rec(this,''); }
-function $extend(from, fields) {
-	function inherit() {}; inherit.prototype = from; var proto = new inherit();
-	for (var name in fields) proto[name] = fields[name];
-	return proto;
-}
-var haxe = haxe || {}
+$estr = function() { return js.Boot.__string_rec(this,''); }
+if(typeof haxe=='undefined') haxe = {}
 if(!haxe.io) haxe.io = {}
-haxe.io.BytesBuffer = $hxClasses["haxe.io.BytesBuffer"] = function() {
+haxe.io.BytesBuffer = function(p) {
+	if( p === $_ ) return;
 	this.b = new Array();
-};
+}
 haxe.io.BytesBuffer.__name__ = ["haxe","io","BytesBuffer"];
-haxe.io.BytesBuffer.prototype = {
-	b: null
-	,addByte: function($byte) {
-		this.b.push($byte);
-	}
-	,add: function(src) {
-		var b1 = this.b;
-		var b2 = src.b;
-		var _g1 = 0, _g = src.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.b.push(b2[i]);
-		}
-	}
-	,addBytes: function(src,pos,len) {
-		if(pos < 0 || len < 0 || pos + len > src.length) throw haxe.io.Error.OutsideBounds;
-		var b1 = this.b;
-		var b2 = src.b;
-		var _g1 = pos, _g = pos + len;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.b.push(b2[i]);
-		}
-	}
-	,getBytes: function() {
-		var bytes = new haxe.io.Bytes(this.b.length,this.b);
-		this.b = null;
-		return bytes;
-	}
-	,__class__: haxe.io.BytesBuffer
+haxe.io.BytesBuffer.prototype.b = null;
+haxe.io.BytesBuffer.prototype.addByte = function($byte) {
+	this.b.push($byte);
 }
+haxe.io.BytesBuffer.prototype.add = function(src) {
+	var b1 = this.b;
+	var b2 = src.b;
+	var _g1 = 0, _g = src.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.b.push(b2[i]);
+	}
+}
+haxe.io.BytesBuffer.prototype.addBytes = function(src,pos,len) {
+	if(pos < 0 || len < 0 || pos + len > src.length) throw haxe.io.Error.OutsideBounds;
+	var b1 = this.b;
+	var b2 = src.b;
+	var _g1 = pos, _g = pos + len;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.b.push(b2[i]);
+	}
+}
+haxe.io.BytesBuffer.prototype.getBytes = function() {
+	var bytes = new haxe.io.Bytes(this.b.length,this.b);
+	this.b = null;
+	return bytes;
+}
+haxe.io.BytesBuffer.prototype.__class__ = haxe.io.BytesBuffer;
 if(!haxe.remoting) haxe.remoting = {}
-haxe.remoting.AsyncConnection = $hxClasses["haxe.remoting.AsyncConnection"] = function() { }
+haxe.remoting.AsyncConnection = function() { }
 haxe.remoting.AsyncConnection.__name__ = ["haxe","remoting","AsyncConnection"];
-haxe.remoting.AsyncConnection.prototype = {
-	resolve: null
-	,call: null
-	,setErrorHandler: null
-	,__class__: haxe.remoting.AsyncConnection
-}
-var app = app || {}
+haxe.remoting.AsyncConnection.prototype.resolve = null;
+haxe.remoting.AsyncConnection.prototype.call = null;
+haxe.remoting.AsyncConnection.prototype.setErrorHandler = null;
+haxe.remoting.AsyncConnection.prototype.__class__ = haxe.remoting.AsyncConnection;
+if(typeof app=='undefined') app = {}
 if(!app.slide) app.slide = {}
-app.slide.SlideController = $hxClasses["app.slide.SlideController"] = function() {
+app.slide.SlideController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.slide.SlideView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-};
-app.slide.SlideController.__name__ = ["app","slide","SlideController"];
-app.slide.SlideController.prototype = {
-	view: null
-	,__class__: app.slide.SlideController
 }
-haxe.Http = $hxClasses["haxe.Http"] = function(url) {
+app.slide.SlideController.__name__ = ["app","slide","SlideController"];
+app.slide.SlideController.prototype.view = null;
+app.slide.SlideController.prototype.__class__ = app.slide.SlideController;
+haxe.Http = function(url) {
+	if( url === $_ ) return;
 	this.url = url;
 	this.headers = new Hash();
 	this.params = new Hash();
 	this.async = true;
-};
+}
 haxe.Http.__name__ = ["haxe","Http"];
 haxe.Http.requestUrl = function(url) {
 	var h = new haxe.Http(url);
@@ -81,203 +73,201 @@ haxe.Http.requestUrl = function(url) {
 	h.request(false);
 	return r;
 }
-haxe.Http.prototype = {
-	url: null
-	,async: null
-	,postData: null
-	,headers: null
-	,params: null
-	,setHeader: function(header,value) {
-		this.headers.set(header,value);
-	}
-	,setParameter: function(param,value) {
-		this.params.set(param,value);
-	}
-	,setPostData: function(data) {
-		this.postData = data;
-	}
-	,request: function(post) {
-		var me = this;
-		var r = new js.XMLHttpRequest();
-		var onreadystatechange = function() {
-			if(r.readyState != 4) return;
-			var s = (function($this) {
-				var $r;
-				try {
-					$r = r.status;
-				} catch( e ) {
-					$r = null;
-				}
-				return $r;
-			}(this));
-			if(s == undefined) s = null;
-			if(s != null) me.onStatus(s);
-			if(s != null && s >= 200 && s < 400) me.onData(r.responseText); else switch(s) {
-			case null: case undefined:
-				me.onError("Failed to connect or resolve host");
-				break;
-			case 12029:
-				me.onError("Failed to connect to host");
-				break;
-			case 12007:
-				me.onError("Unknown host");
-				break;
-			default:
-				me.onError("Http Error #" + r.status);
-			}
-		};
-		if(this.async) r.onreadystatechange = onreadystatechange;
-		var uri = this.postData;
-		if(uri != null) post = true; else {
-			var $it0 = this.params.keys();
-			while( $it0.hasNext() ) {
-				var p = $it0.next();
-				if(uri == null) uri = ""; else uri += "&";
-				uri += StringTools.urlDecode(p) + "=" + StringTools.urlEncode(this.params.get(p));
-			}
-		}
-		try {
-			if(post) r.open("POST",this.url,this.async); else if(uri != null) {
-				var question = this.url.split("?").length <= 1;
-				r.open("GET",this.url + (question?"?":"&") + uri,this.async);
-				uri = null;
-			} else r.open("GET",this.url,this.async);
-		} catch( e ) {
-			this.onError(e.toString());
-			return;
-		}
-		if(this.headers.get("Content-Type") == null && post && this.postData == null) r.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-		var $it1 = this.headers.keys();
-		while( $it1.hasNext() ) {
-			var h = $it1.next();
-			r.setRequestHeader(h,this.headers.get(h));
-		}
-		r.send(uri);
-		if(!this.async) onreadystatechange();
-	}
-	,onData: function(data) {
-	}
-	,onError: function(msg) {
-	}
-	,onStatus: function(status) {
-	}
-	,__class__: haxe.Http
+haxe.Http.prototype.url = null;
+haxe.Http.prototype.async = null;
+haxe.Http.prototype.postData = null;
+haxe.Http.prototype.headers = null;
+haxe.Http.prototype.params = null;
+haxe.Http.prototype.setHeader = function(header,value) {
+	this.headers.set(header,value);
 }
-var List = $hxClasses["List"] = function() {
+haxe.Http.prototype.setParameter = function(param,value) {
+	this.params.set(param,value);
+}
+haxe.Http.prototype.setPostData = function(data) {
+	this.postData = data;
+}
+haxe.Http.prototype.request = function(post) {
+	var me = this;
+	var r = new js.XMLHttpRequest();
+	var onreadystatechange = function() {
+		if(r.readyState != 4) return;
+		var s = (function($this) {
+			var $r;
+			try {
+				$r = r.status;
+			} catch( e ) {
+				$r = null;
+			}
+			return $r;
+		}(this));
+		if(s == undefined) s = null;
+		if(s != null) me.onStatus(s);
+		if(s != null && s >= 200 && s < 400) me.onData(r.responseText); else switch(s) {
+		case null: case undefined:
+			me.onError("Failed to connect or resolve host");
+			break;
+		case 12029:
+			me.onError("Failed to connect to host");
+			break;
+		case 12007:
+			me.onError("Unknown host");
+			break;
+		default:
+			me.onError("Http Error #" + r.status);
+		}
+	};
+	if(this.async) r.onreadystatechange = onreadystatechange;
+	var uri = this.postData;
+	if(uri != null) post = true; else {
+		var $it0 = this.params.keys();
+		while( $it0.hasNext() ) {
+			var p = $it0.next();
+			if(uri == null) uri = ""; else uri += "&";
+			uri += StringTools.urlDecode(p) + "=" + StringTools.urlEncode(this.params.get(p));
+		}
+	}
+	try {
+		if(post) r.open("POST",this.url,this.async); else if(uri != null) {
+			var question = this.url.split("?").length <= 1;
+			r.open("GET",this.url + (question?"?":"&") + uri,this.async);
+			uri = null;
+		} else r.open("GET",this.url,this.async);
+	} catch( e ) {
+		this.onError(e.toString());
+		return;
+	}
+	if(this.headers.get("Content-Type") == null && post && this.postData == null) r.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	var $it1 = this.headers.keys();
+	while( $it1.hasNext() ) {
+		var h = $it1.next();
+		r.setRequestHeader(h,this.headers.get(h));
+	}
+	r.send(uri);
+	if(!this.async) onreadystatechange();
+}
+haxe.Http.prototype.onData = function(data) {
+}
+haxe.Http.prototype.onError = function(msg) {
+}
+haxe.Http.prototype.onStatus = function(status) {
+}
+haxe.Http.prototype.__class__ = haxe.Http;
+List = function(p) {
+	if( p === $_ ) return;
 	this.length = 0;
-};
+}
 List.__name__ = ["List"];
-List.prototype = {
-	h: null
-	,q: null
-	,length: null
-	,add: function(item) {
-		var x = [item];
-		if(this.h == null) this.h = x; else this.q[1] = x;
-		this.q = x;
-		this.length++;
+List.prototype.h = null;
+List.prototype.q = null;
+List.prototype.length = null;
+List.prototype.add = function(item) {
+	var x = [item];
+	if(this.h == null) this.h = x; else this.q[1] = x;
+	this.q = x;
+	this.length++;
+}
+List.prototype.push = function(item) {
+	var x = [item,this.h];
+	this.h = x;
+	if(this.q == null) this.q = x;
+	this.length++;
+}
+List.prototype.first = function() {
+	return this.h == null?null:this.h[0];
+}
+List.prototype.last = function() {
+	return this.q == null?null:this.q[0];
+}
+List.prototype.pop = function() {
+	if(this.h == null) return null;
+	var x = this.h[0];
+	this.h = this.h[1];
+	if(this.h == null) this.q = null;
+	this.length--;
+	return x;
+}
+List.prototype.isEmpty = function() {
+	return this.h == null;
+}
+List.prototype.clear = function() {
+	this.h = null;
+	this.q = null;
+	this.length = 0;
+}
+List.prototype.remove = function(v) {
+	var prev = null;
+	var l = this.h;
+	while(l != null) {
+		if(l[0] == v) {
+			if(prev == null) this.h = l[1]; else prev[1] = l[1];
+			if(this.q == l) this.q = prev;
+			this.length--;
+			return true;
+		}
+		prev = l;
+		l = l[1];
 	}
-	,push: function(item) {
-		var x = [item,this.h];
-		this.h = x;
-		if(this.q == null) this.q = x;
-		this.length++;
-	}
-	,first: function() {
-		return this.h == null?null:this.h[0];
-	}
-	,last: function() {
-		return this.q == null?null:this.q[0];
-	}
-	,pop: function() {
+	return false;
+}
+List.prototype.iterator = function() {
+	return { h : this.h, hasNext : function() {
+		return this.h != null;
+	}, next : function() {
 		if(this.h == null) return null;
 		var x = this.h[0];
 		this.h = this.h[1];
-		if(this.h == null) this.q = null;
-		this.length--;
 		return x;
-	}
-	,isEmpty: function() {
-		return this.h == null;
-	}
-	,clear: function() {
-		this.h = null;
-		this.q = null;
-		this.length = 0;
-	}
-	,remove: function(v) {
-		var prev = null;
-		var l = this.h;
-		while(l != null) {
-			if(l[0] == v) {
-				if(prev == null) this.h = l[1]; else prev[1] = l[1];
-				if(this.q == l) this.q = prev;
-				this.length--;
-				return true;
-			}
-			prev = l;
-			l = l[1];
-		}
-		return false;
-	}
-	,iterator: function() {
-		return { h : this.h, hasNext : function() {
-			return this.h != null;
-		}, next : function() {
-			if(this.h == null) return null;
-			var x = this.h[0];
-			this.h = this.h[1];
-			return x;
-		}};
-	}
-	,toString: function() {
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		s.b[s.b.length] = "{";
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = ", ";
-			s.add(Std.string(l[0]));
-			l = l[1];
-		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
-	}
-	,join: function(sep) {
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = sep == null?"null":sep;
-			s.add(l[0]);
-			l = l[1];
-		}
-		return s.b.join("");
-	}
-	,filter: function(f) {
-		var l2 = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			if(f(v)) l2.add(v);
-		}
-		return l2;
-	}
-	,map: function(f) {
-		var b = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			b.add(f(v));
-		}
-		return b;
-	}
-	,__class__: List
+	}};
 }
-var domtools = domtools || {}
-domtools.Query = $hxClasses["domtools.Query"] = function(selector,node,collection) {
+List.prototype.toString = function() {
+	var s = new StringBuf();
+	var first = true;
+	var l = this.h;
+	s.b[s.b.length] = "{" == null?"null":"{";
+	while(l != null) {
+		if(first) first = false; else s.b[s.b.length] = ", " == null?"null":", ";
+		s.add(Std.string(l[0]));
+		l = l[1];
+	}
+	s.b[s.b.length] = "}" == null?"null":"}";
+	return s.b.join("");
+}
+List.prototype.join = function(sep) {
+	var s = new StringBuf();
+	var first = true;
+	var l = this.h;
+	while(l != null) {
+		if(first) first = false; else s.b[s.b.length] = sep == null?"null":sep;
+		s.add(l[0]);
+		l = l[1];
+	}
+	return s.b.join("");
+}
+List.prototype.filter = function(f) {
+	var l2 = new List();
+	var l = this.h;
+	while(l != null) {
+		var v = l[0];
+		l = l[1];
+		if(f(v)) l2.add(v);
+	}
+	return l2;
+}
+List.prototype.map = function(f) {
+	var b = new List();
+	var l = this.h;
+	while(l != null) {
+		var v = l[0];
+		l = l[1];
+		b.add(f(v));
+	}
+	return b;
+}
+List.prototype.__class__ = List;
+if(typeof domtools=='undefined') domtools = {}
+domtools.Query = function(selector,node,collection) {
+	if( selector === $_ ) return;
 	if(selector == null) selector = "";
 	this.collection = new Array();
 	if(node != null) {
@@ -287,9 +277,8 @@ domtools.Query = $hxClasses["domtools.Query"] = function(selector,node,collectio
 		var nodeList = CommonJS.getAll(selector);
 		this.addNodeList(nodeList);
 	}
-};
+}
 domtools.Query.__name__ = ["domtools","Query"];
-domtools.Query.__properties__ = {get_window:"get_window",get_document:"get_document"}
 domtools.Query.document = null;
 domtools.Query.window = null;
 domtools.Query.create = function(name) {
@@ -301,643 +290,443 @@ domtools.Query.get_window = function() {
 domtools.Query.get_document = function() {
 	return document;
 }
-domtools.Query.prototype = {
-	collection: null
-	,length: null
-	,iterator: function() {
-		return this.collection.iterator();
-	}
-	,getNode: function(i) {
-		if(i == null) i = 0;
-		return this.collection[i];
-	}
-	,eq: function(i) {
-		if(i == null) i = 0;
-		return new domtools.Query(null,this.collection[i]);
-	}
-	,first: function() {
-		return new domtools.Query(null,this.collection[0]);
-	}
-	,last: function() {
-		return new domtools.Query(null,this.collection[this.collection.length - 1]);
-	}
-	,add: function(node) {
-		return (function($this) {
-			var $r;
-			$this.collection.push(node);
-			$r = $this;
-			return $r;
-		}(this));
-	}
-	,addCollection: function(collection) {
-		var $it0 = collection.iterator();
-		while( $it0.hasNext() ) {
-			var node = $it0.next();
-			this.collection.push(node);
-		}
-		return this;
-	}
-	,addNodeList: function(nodeList,elementsOnly) {
-		if(elementsOnly == null) elementsOnly = true;
-		var _g1 = 0, _g = nodeList.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var node = nodeList.item(i);
-			if(elementsOnly == false || domtools.ElementManipulation.isElement(node)) {
-				this.collection.push(node);
-				this;
-			}
-		}
-		return this;
-	}
-	,removeFromCollection: function(node) {
-		return (function($this) {
-			var $r;
-			$this.collection.remove(node);
-			$r = $this;
-			return $r;
-		}(this));
-	}
-	,each: function(f) {
-		return (function($this) {
-			var $r;
-			Lambda.iter($this.collection,f);
-			$r = $this;
-			return $r;
-		}(this));
-	}
-	,filter: function(fn) {
-		return new domtools.Query(null,null,Lambda.filter(this.collection,fn));
-	}
-	,clone: function() {
-		var q = new domtools.Query();
-		var $it0 = this.collection.iterator();
-		while( $it0.hasNext() ) {
-			var node = $it0.next();
-			{
-				q.collection.push(node.cloneNode(true));
-				q;
-			}
-		}
-		return q;
-	}
-	,get_length: function() {
-		return this.collection.length;
-	}
-	,__class__: domtools.Query
-	,__properties__: {get_length:"get_length"}
+domtools.Query.prototype.collection = null;
+domtools.Query.prototype.length = null;
+domtools.Query.prototype.iterator = function() {
+	return this.collection.iterator();
 }
-domtools.AbstractCustomElement = $hxClasses["domtools.AbstractCustomElement"] = function(name) {
+domtools.Query.prototype.getNode = function(i) {
+	if(i == null) i = 0;
+	return this.collection[i];
+}
+domtools.Query.prototype.eq = function(i) {
+	if(i == null) i = 0;
+	return new domtools.Query(null,this.collection[i]);
+}
+domtools.Query.prototype.first = function() {
+	return new domtools.Query(null,this.collection[0]);
+}
+domtools.Query.prototype.last = function() {
+	return new domtools.Query(null,this.collection[this.collection.length - 1]);
+}
+domtools.Query.prototype.add = function(node) {
+	return (function($this) {
+		var $r;
+		$this.collection.push(node);
+		$r = $this;
+		return $r;
+	}(this));
+}
+domtools.Query.prototype.addCollection = function(collection) {
+	var $it0 = collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		this.collection.push(node);
+	}
+	return this;
+}
+domtools.Query.prototype.addNodeList = function(nodeList,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var _g1 = 0, _g = nodeList.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var node = nodeList.item(i);
+		if(elementsOnly == false || domtools.ElementManipulation.isElement(node)) {
+			this.collection.push(node);
+			this;
+		}
+	}
+	return this;
+}
+domtools.Query.prototype.removeFromCollection = function(node) {
+	return (function($this) {
+		var $r;
+		$this.collection.remove(node);
+		$r = $this;
+		return $r;
+	}(this));
+}
+domtools.Query.prototype.each = function(f) {
+	return (function($this) {
+		var $r;
+		Lambda.iter($this.collection,f);
+		$r = $this;
+		return $r;
+	}(this));
+}
+domtools.Query.prototype.filter = function(fn) {
+	return new domtools.Query(null,null,Lambda.filter(this.collection,fn));
+}
+domtools.Query.prototype.clone = function() {
+	var q = new domtools.Query();
+	var $it0 = this.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		{
+			q.collection.push(node.cloneNode(true));
+			q;
+		}
+	}
+	return q;
+}
+domtools.Query.prototype.get_length = function() {
+	return this.collection.length;
+}
+domtools.Query.prototype.__class__ = domtools.Query;
+domtools.AbstractCustomElement = function(name) {
+	if( name === $_ ) return;
 	domtools.Query.call(this);
 	var elm = document.createElement(name);
 	{
 		this.collection.push(elm);
 		this;
 	}
-};
+}
 domtools.AbstractCustomElement.__name__ = ["domtools","AbstractCustomElement"];
 domtools.AbstractCustomElement.__super__ = domtools.Query;
-domtools.AbstractCustomElement.prototype = $extend(domtools.Query.prototype,{
-	__class__: domtools.AbstractCustomElement
-});
-app.slide.SlideView = $hxClasses["app.slide.SlideView"] = function(c) {
+for(var k in domtools.Query.prototype ) domtools.AbstractCustomElement.prototype[k] = domtools.Query.prototype[k];
+domtools.AbstractCustomElement.prototype.__class__ = domtools.AbstractCustomElement;
+app.slide.SlideView = function(c) {
+	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"slide");
 	domtools.QueryElementManipulation.setText(this,"Slide Controller");
-};
+}
 app.slide.SlideView.__name__ = ["app","slide","SlideView"];
 app.slide.SlideView.__super__ = domtools.AbstractCustomElement;
-app.slide.SlideView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,__class__: app.slide.SlideView
-});
-haxe.Serializer = $hxClasses["haxe.Serializer"] = function() {
+for(var k in domtools.AbstractCustomElement.prototype ) app.slide.SlideView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.slide.SlideView.prototype.controller = null;
+app.slide.SlideView.prototype.__class__ = app.slide.SlideView;
+if(typeof autoform=='undefined') autoform = {}
+autoform.AbstractField = function(name) {
+	if( name === $_ ) return;
+	domtools.AbstractCustomElement.call(this,name);
+}
+autoform.AbstractField.__name__ = ["autoform","AbstractField"];
+autoform.AbstractField.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) autoform.AbstractField.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+autoform.AbstractField.prototype.get = function() {
+	return null;
+}
+autoform.AbstractField.prototype.set = function(object) {
+}
+autoform.AbstractField.prototype.__class__ = autoform.AbstractField;
+if(!autoform.ui) autoform.ui = {}
+autoform.ui.TextField = function(field) {
+	if( field === $_ ) return;
+	autoform.AbstractField.call(this,"div");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
+	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><input />");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"input"),"type","text"),"id",field.fullID);
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
+	if(field.description != "") domtools.QueryDOMManipulation.append(domtools.QueryTraversing.find(this,"label"),domtools.ElementManipulation.setText(document.createElement("p"),field.description));
+}
+autoform.ui.TextField.__name__ = ["autoform","ui","TextField"];
+autoform.ui.TextField.__super__ = autoform.AbstractField;
+for(var k in autoform.AbstractField.prototype ) autoform.ui.TextField.prototype[k] = autoform.AbstractField.prototype[k];
+autoform.ui.TextField.prototype.__class__ = autoform.ui.TextField;
+haxe.Serializer = function(p) {
+	if( p === $_ ) return;
 	this.buf = new StringBuf();
 	this.cache = new Array();
 	this.useCache = haxe.Serializer.USE_CACHE;
 	this.useEnumIndex = haxe.Serializer.USE_ENUM_INDEX;
 	this.shash = new Hash();
 	this.scount = 0;
-};
+}
 haxe.Serializer.__name__ = ["haxe","Serializer"];
 haxe.Serializer.run = function(v) {
 	var s = new haxe.Serializer();
 	s.serialize(v);
 	return s.toString();
 }
-haxe.Serializer.prototype = {
-	buf: null
-	,cache: null
-	,shash: null
-	,scount: null
-	,useCache: null
-	,useEnumIndex: null
-	,toString: function() {
-		return this.buf.b.join("");
+haxe.Serializer.prototype.buf = null;
+haxe.Serializer.prototype.cache = null;
+haxe.Serializer.prototype.shash = null;
+haxe.Serializer.prototype.scount = null;
+haxe.Serializer.prototype.useCache = null;
+haxe.Serializer.prototype.useEnumIndex = null;
+haxe.Serializer.prototype.toString = function() {
+	return this.buf.b.join("");
+}
+haxe.Serializer.prototype.serializeString = function(s) {
+	var x = this.shash.get(s);
+	if(x != null) {
+		this.buf.add("R");
+		this.buf.add(x);
+		return;
 	}
-	,serializeString: function(s) {
-		var x = this.shash.get(s);
-		if(x != null) {
-			this.buf.add("R");
-			this.buf.add(x);
+	this.shash.set(s,this.scount++);
+	this.buf.add("y");
+	s = StringTools.urlEncode(s);
+	this.buf.add(s.length);
+	this.buf.add(":");
+	this.buf.add(s);
+}
+haxe.Serializer.prototype.serializeRef = function(v) {
+	var vt = typeof(v);
+	var _g1 = 0, _g = this.cache.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var ci = this.cache[i];
+		if(typeof(ci) == vt && ci == v) {
+			this.buf.add("r");
+			this.buf.add(i);
+			return true;
+		}
+	}
+	this.cache.push(v);
+	return false;
+}
+haxe.Serializer.prototype.serializeFields = function(v) {
+	var _g = 0, _g1 = Reflect.fields(v);
+	while(_g < _g1.length) {
+		var f = _g1[_g];
+		++_g;
+		this.serializeString(f);
+		this.serialize(Reflect.field(v,f));
+	}
+	this.buf.add("g");
+}
+haxe.Serializer.prototype.serialize = function(v) {
+	var $e = (Type["typeof"](v));
+	switch( $e[1] ) {
+	case 0:
+		this.buf.add("n");
+		break;
+	case 1:
+		if(v == 0) {
+			this.buf.add("z");
 			return;
 		}
-		this.shash.set(s,this.scount++);
-		this.buf.add("y");
-		s = StringTools.urlEncode(s);
-		this.buf.add(s.length);
-		this.buf.add(":");
-		this.buf.add(s);
-	}
-	,serializeRef: function(v) {
-		var vt = typeof(v);
-		var _g1 = 0, _g = this.cache.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var ci = this.cache[i];
-			if(typeof(ci) == vt && ci == v) {
-				this.buf.add("r");
-				this.buf.add(i);
-				return true;
-			}
-		}
-		this.cache.push(v);
-		return false;
-	}
-	,serializeFields: function(v) {
-		var _g = 0, _g1 = Reflect.fields(v);
-		while(_g < _g1.length) {
-			var f = _g1[_g];
-			++_g;
-			this.serializeString(f);
-			this.serialize(Reflect.field(v,f));
-		}
-		this.buf.add("g");
-	}
-	,serialize: function(v) {
-		var $e = (Type["typeof"](v));
-		switch( $e[1] ) {
-		case 0:
-			this.buf.add("n");
-			break;
-		case 1:
-			if(v == 0) {
-				this.buf.add("z");
-				return;
-			}
-			this.buf.add("i");
+		this.buf.add("i");
+		this.buf.add(v);
+		break;
+	case 2:
+		if(Math.isNaN(v)) this.buf.add("k"); else if(!Math.isFinite(v)) this.buf.add(v < 0?"m":"p"); else {
+			this.buf.add("d");
 			this.buf.add(v);
-			break;
-		case 2:
-			if(Math.isNaN(v)) this.buf.add("k"); else if(!Math.isFinite(v)) this.buf.add(v < 0?"m":"p"); else {
-				this.buf.add("d");
-				this.buf.add(v);
-			}
-			break;
-		case 3:
-			this.buf.add(v?"t":"f");
-			break;
-		case 6:
-			var c = $e[2];
-			if(c == String) {
-				this.serializeString(v);
-				return;
-			}
-			if(this.useCache && this.serializeRef(v)) return;
-			switch(c) {
-			case Array:
-				var ucount = 0;
-				this.buf.add("a");
-				var l = v["length"];
-				var _g = 0;
-				while(_g < l) {
-					var i = _g++;
-					if(v[i] == null) ucount++; else {
-						if(ucount > 0) {
-							if(ucount == 1) this.buf.add("n"); else {
-								this.buf.add("u");
-								this.buf.add(ucount);
-							}
-							ucount = 0;
-						}
-						this.serialize(v[i]);
-					}
-				}
-				if(ucount > 0) {
-					if(ucount == 1) this.buf.add("n"); else {
-						this.buf.add("u");
-						this.buf.add(ucount);
-					}
-				}
-				this.buf.add("h");
-				break;
-			case List:
-				this.buf.add("l");
-				var v1 = v;
-				var $it0 = v1.iterator();
-				while( $it0.hasNext() ) {
-					var i = $it0.next();
-					this.serialize(i);
-				}
-				this.buf.add("h");
-				break;
-			case Date:
-				var d = v;
-				this.buf.add("v");
-				this.buf.add(d.toString());
-				break;
-			case Hash:
-				this.buf.add("b");
-				var v1 = v;
-				var $it1 = v1.keys();
-				while( $it1.hasNext() ) {
-					var k = $it1.next();
-					this.serializeString(k);
-					this.serialize(v1.get(k));
-				}
-				this.buf.add("h");
-				break;
-			case IntHash:
-				this.buf.add("q");
-				var v1 = v;
-				var $it2 = v1.keys();
-				while( $it2.hasNext() ) {
-					var k = $it2.next();
-					this.buf.add(":");
-					this.buf.add(k);
-					this.serialize(v1.get(k));
-				}
-				this.buf.add("h");
-				break;
-			case haxe.io.Bytes:
-				var v1 = v;
-				var i = 0;
-				var max = v1.length - 2;
-				var chars = "";
-				var b64 = haxe.Serializer.BASE64;
-				while(i < max) {
-					var b1 = v1.b[i++];
-					var b2 = v1.b[i++];
-					var b3 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt((b2 << 2 | b3 >> 6) & 63) + b64.charAt(b3 & 63);
-				}
-				if(i == max) {
-					var b1 = v1.b[i++];
-					var b2 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt(b2 << 2 & 63);
-				} else if(i == max + 1) {
-					var b1 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt(b1 << 4 & 63);
-				}
-				this.buf.add("s");
-				this.buf.add(chars.length);
-				this.buf.add(":");
-				this.buf.add(chars);
-				break;
-			default:
-				this.cache.pop();
-				if(v.hxSerialize != null) {
-					this.buf.add("C");
-					this.serializeString(Type.getClassName(c));
-					this.cache.push(v);
-					v.hxSerialize(this);
-					this.buf.add("g");
-				} else {
-					this.buf.add("c");
-					this.serializeString(Type.getClassName(c));
-					this.cache.push(v);
-					this.serializeFields(v);
-				}
-			}
-			break;
-		case 4:
-			if(this.useCache && this.serializeRef(v)) return;
-			this.buf.add("o");
-			this.serializeFields(v);
-			break;
-		case 7:
-			var e = $e[2];
-			if(this.useCache && this.serializeRef(v)) return;
-			this.cache.pop();
-			this.buf.add(this.useEnumIndex?"j":"w");
-			this.serializeString(Type.getEnumName(e));
-			if(this.useEnumIndex) {
-				this.buf.add(":");
-				this.buf.add(v[1]);
-			} else this.serializeString(v[0]);
-			this.buf.add(":");
+		}
+		break;
+	case 3:
+		this.buf.add(v?"t":"f");
+		break;
+	case 6:
+		var c = $e[2];
+		if(c == String) {
+			this.serializeString(v);
+			return;
+		}
+		if(this.useCache && this.serializeRef(v)) return;
+		switch(c) {
+		case Array:
+			var ucount = 0;
+			this.buf.add("a");
 			var l = v["length"];
-			this.buf.add(l - 2);
-			var _g = 2;
+			var _g = 0;
 			while(_g < l) {
 				var i = _g++;
-				this.serialize(v[i]);
+				if(v[i] == null) ucount++; else {
+					if(ucount > 0) {
+						if(ucount == 1) this.buf.add("n"); else {
+							this.buf.add("u");
+							this.buf.add(ucount);
+						}
+						ucount = 0;
+					}
+					this.serialize(v[i]);
+				}
 			}
-			this.cache.push(v);
+			if(ucount > 0) {
+				if(ucount == 1) this.buf.add("n"); else {
+					this.buf.add("u");
+					this.buf.add(ucount);
+				}
+			}
+			this.buf.add("h");
 			break;
-		case 5:
-			throw "Cannot serialize function";
+		case List:
+			this.buf.add("l");
+			var v1 = v;
+			var $it0 = v1.iterator();
+			while( $it0.hasNext() ) {
+				var i = $it0.next();
+				this.serialize(i);
+			}
+			this.buf.add("h");
+			break;
+		case Date:
+			var d = v;
+			this.buf.add("v");
+			this.buf.add(d.toString());
+			break;
+		case Hash:
+			this.buf.add("b");
+			var v1 = v;
+			var $it1 = v1.keys();
+			while( $it1.hasNext() ) {
+				var k = $it1.next();
+				this.serializeString(k);
+				this.serialize(v1.get(k));
+			}
+			this.buf.add("h");
+			break;
+		case IntHash:
+			this.buf.add("q");
+			var v1 = v;
+			var $it2 = v1.keys();
+			while( $it2.hasNext() ) {
+				var k = $it2.next();
+				this.buf.add(":");
+				this.buf.add(k);
+				this.serialize(v1.get(k));
+			}
+			this.buf.add("h");
+			break;
+		case haxe.io.Bytes:
+			var v1 = v;
+			var i = 0;
+			var max = v1.length - 2;
+			var chars = "";
+			var b64 = haxe.Serializer.BASE64;
+			while(i < max) {
+				var b1 = v1.b[i++];
+				var b2 = v1.b[i++];
+				var b3 = v1.b[i++];
+				chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt((b2 << 2 | b3 >> 6) & 63) + b64.charAt(b3 & 63);
+			}
+			if(i == max) {
+				var b1 = v1.b[i++];
+				var b2 = v1.b[i++];
+				chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt(b2 << 2 & 63);
+			} else if(i == max + 1) {
+				var b1 = v1.b[i++];
+				chars += b64.charAt(b1 >> 2) + b64.charAt(b1 << 4 & 63);
+			}
+			this.buf.add("s");
+			this.buf.add(chars.length);
+			this.buf.add(":");
+			this.buf.add(chars);
 			break;
 		default:
-			throw "Cannot serialize " + Std.string(v);
+			this.cache.pop();
+			if(v.hxSerialize != null) {
+				this.buf.add("C");
+				this.serializeString(Type.getClassName(c));
+				this.cache.push(v);
+				v.hxSerialize(this);
+				this.buf.add("g");
+			} else {
+				this.buf.add("c");
+				this.serializeString(Type.getClassName(c));
+				this.cache.push(v);
+				this.serializeFields(v);
+			}
 		}
+		break;
+	case 4:
+		if(this.useCache && this.serializeRef(v)) return;
+		this.buf.add("o");
+		this.serializeFields(v);
+		break;
+	case 7:
+		var e = $e[2];
+		if(this.useCache && this.serializeRef(v)) return;
+		this.cache.pop();
+		this.buf.add(this.useEnumIndex?"j":"w");
+		this.serializeString(Type.getEnumName(e));
+		if(this.useEnumIndex) {
+			this.buf.add(":");
+			this.buf.add(v[1]);
+		} else this.serializeString(v[0]);
+		this.buf.add(":");
+		var l = v["length"];
+		this.buf.add(l - 2);
+		var _g = 2;
+		while(_g < l) {
+			var i = _g++;
+			this.serialize(v[i]);
+		}
+		this.cache.push(v);
+		break;
+	case 5:
+		throw "Cannot serialize function";
+		break;
+	default:
+		throw "Cannot serialize " + Std.string(v);
 	}
-	,serializeException: function(e) {
-		this.buf.add("x");
-		this.serialize(e);
-	}
-	,__class__: haxe.Serializer
 }
-if(!app.project) app.project = {}
-app.project.ProjectView = $hxClasses["app.project.ProjectView"] = function(c) {
-	domtools.AbstractCustomElement.call(this,"div");
-	this.controller = c;
-	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"project");
-	domtools.QueryElementManipulation.setInnerHTML(this,"<h1>Project Controller</h1><ul></ul>");
-};
-app.project.ProjectView.__name__ = ["app","project","ProjectView"];
-app.project.ProjectView.__super__ = domtools.AbstractCustomElement;
-app.project.ProjectView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,addProject: function(p) {
-		var projectLine = new app.project._ProjectView.ProjectItem(p);
-		domtools.QueryDOMManipulation.append(domtools.QueryTraversing.find(this,"ul"),null,projectLine);
-	}
-	,__class__: app.project.ProjectView
-});
-if(!app.project._ProjectView) app.project._ProjectView = {}
-app.project._ProjectView.ProjectItem = $hxClasses["app.project._ProjectView.ProjectItem"] = function(p) {
-	domtools.AbstractCustomElement.call(this,"li");
-	var linkInnerHTML = "<span class='unitCode'></span>: <span class='unitTitle'></span> (<span class='unitLecturer'></span>)";
-	var unitLink = new client.ui.basic.Link(linkInnerHTML,"#","Open Project");
-	domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(unitLink,"span.unitCode"),p.id);
-	domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(unitLink,"span.unitTitle"),p.title);
-	domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(unitLink,"span.unitLecturer"),p.lecturer);
-	domtools.QueryElementManipulation.addClass(unitLink,"unitLink");
-	var editLink = new client.ui.basic.Link("Edit","#");
-	var archiveLink = new client.ui.basic.Link("Archive","#");
-	domtools.QueryDOMManipulation.append(domtools.QueryDOMManipulation.append(domtools.QueryDOMManipulation.append(this,null,unitLink),null,editLink),null,archiveLink);
-};
-app.project._ProjectView.ProjectItem.__name__ = ["app","project","_ProjectView","ProjectItem"];
-app.project._ProjectView.ProjectItem.__super__ = domtools.AbstractCustomElement;
-app.project._ProjectView.ProjectItem.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	__class__: app.project._ProjectView.ProjectItem
-});
+haxe.Serializer.prototype.serializeException = function(e) {
+	this.buf.add("x");
+	this.serialize(e);
+}
+haxe.Serializer.prototype.__class__ = haxe.Serializer;
 if(!app.copy) app.copy = {}
-app.copy.CopyView = $hxClasses["app.copy.CopyView"] = function(c) {
+app.copy.CopyView = function(c) {
+	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"copy");
 	domtools.QueryElementManipulation.setText(this,"Copy Controller");
-};
+}
 app.copy.CopyView.__name__ = ["app","copy","CopyView"];
 app.copy.CopyView.__super__ = domtools.AbstractCustomElement;
-app.copy.CopyView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,__class__: app.copy.CopyView
-});
-var AppConfig = $hxClasses["AppConfig"] = function() { }
-AppConfig.__name__ = ["AppConfig"];
-AppConfig.prototype = {
-	__class__: AppConfig
+for(var k in domtools.AbstractCustomElement.prototype ) app.copy.CopyView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.copy.CopyView.prototype.controller = null;
+app.copy.CopyView.prototype.__class__ = app.copy.CopyView;
+if(!app.project) app.project = {}
+app.project.ProjectView = function(c) {
+	if( c === $_ ) return;
+	domtools.AbstractCustomElement.call(this,"div");
+	this.controller = c;
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"project");
+	domtools.QueryElementManipulation.setInnerHTML(this,"<h1>Project Controller</h1>");
+	this.renderForm();
 }
-var client = client || {}
+app.project.ProjectView.__name__ = ["app","project","ProjectView"];
+app.project.ProjectView.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) app.project.ProjectView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.project.ProjectView.prototype.controller = null;
+app.project.ProjectView.prototype.listProjects = function(list) {
+	var table = new client.ui.basic.Table(app.project.model.Project,list);
+	domtools.QueryDOMManipulation.append(this,null,table);
+}
+app.project.ProjectView.prototype.renderForm = function(o) {
+	var form = new autoform.AutoForm(app.project.model.Project);
+	domtools.QueryDOMManipulation.append(this,null,form);
+	if(o != null) this.populateForm(o);
+}
+app.project.ProjectView.prototype.populateForm = function(o) {
+}
+app.project.ProjectView.prototype.__class__ = app.project.ProjectView;
+AppConfig = function() { }
+AppConfig.__name__ = ["AppConfig"];
+AppConfig.prototype.__class__ = AppConfig;
+if(typeof client=='undefined') client = {}
 if(!client.ui) client.ui = {}
 if(!client.ui.menu) client.ui.menu = {}
-client.ui.menu.Menu = $hxClasses["client.ui.menu.Menu"] = function() {
+client.ui.menu.Menu = function(p) {
+	if( p === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"ul");
 	domtools.QueryElementManipulation.addClass(this,"menu");
 	this.items = new Hash();
-};
+}
 client.ui.menu.Menu.__name__ = ["client","ui","menu","Menu"];
 client.ui.menu.Menu.__super__ = domtools.AbstractCustomElement;
-client.ui.menu.Menu.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	items: null
-	,addMenuItem: function(id,title) {
-		var menuItem = new client.ui.menu.MenuItem(id,title);
-		domtools.QueryDOMManipulation.appendTo(menuItem,null,this);
-		this.items.set(id,menuItem);
-	}
-	,get: function(id) {
-		return this.items.get(id);
-	}
-	,__class__: client.ui.menu.Menu
-});
-domtools.ElementManipulation = $hxClasses["domtools.ElementManipulation"] = function() { }
-domtools.ElementManipulation.__name__ = ["domtools","ElementManipulation"];
-domtools.ElementManipulation.isElement = function(node) {
-	return node.nodeType == domtools.ElementManipulation.NodeTypeElement;
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.menu.Menu.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.menu.Menu.prototype.items = null;
+client.ui.menu.Menu.prototype.addMenuItem = function(id,title) {
+	var menuItem = new client.ui.menu.MenuItem(id,title);
+	domtools.QueryDOMManipulation.appendTo(menuItem,null,this);
+	this.items.set(id,menuItem);
 }
-domtools.ElementManipulation.attr = function(elm,attName) {
-	var ret = "";
-	if(domtools.ElementManipulation.isElement(elm)) {
-		var element = elm;
-		ret = element.getAttribute(attName);
-		if(ret == null) ret = "";
-	}
-	return ret;
+client.ui.menu.Menu.prototype.get = function(id) {
+	return this.items.get(id);
 }
-domtools.ElementManipulation.setAttr = function(elm,attName,attValue) {
-	if(elm.nodeType == domtools.ElementManipulation.NodeTypeElement) {
-		var element = elm;
-		element.setAttribute(attName,attValue);
-	}
-	return elm;
-}
-domtools.ElementManipulation.removeAttr = function(elm,attName) {
-	if(elm.nodeType == domtools.ElementManipulation.NodeTypeElement) {
-		var element = elm;
-		element.removeAttribute(attName);
-	}
-	return elm;
-}
-domtools.ElementManipulation.hasClass = function(elm,className) {
-	return (" " + domtools.ElementManipulation.attr(elm,"class") + " ").indexOf(" " + className + " ") > -1;
-}
-domtools.ElementManipulation.addClass = function(elm,className) {
-	if(domtools.ElementManipulation.hasClass(elm,className) == false) {
-		var oldClassName = domtools.ElementManipulation.attr(elm,"class");
-		var newClassName = oldClassName == ""?className:oldClassName + " " + className;
-		domtools.ElementManipulation.setAttr(elm,"class",newClassName);
-	}
-	return elm;
-}
-domtools.ElementManipulation.removeClass = function(elm,className) {
-	var classes = domtools.ElementManipulation.attr(elm,"class").split(" ");
-	classes.remove(className);
-	var newClassValue = classes.join(" ");
-	domtools.ElementManipulation.setAttr(elm,"class",newClassValue);
-	return elm;
-}
-domtools.ElementManipulation.toggleClass = function(elm,className) {
-	if(domtools.ElementManipulation.hasClass(elm,className)) domtools.ElementManipulation.removeClass(elm,className); else domtools.ElementManipulation.addClass(elm,className);
-	return elm;
-}
-domtools.ElementManipulation.tagName = function(elm) {
-	return elm.nodeName.toLowerCase();
-}
-domtools.ElementManipulation.val = function(elm) {
-	return domtools.ElementManipulation.attr(elm,"value");
-}
-domtools.ElementManipulation.text = function(elm) {
-	return elm.textContent;
-}
-domtools.ElementManipulation.setText = function(elm,text) {
-	return (function($this) {
-		var $r;
-		elm.textContent = text;
-		$r = elm;
-		return $r;
-	}(this));
-}
-domtools.ElementManipulation.innerHTML = function(elm) {
-	var ret = "";
-	switch(elm.nodeType) {
-	case domtools.ElementManipulation.NodeTypeElement:
-		var element = elm;
-		ret = element.innerHTML;
-		break;
-	default:
-		ret = elm.textContent;
-	}
-	return ret;
-}
-domtools.ElementManipulation.setInnerHTML = function(elm,html) {
-	switch(elm.nodeType) {
-	case domtools.ElementManipulation.NodeTypeElement:
-		var element = elm;
-		element.innerHTML = html;
-		break;
-	default:
-		elm.textContent = html;
-	}
-	return elm;
-}
-domtools.ElementManipulation.clone = function(elm,deep) {
-	if(deep == null) deep = true;
-	return elm.cloneNode(deep);
-}
-domtools.ElementManipulation.prototype = {
-	__class__: domtools.ElementManipulation
-}
-domtools.QueryElementManipulation = $hxClasses["domtools.QueryElementManipulation"] = function() { }
-domtools.QueryElementManipulation.__name__ = ["domtools","QueryElementManipulation"];
-domtools.QueryElementManipulation.attr = function(query,attName) {
-	return query.collection.length > 0?domtools.ElementManipulation.attr(query.collection[0],attName):"";
-}
-domtools.QueryElementManipulation.setAttr = function(query,attName,attValue) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.setAttr(node,attName,attValue);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.removeAttr = function(query,attName) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.removeAttr(node,attName);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.hasClass = function(query,className) {
-	return query.collection.length > 0?domtools.ElementManipulation.hasClass(query.collection[0],className):false;
-}
-domtools.QueryElementManipulation.addClass = function(query,className) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.addClass(node,className);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.removeClass = function(query,className) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.removeClass(node,className);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.toggleClass = function(query,className) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.toggleClass(node,className);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.tagName = function(query) {
-	return query.collection.length > 0?query.collection[0].nodeName.toLowerCase():"";
-}
-domtools.QueryElementManipulation.tagNames = function(query) {
-	var names = new Array();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		names.push(node.nodeName.toLowerCase());
-	}
-	return names;
-}
-domtools.QueryElementManipulation.val = function(query) {
-	return query.collection.length > 0?domtools.ElementManipulation.attr(query.collection[0],"value"):"";
-}
-domtools.QueryElementManipulation.text = function(query) {
-	var text = "";
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		text = text + node.textContent;
-	}
-	return text;
-}
-domtools.QueryElementManipulation.setText = function(query,text) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		{
-			node.textContent = text;
-			node;
-		}
-	}
-	return query;
-}
-domtools.QueryElementManipulation.innerHTML = function(query) {
-	var ret = "";
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		ret += domtools.ElementManipulation.innerHTML(node);
-	}
-	return ret;
-}
-domtools.QueryElementManipulation.setInnerHTML = function(query,html) {
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.ElementManipulation.setInnerHTML(node,html);
-	}
-	return query;
-}
-domtools.QueryElementManipulation.clone = function(query,deep) {
-	if(deep == null) deep = true;
-	var newQuery = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		{
-			newQuery.collection.push(node.cloneNode(true));
-			newQuery;
-		}
-	}
-	return newQuery;
-}
-domtools.QueryElementManipulation.prototype = {
-	__class__: domtools.QueryElementManipulation
-}
-client.ui.menu.NavBar = $hxClasses["client.ui.menu.NavBar"] = function(brand,fixed) {
+client.ui.menu.Menu.prototype.__class__ = client.ui.menu.Menu;
+client.ui.menu.NavBar = function(brand,fixed) {
+	if( brand === $_ ) return;
 	if(fixed == null) fixed = true;
 	if(brand == null) brand = "";
 	domtools.AbstractCustomElement.call(this,"div");
@@ -955,639 +744,244 @@ client.ui.menu.NavBar = $hxClasses["client.ui.menu.NavBar"] = function(brand,fix
 	domtools.DOMManipulation.append(container,null,this.menu);
 	domtools.DOMManipulation.append(navbarInner,container);
 	domtools.QueryDOMManipulation.append(this,navbarInner);
-};
+}
 client.ui.menu.NavBar.__name__ = ["client","ui","menu","NavBar"];
 client.ui.menu.NavBar.__super__ = domtools.AbstractCustomElement;
-client.ui.menu.NavBar.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	menu: null
-	,__class__: client.ui.menu.NavBar
-});
-domtools.EventManagement = $hxClasses["domtools.EventManagement"] = function() { }
-domtools.EventManagement.__name__ = ["domtools","EventManagement"];
-domtools.EventManagement.triggerHandler = function(target,event) {
-	return target;
-}
-domtools.EventManagement.on = function(target,eventType,listener) {
-	var elm = target;
-	elm.addEventListener(eventType,listener,false);
-	return target;
-}
-domtools.EventManagement.off = function(target,eventType,listener) {
-	var elm = target;
-	elm.removeEventListener(eventType,listener,false);
-	return target;
-}
-domtools.EventManagement.one = function(target,eventType,listener) {
-	var fn = null;
-	fn = function(e) {
-		listener(e);
-		target.removeEventListener(eventType,fn,false);
-	};
-	target.addEventListener(eventType,fn,false);
-	return target;
-}
-domtools.EventManagement.mousedown = function(target,listener) {
-	return domtools.EventManagement.on(target,"mousedown",listener);
-}
-domtools.EventManagement.mouseenter = function(target,listener) {
-	return domtools.EventManagement.on(target,"mouseover",listener);
-}
-domtools.EventManagement.mouseleave = function(target,listener) {
-	return domtools.EventManagement.on(target,"mouseout",listener);
-}
-domtools.EventManagement.mousemove = function(target,listener) {
-	return domtools.EventManagement.on(target,"mousemove",listener);
-}
-domtools.EventManagement.mouseout = function(target,listener) {
-	return domtools.EventManagement.on(target,"mouseout",listener);
-}
-domtools.EventManagement.mouseover = function(target,listener) {
-	return domtools.EventManagement.on(target,"mouseover",listener);
-}
-domtools.EventManagement.mouseup = function(target,listener) {
-	return domtools.EventManagement.on(target,"mouseup",listener);
-}
-domtools.EventManagement.keydown = function(target,listener) {
-	return domtools.EventManagement.on(target,"keydown",listener);
-}
-domtools.EventManagement.keypress = function(target,listener) {
-	return domtools.EventManagement.on(target,"keypress",listener);
-}
-domtools.EventManagement.keyup = function(target,listener) {
-	return domtools.EventManagement.on(target,"keyup",listener);
-}
-domtools.EventManagement.hover = function(target,listener1,listener2) {
-	domtools.EventManagement.on(target,"mouseover",listener1);
-	if(listener2 == null) domtools.EventManagement.on(target,"mouseout",listener1); else domtools.EventManagement.on(target,"mouseout",listener2);
-	return target;
-}
-domtools.EventManagement.submit = function(target,listener) {
-	return domtools.EventManagement.on(target,"submit",listener);
-}
-domtools.EventManagement.toggleClick = function(target,listenerFirstClick,listenerSecondClick) {
-	var fn1 = null;
-	var fn2 = null;
-	fn1 = function(e) {
-		listenerFirstClick(e);
-		target.removeEventListener("click",fn1,false);
-		target.addEventListener("click",fn2,false);
-	};
-	fn2 = function(e) {
-		listenerSecondClick(e);
-		target.removeEventListener("click",fn2,false);
-		target.addEventListener("click",fn1,false);
-	};
-	target.addEventListener("click",fn1,false);
-	return target;
-}
-domtools.EventManagement.blur = function(target,listener) {
-	return domtools.EventManagement.on(target,"blur",listener);
-}
-domtools.EventManagement.change = function(target,listener) {
-	return domtools.EventManagement.on(target,"change",listener);
-}
-domtools.EventManagement.click = function(target,listener) {
-	return domtools.EventManagement.on(target,"click",listener);
-}
-domtools.EventManagement.dblclick = function(target,listener) {
-	return domtools.EventManagement.on(target,"dblclick",listener);
-}
-domtools.EventManagement.focus = function(target,listener) {
-	return domtools.EventManagement.on(target,"focus",listener);
-}
-domtools.EventManagement.focusIn = function(target,listener) {
-	return domtools.EventManagement.on(target,"focusIn",listener);
-}
-domtools.EventManagement.focusOut = function(target,listener) {
-	return domtools.EventManagement.on(target,"focusOut",listener);
-}
-domtools.EventManagement.resize = function(target,listener) {
-	return domtools.EventManagement.on(target,"resize",listener);
-}
-domtools.EventManagement.scroll = function(target,listener) {
-	return domtools.EventManagement.on(target,"scroll",listener);
-}
-domtools.EventManagement.select = function(target,listener) {
-	return domtools.EventManagement.on(target,"select",listener);
-}
-domtools.EventManagement.load = function(target,listener) {
-	return domtools.EventManagement.on(target,"load",listener);
-}
-domtools.EventManagement.unload = function(target,listener) {
-	return domtools.EventManagement.on(target,"unload",listener);
-}
-domtools.EventManagement.error = function(target,listener) {
-	return domtools.EventManagement.on(target,"error",listener);
-}
-domtools.EventManagement.ready = function(target,listener) {
-	return domtools.EventManagement.on(target,"ready",listener);
-}
-domtools.EventManagement.prototype = {
-	__class__: domtools.EventManagement
-}
-domtools.QueryEventManagement = $hxClasses["domtools.QueryEventManagement"] = function() { }
-domtools.QueryEventManagement.__name__ = ["domtools","QueryEventManagement"];
-domtools.QueryEventManagement.on = function(targetCollection,eventType,listener) {
-	var $it0 = targetCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var target = $it0.next();
-		domtools.EventManagement.on(target,eventType,listener);
-	}
-	return targetCollection;
-}
-domtools.QueryEventManagement.off = function(targetCollection,eventType,listener) {
-	var $it0 = targetCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var target = $it0.next();
-		domtools.EventManagement.off(target,eventType,listener);
-	}
-	return targetCollection;
-}
-domtools.QueryEventManagement.one = function(targetCollection,eventType,listener) {
-	var $it0 = targetCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var target = $it0.next();
-		domtools.EventManagement.one(target,eventType,listener);
-	}
-	return targetCollection;
-}
-domtools.QueryEventManagement.mousedown = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mousedown",listener);
-}
-domtools.QueryEventManagement.mouseenter = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mouseenter",listener);
-}
-domtools.QueryEventManagement.mouseleave = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mouseleave",listener);
-}
-domtools.QueryEventManagement.mousemove = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mousemove",listener);
-}
-domtools.QueryEventManagement.mouseout = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mouseout",listener);
-}
-domtools.QueryEventManagement.mouseover = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mouseover",listener);
-}
-domtools.QueryEventManagement.mouseup = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"mouseup",listener);
-}
-domtools.QueryEventManagement.keydown = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"keydown",listener);
-}
-domtools.QueryEventManagement.keypress = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"keypress",listener);
-}
-domtools.QueryEventManagement.keyup = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"keyup",listener);
-}
-domtools.QueryEventManagement.hover = function(targetCollection,listener1,listener2) {
-	var $it0 = targetCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.EventManagement.hover(node,listener1,listener2);
-	}
-	return targetCollection;
-}
-domtools.QueryEventManagement.submit = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"submit",listener);
-}
-domtools.QueryEventManagement.toggleClick = function(targetCollection,listenerFirstClick,listenerSecondClick) {
-	var $it0 = targetCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var target = $it0.next();
-		domtools.EventManagement.toggleClick(target,listenerFirstClick,listenerSecondClick);
-	}
-	return targetCollection;
-}
-domtools.QueryEventManagement.blur = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"blur",listener);
-}
-domtools.QueryEventManagement.change = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"change",listener);
-}
-domtools.QueryEventManagement.click = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"click",listener);
-}
-domtools.QueryEventManagement.dblclick = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"dblclick",listener);
-}
-domtools.QueryEventManagement.focus = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"focus",listener);
-}
-domtools.QueryEventManagement.focusIn = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"focusIn",listener);
-}
-domtools.QueryEventManagement.focusOut = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"focusOut",listener);
-}
-domtools.QueryEventManagement.resize = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"resize",listener);
-}
-domtools.QueryEventManagement.scroll = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"scroll",listener);
-}
-domtools.QueryEventManagement.select = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"select",listener);
-}
-domtools.QueryEventManagement.load = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"load",listener);
-}
-domtools.QueryEventManagement.unload = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"unload",listener);
-}
-domtools.QueryEventManagement.error = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"error",listener);
-}
-domtools.QueryEventManagement.ready = function(target,listener) {
-	return domtools.QueryEventManagement.on(target,"ready",listener);
-}
-domtools.QueryEventManagement.prototype = {
-	__class__: domtools.QueryEventManagement
-}
-haxe.io.Input = $hxClasses["haxe.io.Input"] = function() { }
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.menu.NavBar.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.menu.NavBar.prototype.menu = null;
+client.ui.menu.NavBar.prototype.__class__ = client.ui.menu.NavBar;
+haxe.io.Input = function() { }
 haxe.io.Input.__name__ = ["haxe","io","Input"];
-haxe.io.Input.prototype = {
-	bigEndian: null
-	,readByte: function() {
-		return (function($this) {
-			var $r;
-			throw "Not implemented";
-			return $r;
-		}(this));
-	}
-	,readBytes: function(s,pos,len) {
-		var k = len;
-		var b = s.b;
-		if(pos < 0 || len < 0 || pos + len > s.length) throw haxe.io.Error.OutsideBounds;
-		while(k > 0) {
-			b[pos] = this.readByte();
-			pos++;
-			k--;
-		}
-		return len;
-	}
-	,close: function() {
-	}
-	,setEndian: function(b) {
-		this.bigEndian = b;
-		return b;
-	}
-	,readAll: function(bufsize) {
-		if(bufsize == null) bufsize = 16384;
-		var buf = haxe.io.Bytes.alloc(bufsize);
-		var total = new haxe.io.BytesBuffer();
-		try {
-			while(true) {
-				var len = this.readBytes(buf,0,bufsize);
-				if(len == 0) throw haxe.io.Error.Blocked;
-				total.addBytes(buf,0,len);
-			}
-		} catch( e ) {
-			if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
-			} else throw(e);
-		}
-		return total.getBytes();
-	}
-	,readFullBytes: function(s,pos,len) {
-		while(len > 0) {
-			var k = this.readBytes(s,pos,len);
-			pos += k;
-			len -= k;
-		}
-	}
-	,read: function(nbytes) {
-		var s = haxe.io.Bytes.alloc(nbytes);
-		var p = 0;
-		while(nbytes > 0) {
-			var k = this.readBytes(s,p,nbytes);
-			if(k == 0) throw haxe.io.Error.Blocked;
-			p += k;
-			nbytes -= k;
-		}
-		return s;
-	}
-	,readUntil: function(end) {
-		var buf = new StringBuf();
-		var last;
-		while((last = this.readByte()) != end) buf.b[buf.b.length] = String.fromCharCode(last);
-		return buf.b.join("");
-	}
-	,readLine: function() {
-		var buf = new StringBuf();
-		var last;
-		var s;
-		try {
-			while((last = this.readByte()) != 10) buf.b[buf.b.length] = String.fromCharCode(last);
-			s = buf.b.join("");
-			if(s.charCodeAt(s.length - 1) == 13) s = s.substr(0,-1);
-		} catch( e ) {
-			if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
-				s = buf.b.join("");
-				if(s.length == 0) throw e;
-			} else throw(e);
-		}
-		return s;
-	}
-	,readFloat: function() {
+haxe.io.Input.prototype.bigEndian = null;
+haxe.io.Input.prototype.readByte = function() {
+	return (function($this) {
+		var $r;
 		throw "Not implemented";
-		return 0;
-	}
-	,readDouble: function() {
-		throw "Not implemented";
-		return 0;
-	}
-	,readInt8: function() {
-		var n = this.readByte();
-		if(n >= 128) return n - 256;
-		return n;
-	}
-	,readInt16: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var n = this.bigEndian?ch2 | ch1 << 8:ch1 | ch2 << 8;
-		if((n & 32768) != 0) return n - 65536;
-		return n;
-	}
-	,readUInt16: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		return this.bigEndian?ch2 | ch1 << 8:ch1 | ch2 << 8;
-	}
-	,readInt24: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var ch3 = this.readByte();
-		var n = this.bigEndian?ch3 | ch2 << 8 | ch1 << 16:ch1 | ch2 << 8 | ch3 << 16;
-		if((n & 8388608) != 0) return n - 16777216;
-		return n;
-	}
-	,readUInt24: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var ch3 = this.readByte();
-		return this.bigEndian?ch3 | ch2 << 8 | ch1 << 16:ch1 | ch2 << 8 | ch3 << 16;
-	}
-	,readInt31: function() {
-		var ch1, ch2, ch3, ch4;
-		if(this.bigEndian) {
-			ch4 = this.readByte();
-			ch3 = this.readByte();
-			ch2 = this.readByte();
-			ch1 = this.readByte();
-		} else {
-			ch1 = this.readByte();
-			ch2 = this.readByte();
-			ch3 = this.readByte();
-			ch4 = this.readByte();
-		}
-		if((ch4 & 128) == 0 != ((ch4 & 64) == 0)) throw haxe.io.Error.Overflow;
-		return ch1 | ch2 << 8 | ch3 << 16 | ch4 << 24;
-	}
-	,readUInt30: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var ch3 = this.readByte();
-		var ch4 = this.readByte();
-		if((this.bigEndian?ch1:ch4) >= 64) throw haxe.io.Error.Overflow;
-		return this.bigEndian?ch4 | ch3 << 8 | ch2 << 16 | ch1 << 24:ch1 | ch2 << 8 | ch3 << 16 | ch4 << 24;
-	}
-	,readInt32: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var ch3 = this.readByte();
-		var ch4 = this.readByte();
-		return this.bigEndian?(ch1 << 8 | ch2) << 16 | (ch3 << 8 | ch4):(ch4 << 8 | ch3) << 16 | (ch2 << 8 | ch1);
-	}
-	,readString: function(len) {
-		var b = haxe.io.Bytes.alloc(len);
-		this.readFullBytes(b,0,len);
-		return b.toString();
-	}
-	,__class__: haxe.io.Input
-	,__properties__: {set_bigEndian:"setEndian"}
+		return $r;
+	}(this));
 }
-haxe.io.BytesInput = $hxClasses["haxe.io.BytesInput"] = function(b,pos,len) {
+haxe.io.Input.prototype.readBytes = function(s,pos,len) {
+	var k = len;
+	var b = s.b;
+	if(pos < 0 || len < 0 || pos + len > s.length) throw haxe.io.Error.OutsideBounds;
+	while(k > 0) {
+		b[pos] = this.readByte();
+		pos++;
+		k--;
+	}
+	return len;
+}
+haxe.io.Input.prototype.close = function() {
+}
+haxe.io.Input.prototype.setEndian = function(b) {
+	this.bigEndian = b;
+	return b;
+}
+haxe.io.Input.prototype.readAll = function(bufsize) {
+	if(bufsize == null) bufsize = 16384;
+	var buf = haxe.io.Bytes.alloc(bufsize);
+	var total = new haxe.io.BytesBuffer();
+	try {
+		while(true) {
+			var len = this.readBytes(buf,0,bufsize);
+			if(len == 0) throw haxe.io.Error.Blocked;
+			total.addBytes(buf,0,len);
+		}
+	} catch( e ) {
+		if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
+		} else throw(e);
+	}
+	return total.getBytes();
+}
+haxe.io.Input.prototype.readFullBytes = function(s,pos,len) {
+	while(len > 0) {
+		var k = this.readBytes(s,pos,len);
+		pos += k;
+		len -= k;
+	}
+}
+haxe.io.Input.prototype.read = function(nbytes) {
+	var s = haxe.io.Bytes.alloc(nbytes);
+	var p = 0;
+	while(nbytes > 0) {
+		var k = this.readBytes(s,p,nbytes);
+		if(k == 0) throw haxe.io.Error.Blocked;
+		p += k;
+		nbytes -= k;
+	}
+	return s;
+}
+haxe.io.Input.prototype.readUntil = function(end) {
+	var buf = new StringBuf();
+	var last;
+	while((last = this.readByte()) != end) buf.b[buf.b.length] = String.fromCharCode(last);
+	return buf.b.join("");
+}
+haxe.io.Input.prototype.readLine = function() {
+	var buf = new StringBuf();
+	var last;
+	var s;
+	try {
+		while((last = this.readByte()) != 10) buf.b[buf.b.length] = String.fromCharCode(last);
+		s = buf.b.join("");
+		if(s.charCodeAt(s.length - 1) == 13) s = s.substr(0,-1);
+	} catch( e ) {
+		if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
+			s = buf.b.join("");
+			if(s.length == 0) throw e;
+		} else throw(e);
+	}
+	return s;
+}
+haxe.io.Input.prototype.readFloat = function() {
+	throw "Not implemented";
+	return 0;
+}
+haxe.io.Input.prototype.readDouble = function() {
+	throw "Not implemented";
+	return 0;
+}
+haxe.io.Input.prototype.readInt8 = function() {
+	var n = this.readByte();
+	if(n >= 128) return n - 256;
+	return n;
+}
+haxe.io.Input.prototype.readInt16 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	var n = this.bigEndian?ch2 | ch1 << 8:ch1 | ch2 << 8;
+	if((n & 32768) != 0) return n - 65536;
+	return n;
+}
+haxe.io.Input.prototype.readUInt16 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	return this.bigEndian?ch2 | ch1 << 8:ch1 | ch2 << 8;
+}
+haxe.io.Input.prototype.readInt24 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	var ch3 = this.readByte();
+	var n = this.bigEndian?ch3 | ch2 << 8 | ch1 << 16:ch1 | ch2 << 8 | ch3 << 16;
+	if((n & 8388608) != 0) return n - 16777216;
+	return n;
+}
+haxe.io.Input.prototype.readUInt24 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	var ch3 = this.readByte();
+	return this.bigEndian?ch3 | ch2 << 8 | ch1 << 16:ch1 | ch2 << 8 | ch3 << 16;
+}
+haxe.io.Input.prototype.readInt31 = function() {
+	var ch1, ch2, ch3, ch4;
+	if(this.bigEndian) {
+		ch4 = this.readByte();
+		ch3 = this.readByte();
+		ch2 = this.readByte();
+		ch1 = this.readByte();
+	} else {
+		ch1 = this.readByte();
+		ch2 = this.readByte();
+		ch3 = this.readByte();
+		ch4 = this.readByte();
+	}
+	if((ch4 & 128) == 0 != ((ch4 & 64) == 0)) throw haxe.io.Error.Overflow;
+	return ch1 | ch2 << 8 | ch3 << 16 | ch4 << 24;
+}
+haxe.io.Input.prototype.readUInt30 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	var ch3 = this.readByte();
+	var ch4 = this.readByte();
+	if((this.bigEndian?ch1:ch4) >= 64) throw haxe.io.Error.Overflow;
+	return this.bigEndian?ch4 | ch3 << 8 | ch2 << 16 | ch1 << 24:ch1 | ch2 << 8 | ch3 << 16 | ch4 << 24;
+}
+haxe.io.Input.prototype.readInt32 = function() {
+	var ch1 = this.readByte();
+	var ch2 = this.readByte();
+	var ch3 = this.readByte();
+	var ch4 = this.readByte();
+	return this.bigEndian?(ch1 << 8 | ch2) << 16 | (ch3 << 8 | ch4):(ch4 << 8 | ch3) << 16 | (ch2 << 8 | ch1);
+}
+haxe.io.Input.prototype.readString = function(len) {
+	var b = haxe.io.Bytes.alloc(len);
+	this.readFullBytes(b,0,len);
+	return b.toString();
+}
+haxe.io.Input.prototype.__class__ = haxe.io.Input;
+haxe.io.BytesInput = function(b,pos,len) {
+	if( b === $_ ) return;
 	if(pos == null) pos = 0;
 	if(len == null) len = b.length - pos;
 	if(pos < 0 || len < 0 || pos + len > b.length) throw haxe.io.Error.OutsideBounds;
 	this.b = b.b;
 	this.pos = pos;
 	this.len = len;
-};
+}
 haxe.io.BytesInput.__name__ = ["haxe","io","BytesInput"];
 haxe.io.BytesInput.__super__ = haxe.io.Input;
-haxe.io.BytesInput.prototype = $extend(haxe.io.Input.prototype,{
-	b: null
-	,pos: null
-	,len: null
-	,readByte: function() {
-		if(this.len == 0) throw new haxe.io.Eof();
-		this.len--;
-		return this.b[this.pos++];
+for(var k in haxe.io.Input.prototype ) haxe.io.BytesInput.prototype[k] = haxe.io.Input.prototype[k];
+haxe.io.BytesInput.prototype.b = null;
+haxe.io.BytesInput.prototype.pos = null;
+haxe.io.BytesInput.prototype.len = null;
+haxe.io.BytesInput.prototype.readByte = function() {
+	if(this.len == 0) throw new haxe.io.Eof();
+	this.len--;
+	return this.b[this.pos++];
+}
+haxe.io.BytesInput.prototype.readBytes = function(buf,pos,len) {
+	if(pos < 0 || len < 0 || pos + len > buf.length) throw haxe.io.Error.OutsideBounds;
+	if(this.len == 0 && len > 0) throw new haxe.io.Eof();
+	if(this.len < len) len = this.len;
+	var b1 = this.b;
+	var b2 = buf.b;
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		b2[pos + i] = b1[this.pos + i];
 	}
-	,readBytes: function(buf,pos,len) {
-		if(pos < 0 || len < 0 || pos + len > buf.length) throw haxe.io.Error.OutsideBounds;
-		if(this.len == 0 && len > 0) throw new haxe.io.Eof();
-		if(this.len < len) len = this.len;
-		var b1 = this.b;
-		var b2 = buf.b;
-		var _g = 0;
-		while(_g < len) {
-			var i = _g++;
-			b2[pos + i] = b1[this.pos + i];
-		}
-		this.pos += len;
-		this.len -= len;
-		return len;
-	}
-	,__class__: haxe.io.BytesInput
-});
-var server = server || {}
+	this.pos += len;
+	this.len -= len;
+	return len;
+}
+haxe.io.BytesInput.prototype.__class__ = haxe.io.BytesInput;
+if(typeof server=='undefined') server = {}
 if(!server.api) server.api = {}
-server.api.SchedulerProxy = $hxClasses["server.api.SchedulerProxy"] = function(c) {
+server.api.SchedulerProxy = function(c) {
+	if( c === $_ ) return;
 	this._conn = c.resolve("server.api.SchedulerService");
-};
+}
 server.api.SchedulerProxy.__name__ = ["server","api","SchedulerProxy"];
-server.api.SchedulerProxy.prototype = {
-	_conn: null
-	,getTheFoo: function(fooId,cb) {
-		this._conn.resolve("getTheFoo").call([fooId],cb);
-	}
-	,__class__: server.api.SchedulerProxy
+server.api.SchedulerProxy.prototype._conn = null;
+server.api.SchedulerProxy.prototype.getTheFoo = function(fooId,cb) {
+	this._conn.resolve("getTheFoo").call([fooId],cb);
 }
-domtools.DOMManipulation = $hxClasses["domtools.DOMManipulation"] = function() { }
-domtools.DOMManipulation.__name__ = ["domtools","DOMManipulation"];
-domtools.DOMManipulation.append = function(parent,childNode,childCollection) {
-	if(childNode != null) parent.appendChild(childNode); else if(childCollection != null) {
-		var $it0 = childCollection.collection.iterator();
-		while( $it0.hasNext() ) {
-			var child = $it0.next();
-			parent.appendChild(child);
-		}
-	}
-	return parent;
+server.api.SchedulerProxy.prototype.__class__ = server.api.SchedulerProxy;
+haxe.io.Eof = function(p) {
 }
-domtools.DOMManipulation.prepend = function(parent,newChildNode,newChildCollection) {
-	if(newChildNode != null) domtools.DOMManipulation.insertThisBefore(newChildNode,parent.firstChild); else if(newChildCollection != null) domtools.QueryDOMManipulation.insertThisBefore(newChildCollection,parent.firstChild);
-	return parent;
-}
-domtools.DOMManipulation.appendTo = function(child,parentNode,parentCollection) {
-	if(parentNode != null) domtools.DOMManipulation.append(parentNode,child); else if(parentCollection != null) domtools.QueryDOMManipulation.append(parentCollection,child);
-	return child;
-}
-domtools.DOMManipulation.prependTo = function(child,parentNode,parentCollection) {
-	return domtools.DOMManipulation.insertThisBefore(child,parentNode.firstChild,parentCollection);
-}
-domtools.DOMManipulation.insertThisBefore = function(content,targetNode,targetCollection) {
-	if(targetNode != null) targetNode.parentNode.insertBefore(content,targetNode); else if(targetCollection != null) {
-		var firstChildUsed = false;
-		var $it0 = targetCollection.collection.iterator();
-		while( $it0.hasNext() ) {
-			var target = $it0.next();
-			var childToInsert;
-			if(firstChildUsed) {
-				childToInsert = content;
-				firstChildUsed = true;
-			} else childToInsert = content.cloneNode(true);
-			target.parentNode.insertBefore(childToInsert,target);
-		}
-	}
-	return content;
-}
-domtools.DOMManipulation.insertThisAfter = function(content,targetNode,targetCollection) {
-	return domtools.DOMManipulation.insertThisBefore(content,targetNode.nextSibling,targetCollection);
-}
-domtools.DOMManipulation.beforeThisInsert = function(target,contentNode,contentQuery) {
-	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,target); else if(contentQuery != null) domtools.QueryDOMManipulation.insertThisBefore(contentQuery,target);
-	return target;
-}
-domtools.DOMManipulation.afterThisInsert = function(target,contentNode,contentQuery) {
-	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,target.nextSibling,null); else if(contentQuery != null) domtools.QueryDOMManipulation.insertThisBefore(contentQuery,target.nextSibling,domtools.QueryTraversing.next(null));
-	return target;
-}
-domtools.DOMManipulation.remove = function(childToRemove) {
-	childToRemove.parentNode.removeChild(childToRemove);
-	return childToRemove;
-}
-domtools.DOMManipulation.empty = function(container) {
-	while(container.hasChildNodes()) container.removeChild(container.firstChild);
-	return container;
-}
-domtools.DOMManipulation.prototype = {
-	__class__: domtools.DOMManipulation
-}
-domtools.QueryDOMManipulation = $hxClasses["domtools.QueryDOMManipulation"] = function() { }
-domtools.QueryDOMManipulation.__name__ = ["domtools","QueryDOMManipulation"];
-domtools.QueryDOMManipulation.append = function(parentCollection,childNode,childCollection) {
-	var firstChildUsed = true;
-	var $it0 = parentCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var parent = $it0.next();
-		childNode = firstChildUsed || childNode == null?childNode:childNode.cloneNode(true);
-		childCollection = firstChildUsed || childCollection == null?childCollection:childCollection.clone();
-		domtools.DOMManipulation.append(parent,childNode,childCollection);
-		firstChildUsed = false;
-	}
-	return parentCollection;
-}
-domtools.QueryDOMManipulation.prepend = function(parentCollection,childNode,childCollection) {
-	var firstChildUsed = false;
-	var $it0 = parentCollection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var parent = $it0.next();
-		childNode = firstChildUsed || childNode == null?childNode:childNode.cloneNode(true);
-		childCollection = firstChildUsed || childCollection == null?childCollection:childCollection.clone();
-		domtools.DOMManipulation.prepend(parent,childNode,childCollection);
-		firstChildUsed = true;
-	}
-	return parentCollection;
-}
-domtools.QueryDOMManipulation.appendTo = function(children,parentNode,parentCollection) {
-	if(parentNode != null) domtools.DOMManipulation.append(parentNode,null,children); else if(parentCollection != null) domtools.QueryDOMManipulation.append(parentCollection,null,children);
-	return children;
-}
-domtools.QueryDOMManipulation.prependTo = function(children,parentNode,parentCollection) {
-	return domtools.QueryDOMManipulation.insertThisBefore(children,parentNode.firstChild,domtools.QueryTraversing.firstChildren(parentCollection));
-}
-domtools.QueryDOMManipulation.insertThisBefore = function(content,targetNode,targetCollection) {
-	if(targetNode != null) {
-		var $it0 = content.collection.iterator();
-		while( $it0.hasNext() ) {
-			var childToAdd = $it0.next();
-			domtools.DOMManipulation.insertThisBefore(childToAdd,targetNode);
-		}
-	} else if(targetCollection != null) {
-		var firstChildUsed = false;
-		var childCollection = content;
-		var $it1 = targetCollection.collection.iterator();
-		while( $it1.hasNext() ) {
-			var target = $it1.next();
-			childCollection = firstChildUsed?childCollection:childCollection.clone();
-			domtools.QueryDOMManipulation.insertThisBefore(childCollection,target);
-			firstChildUsed = true;
-		}
-	}
-	return content;
-}
-domtools.QueryDOMManipulation.insertThisAfter = function(content,targetNode,targetCollection) {
-	return domtools.QueryDOMManipulation.insertThisBefore(content,targetNode.nextSibling,domtools.QueryTraversing.next(targetCollection));
-}
-domtools.QueryDOMManipulation.beforeThisInsert = function(target,contentNode,contentCollection) {
-	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,null,target); else if(contentCollection != null) domtools.QueryDOMManipulation.insertThisBefore(contentCollection,null,target);
-	return target;
-}
-domtools.QueryDOMManipulation.afterThisInsert = function(target,contentNode,contentCollection) {
-	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,null.nextSibling,target); else if(contentCollection != null) domtools.QueryDOMManipulation.insertThisBefore(contentCollection,null.nextSibling,domtools.QueryTraversing.next(target));
-	return target;
-}
-domtools.QueryDOMManipulation.remove = function(nodesToRemove) {
-	var $it0 = nodesToRemove.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.DOMManipulation.remove(node);
-	}
-	return nodesToRemove;
-}
-domtools.QueryDOMManipulation.empty = function(containers) {
-	var $it0 = containers.collection.iterator();
-	while( $it0.hasNext() ) {
-		var container = $it0.next();
-		while(container.hasChildNodes()) container.removeChild(container.firstChild);
-	}
-	return containers;
-}
-domtools.QueryDOMManipulation.prototype = {
-	__class__: domtools.QueryDOMManipulation
-}
-haxe.io.Eof = $hxClasses["haxe.io.Eof"] = function() {
-};
 haxe.io.Eof.__name__ = ["haxe","io","Eof"];
-haxe.io.Eof.prototype = {
-	toString: function() {
-		return "Eof";
-	}
-	,__class__: haxe.io.Eof
+haxe.io.Eof.prototype.toString = function() {
+	return "Eof";
 }
-app.project.ProjectAPIProxy = $hxClasses["app.project.ProjectAPIProxy"] = function(c) {
+haxe.io.Eof.prototype.__class__ = haxe.io.Eof;
+app.project.ProjectAPIProxy = function(c) {
+	if( c === $_ ) return;
 	this._conn = c.resolve("app.project.ProjectAPIService");
-};
-app.project.ProjectAPIProxy.__name__ = ["app","project","ProjectAPIProxy"];
-app.project.ProjectAPIProxy.prototype = {
-	_conn: null
-	,listProjects: function(cb) {
-		this._conn.resolve("listProjects").call([],cb);
-	}
-	,addProject: function(p,cb) {
-		this._conn.resolve("addProject").call([p],cb);
-	}
-	,updateProject: function(currentProjectName,newProjectDetails,cb) {
-		this._conn.resolve("updateProject").call([currentProjectName,newProjectDetails],cb);
-	}
-	,__class__: app.project.ProjectAPIProxy
 }
-var hscript = hscript || {}
-hscript.Token = $hxClasses["hscript.Token"] = { __ename__ : ["hscript","Token"], __constructs__ : ["TEof","TConst","TId","TOp","TPOpen","TPClose","TBrOpen","TBrClose","TDot","TComma","TSemicolon","TBkOpen","TBkClose","TQuestion","TDoubleDot"] }
+app.project.ProjectAPIProxy.__name__ = ["app","project","ProjectAPIProxy"];
+app.project.ProjectAPIProxy.prototype._conn = null;
+app.project.ProjectAPIProxy.prototype.listProjects = function(cb) {
+	this._conn.resolve("listProjects").call([],cb);
+}
+app.project.ProjectAPIProxy.prototype.addProject = function(p,cb) {
+	this._conn.resolve("addProject").call([p],cb);
+}
+app.project.ProjectAPIProxy.prototype.updateProject = function(currentProjectName,newProjectDetails,cb) {
+	this._conn.resolve("updateProject").call([currentProjectName,newProjectDetails],cb);
+}
+app.project.ProjectAPIProxy.prototype.__class__ = app.project.ProjectAPIProxy;
+if(typeof hscript=='undefined') hscript = {}
+hscript.Token = { __ename__ : ["hscript","Token"], __constructs__ : ["TEof","TConst","TId","TOp","TPOpen","TPClose","TBrOpen","TBrClose","TDot","TComma","TSemicolon","TBkOpen","TBkClose","TQuestion","TDoubleDot"] }
 hscript.Token.TEof = ["TEof",0];
 hscript.Token.TEof.toString = $estr;
 hscript.Token.TEof.__enum__ = hscript.Token;
@@ -1627,7 +1021,8 @@ hscript.Token.TQuestion.__enum__ = hscript.Token;
 hscript.Token.TDoubleDot = ["TDoubleDot",14];
 hscript.Token.TDoubleDot.toString = $estr;
 hscript.Token.TDoubleDot.__enum__ = hscript.Token;
-hscript.Parser = $hxClasses["hscript.Parser"] = function() {
+hscript.Parser = function(p) {
+	if( p === $_ ) return;
 	this.line = 1;
 	this.opChars = "+*/-=!><&|^%~";
 	this.identChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
@@ -1652,858 +1047,931 @@ hscript.Parser = $hxClasses["hscript.Parser"] = function() {
 		++_g;
 		this.unops.set(x,x == "++" || x == "--");
 	}
-};
+}
 hscript.Parser.__name__ = ["hscript","Parser"];
-hscript.Parser.prototype = {
-	line: null
-	,opChars: null
-	,identChars: null
-	,opPriority: null
-	,opRightAssoc: null
-	,unops: null
-	,allowJSON: null
-	,allowTypes: null
-	,input: null
-	,'char': null
-	,ops: null
-	,idents: null
-	,tokens: null
-	,error: function(err,pmin,pmax) {
-		throw err;
+hscript.Parser.prototype.line = null;
+hscript.Parser.prototype.opChars = null;
+hscript.Parser.prototype.identChars = null;
+hscript.Parser.prototype.opPriority = null;
+hscript.Parser.prototype.opRightAssoc = null;
+hscript.Parser.prototype.unops = null;
+hscript.Parser.prototype.allowJSON = null;
+hscript.Parser.prototype.allowTypes = null;
+hscript.Parser.prototype.input = null;
+hscript.Parser.prototype["char"] = null;
+hscript.Parser.prototype.ops = null;
+hscript.Parser.prototype.idents = null;
+hscript.Parser.prototype.tokens = null;
+hscript.Parser.prototype.error = function(err,pmin,pmax) {
+	throw err;
+}
+hscript.Parser.prototype.invalidChar = function(c) {
+	throw hscript.Error.EInvalidChar(c);
+}
+hscript.Parser.prototype.parseString = function(s) {
+	this.line = 1;
+	return this.parse(new haxe.io.StringInput(s));
+}
+hscript.Parser.prototype.parse = function(s) {
+	this.tokens = new haxe.FastList();
+	this["char"] = -1;
+	this.input = s;
+	this.ops = new Array();
+	this.idents = new Array();
+	var _g1 = 0, _g = this.opChars.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.ops[this.opChars.charCodeAt(i)] = true;
 	}
-	,invalidChar: function(c) {
-		throw hscript.Error.EInvalidChar(c);
+	var _g1 = 0, _g = this.identChars.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		this.idents[this.identChars.charCodeAt(i)] = true;
 	}
-	,parseString: function(s) {
-		this.line = 1;
-		return this.parse(new haxe.io.StringInput(s));
+	var a = new Array();
+	while(true) {
+		var tk = this.token();
+		if(tk == hscript.Token.TEof) break;
+		this.tokens.add(tk);
+		a.push(this.parseFullExpr());
 	}
-	,parse: function(s) {
-		this.tokens = new haxe.FastList();
-		this["char"] = -1;
-		this.input = s;
-		this.ops = new Array();
-		this.idents = new Array();
-		var _g1 = 0, _g = this.opChars.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.ops[this.opChars.charCodeAt(i)] = true;
+	return a.length == 1?a[0]:hscript.Expr.EBlock(a);
+}
+hscript.Parser.prototype.unexpected = function(tk) {
+	throw hscript.Error.EUnexpected(this.tokenString(tk));
+	return null;
+}
+hscript.Parser.prototype.push = function(tk) {
+	this.tokens.add(tk);
+}
+hscript.Parser.prototype.ensure = function(tk) {
+	var t = this.token();
+	if(t != tk) this.unexpected(t);
+}
+hscript.Parser.prototype.expr = function(e) {
+	return e;
+}
+hscript.Parser.prototype.pmin = function(e) {
+	return 0;
+}
+hscript.Parser.prototype.pmax = function(e) {
+	return 0;
+}
+hscript.Parser.prototype.mk = function(e,pmin,pmax) {
+	return e;
+}
+hscript.Parser.prototype.isBlock = function(e) {
+	return (function($this) {
+		var $r;
+		var $e = (e);
+		switch( $e[1] ) {
+		case 4:
+		case 21:
+			$r = true;
+			break;
+		case 14:
+			var e1 = $e[3];
+			$r = $this.isBlock(e1);
+			break;
+		case 2:
+			var e1 = $e[4];
+			$r = e1 != null && $this.isBlock(e1);
+			break;
+		case 9:
+			var e2 = $e[4], e1 = $e[3];
+			$r = e2 != null?$this.isBlock(e2):$this.isBlock(e1);
+			break;
+		case 6:
+			var e1 = $e[4];
+			$r = $this.isBlock(e1);
+			break;
+		case 7:
+			var e1 = $e[4], prefix = $e[3];
+			$r = !prefix && $this.isBlock(e1);
+			break;
+		case 10:
+			var e1 = $e[3];
+			$r = $this.isBlock(e1);
+			break;
+		case 11:
+			var e1 = $e[4];
+			$r = $this.isBlock(e1);
+			break;
+		case 15:
+			var e1 = $e[2];
+			$r = e1 != null && $this.isBlock(e1);
+			break;
+		default:
+			$r = false;
 		}
-		var _g1 = 0, _g = this.identChars.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.idents[this.identChars.charCodeAt(i)] = true;
-		}
-		var a = new Array();
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.parseFullExpr = function() {
+	var e = this.parseExpr();
+	var tk = this.token();
+	if(tk != hscript.Token.TSemicolon && tk != hscript.Token.TEof) {
+		if(this.isBlock(e)) this.tokens.add(tk); else this.unexpected(tk);
+	}
+	return e;
+}
+hscript.Parser.prototype.parseObject = function(p1) {
+	var fl = new Array();
+	try {
 		while(true) {
 			var tk = this.token();
-			if(tk == hscript.Token.TEof) break;
-			this.tokens.add(tk);
-			a.push(this.parseFullExpr());
-		}
-		return a.length == 1?a[0]:hscript.Expr.EBlock(a);
-	}
-	,unexpected: function(tk) {
-		throw hscript.Error.EUnexpected(this.tokenString(tk));
-		return null;
-	}
-	,push: function(tk) {
-		this.tokens.add(tk);
-	}
-	,ensure: function(tk) {
-		var t = this.token();
-		if(t != tk) this.unexpected(t);
-	}
-	,expr: function(e) {
-		return e;
-	}
-	,pmin: function(e) {
-		return 0;
-	}
-	,pmax: function(e) {
-		return 0;
-	}
-	,mk: function(e,pmin,pmax) {
-		return e;
-	}
-	,isBlock: function(e) {
-		return (function($this) {
-			var $r;
-			var $e = (e);
-			switch( $e[1] ) {
-			case 4:
-			case 21:
-				$r = true;
-				break;
-			case 14:
-				var e1 = $e[3];
-				$r = $this.isBlock(e1);
-				break;
-			case 2:
-				var e1 = $e[4];
-				$r = e1 != null && $this.isBlock(e1);
-				break;
-			case 9:
-				var e2 = $e[4], e1 = $e[3];
-				$r = e2 != null?$this.isBlock(e2):$this.isBlock(e1);
-				break;
-			case 6:
-				var e1 = $e[4];
-				$r = $this.isBlock(e1);
-				break;
-			case 7:
-				var e1 = $e[4], prefix = $e[3];
-				$r = !prefix && $this.isBlock(e1);
-				break;
-			case 10:
-				var e1 = $e[3];
-				$r = $this.isBlock(e1);
-				break;
-			case 11:
-				var e1 = $e[4];
-				$r = $this.isBlock(e1);
-				break;
-			case 15:
-				var e1 = $e[2];
-				$r = e1 != null && $this.isBlock(e1);
-				break;
-			default:
-				$r = false;
-			}
-			return $r;
-		}(this));
-	}
-	,parseFullExpr: function() {
-		var e = this.parseExpr();
-		var tk = this.token();
-		if(tk != hscript.Token.TSemicolon && tk != hscript.Token.TEof) {
-			if(this.isBlock(e)) this.tokens.add(tk); else this.unexpected(tk);
-		}
-		return e;
-	}
-	,parseObject: function(p1) {
-		var fl = new Array();
-		try {
-			while(true) {
-				var tk = this.token();
-				var id = null;
-				var $e = (tk);
-				switch( $e[1] ) {
-				case 2:
-					var i = $e[2];
-					id = i;
-					break;
-				case 1:
-					var c = $e[2];
-					if(!this.allowJSON) this.unexpected(tk);
-					var $e = (c);
-					switch( $e[1] ) {
-					case 2:
-						var s = $e[2];
-						id = s;
-						break;
-					default:
-						this.unexpected(tk);
-					}
-					break;
-				case 7:
-					throw "__break__";
-					break;
-				default:
-					this.unexpected(tk);
-				}
-				this.ensure(hscript.Token.TDoubleDot);
-				fl.push({ name : id, e : this.parseExpr()});
-				tk = this.token();
-				switch( (tk)[1] ) {
-				case 7:
-					throw "__break__";
-					break;
-				case 9:
-					break;
-				default:
-					this.unexpected(tk);
-				}
-			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-		return this.parseExprNext(hscript.Expr.EObject(fl));
-	}
-	,parseExpr: function() {
-		var tk = this.token();
-		var $e = (tk);
-		switch( $e[1] ) {
-		case 2:
-			var id = $e[2];
-			var e = this.parseStructure(id);
-			if(e == null) e = hscript.Expr.EIdent(id);
-			return this.parseExprNext(e);
-		case 1:
-			var c = $e[2];
-			return this.parseExprNext(hscript.Expr.EConst(c));
-		case 4:
-			var e = this.parseExpr();
-			this.ensure(hscript.Token.TPClose);
-			return this.parseExprNext(hscript.Expr.EParent(e));
-		case 6:
-			tk = this.token();
+			var id = null;
 			var $e = (tk);
 			switch( $e[1] ) {
-			case 7:
-				return this.parseExprNext(hscript.Expr.EObject([]));
 			case 2:
-				var id = $e[2];
-				var tk2 = this.token();
-				this.tokens.add(tk2);
-				this.tokens.add(tk);
-				switch( (tk2)[1] ) {
-				case 14:
-					return this.parseExprNext(this.parseObject(0));
-				default:
-				}
+				var i = $e[2];
+				id = i;
 				break;
 			case 1:
 				var c = $e[2];
-				if(this.allowJSON) {
-					switch( (c)[1] ) {
-					case 2:
-						var tk2 = this.token();
-						this.tokens.add(tk2);
-						this.tokens.add(tk);
-						switch( (tk2)[1] ) {
-						case 14:
-							return this.parseExprNext(this.parseObject(0));
-						default:
-						}
-						break;
-					default:
-						this.tokens.add(tk);
-					}
-				} else this.tokens.add(tk);
-				break;
-			default:
-				this.tokens.add(tk);
-			}
-			var a = new Array();
-			while(true) {
-				a.push(this.parseFullExpr());
-				tk = this.token();
-				if(tk == hscript.Token.TBrClose) break;
-				this.tokens.add(tk);
-			}
-			return hscript.Expr.EBlock(a);
-		case 3:
-			var op = $e[2];
-			if(this.unops.exists(op)) return this.makeUnop(op,this.parseExpr());
-			return this.unexpected(tk);
-		case 11:
-			var a = new Array();
-			tk = this.token();
-			while(tk != hscript.Token.TBkClose) {
-				this.tokens.add(tk);
-				a.push(this.parseExpr());
-				tk = this.token();
-				if(tk == hscript.Token.TComma) tk = this.token();
-			}
-			return this.parseExprNext(hscript.Expr.EArrayDecl(a));
-		default:
-			return this.unexpected(tk);
-		}
-	}
-	,makeUnop: function(op,e) {
-		return (function($this) {
-			var $r;
-			var $e = (e);
-			switch( $e[1] ) {
-			case 6:
-				var e2 = $e[4], e1 = $e[3], bop = $e[2];
-				$r = hscript.Expr.EBinop(bop,$this.makeUnop(op,e1),e2);
-				break;
-			case 22:
-				var e3 = $e[4], e2 = $e[3], e1 = $e[2];
-				$r = hscript.Expr.ETernary($this.makeUnop(op,e1),e2,e3);
-				break;
-			default:
-				$r = hscript.Expr.EUnop(op,true,e);
-			}
-			return $r;
-		}(this));
-	}
-	,makeBinop: function(op,e1,e) {
-		return (function($this) {
-			var $r;
-			var $e = (e);
-			switch( $e[1] ) {
-			case 6:
-				var e3 = $e[4], e2 = $e[3], op2 = $e[2];
-				$r = $this.opPriority.get(op) <= $this.opPriority.get(op2) && !$this.opRightAssoc.exists(op)?hscript.Expr.EBinop(op2,$this.makeBinop(op,e1,e2),e3):hscript.Expr.EBinop(op,e1,e);
-				break;
-			case 22:
-				var e4 = $e[4], e3 = $e[3], e2 = $e[2];
-				$r = $this.opRightAssoc.exists(op)?hscript.Expr.EBinop(op,e1,e):hscript.Expr.ETernary($this.makeBinop(op,e1,e2),e3,e4);
-				break;
-			default:
-				$r = hscript.Expr.EBinop(op,e1,e);
-			}
-			return $r;
-		}(this));
-	}
-	,parseStructure: function(id) {
-		return (function($this) {
-			var $r;
-			switch(id) {
-			case "if":
-				$r = (function($this) {
-					var $r;
-					var cond = $this.parseExpr();
-					var e1 = $this.parseExpr();
-					var e2 = null;
-					var semic = false;
-					var tk = $this.token();
-					if(tk == hscript.Token.TSemicolon) {
-						semic = true;
-						tk = $this.token();
-					}
-					if(Type.enumEq(tk,hscript.Token.TId("else"))) e2 = $this.parseExpr(); else {
-						$this.tokens.add(tk);
-						if(semic) $this.tokens.add(hscript.Token.TSemicolon);
-					}
-					$r = hscript.Expr.EIf(cond,e1,e2);
-					return $r;
-				}($this));
-				break;
-			case "var":
-				$r = (function($this) {
-					var $r;
-					var tk = $this.token();
-					var ident = null;
-					var $e = (tk);
-					switch( $e[1] ) {
-					case 2:
-						var id1 = $e[2];
-						ident = id1;
-						break;
-					default:
-						$this.unexpected(tk);
-					}
-					tk = $this.token();
-					var t = null;
-					if(tk == hscript.Token.TDoubleDot && $this.allowTypes) {
-						t = $this.parseType();
-						tk = $this.token();
-					}
-					var e = null;
-					if(Type.enumEq(tk,hscript.Token.TOp("="))) e = $this.parseExpr(); else $this.tokens.add(tk);
-					$r = hscript.Expr.EVar(ident,t,e);
-					return $r;
-				}($this));
-				break;
-			case "while":
-				$r = (function($this) {
-					var $r;
-					var econd = $this.parseExpr();
-					var e = $this.parseExpr();
-					$r = hscript.Expr.EWhile(econd,e);
-					return $r;
-				}($this));
-				break;
-			case "for":
-				$r = (function($this) {
-					var $r;
-					$this.ensure(hscript.Token.TPOpen);
-					var tk = $this.token();
-					var vname = null;
-					var $e = (tk);
-					switch( $e[1] ) {
-					case 2:
-						var id1 = $e[2];
-						vname = id1;
-						break;
-					default:
-						$this.unexpected(tk);
-					}
-					tk = $this.token();
-					if(!Type.enumEq(tk,hscript.Token.TId("in"))) $this.unexpected(tk);
-					var eiter = $this.parseExpr();
-					$this.ensure(hscript.Token.TPClose);
-					var e = $this.parseExpr();
-					$r = hscript.Expr.EFor(vname,eiter,e);
-					return $r;
-				}($this));
-				break;
-			case "break":
-				$r = hscript.Expr.EBreak;
-				break;
-			case "continue":
-				$r = hscript.Expr.EContinue;
-				break;
-			case "else":
-				$r = $this.unexpected(hscript.Token.TId(id));
-				break;
-			case "function":
-				$r = (function($this) {
-					var $r;
-					var tk = $this.token();
-					var name = null;
-					var $e = (tk);
-					switch( $e[1] ) {
-					case 2:
-						var id1 = $e[2];
-						name = id1;
-						break;
-					default:
-						$this.tokens.add(tk);
-					}
-					$this.ensure(hscript.Token.TPOpen);
-					var args = new Array();
-					tk = $this.token();
-					if(tk != hscript.Token.TPClose) try {
-						while(true) {
-							var name1 = null;
-							var $e = (tk);
-							switch( $e[1] ) {
-							case 2:
-								var id1 = $e[2];
-								name1 = id1;
-								break;
-							default:
-								$this.unexpected(tk);
-							}
-							tk = $this.token();
-							var t = null;
-							if(tk == hscript.Token.TDoubleDot && $this.allowTypes) {
-								t = $this.parseType();
-								tk = $this.token();
-							}
-							args.push({ name : name1, t : t});
-							switch( (tk)[1] ) {
-							case 9:
-								break;
-							case 5:
-								throw "__break__";
-								break;
-							default:
-								$this.unexpected(tk);
-							}
-							tk = $this.token();
-						}
-					} catch( e ) { if( e != "__break__" ) throw e; }
-					var ret = null;
-					if($this.allowTypes) {
-						tk = $this.token();
-						if(tk != hscript.Token.TDoubleDot) $this.tokens.add(tk); else ret = $this.parseType();
-					}
-					var body = $this.parseExpr();
-					$r = hscript.Expr.EFunction(args,body,name,ret);
-					return $r;
-				}($this));
-				break;
-			case "return":
-				$r = (function($this) {
-					var $r;
-					var tk = $this.token();
-					$this.tokens.add(tk);
-					var e = tk == hscript.Token.TSemicolon?null:$this.parseExpr();
-					$r = hscript.Expr.EReturn(e);
-					return $r;
-				}($this));
-				break;
-			case "new":
-				$r = (function($this) {
-					var $r;
-					var a = new Array();
-					var tk = $this.token();
-					var $e = (tk);
-					switch( $e[1] ) {
-					case 2:
-						var id1 = $e[2];
-						a.push(id1);
-						break;
-					default:
-						$this.unexpected(tk);
-					}
-					try {
-						while(true) {
-							tk = $this.token();
-							switch( (tk)[1] ) {
-							case 8:
-								tk = $this.token();
-								var $e = (tk);
-								switch( $e[1] ) {
-								case 2:
-									var id1 = $e[2];
-									a.push(id1);
-									break;
-								default:
-									$this.unexpected(tk);
-								}
-								break;
-							case 4:
-								throw "__break__";
-								break;
-							default:
-								$this.unexpected(tk);
-							}
-						}
-					} catch( e ) { if( e != "__break__" ) throw e; }
-					var args = $this.parseExprList(hscript.Token.TPClose);
-					$r = hscript.Expr.ENew(a.join("."),args);
-					return $r;
-				}($this));
-				break;
-			case "throw":
-				$r = (function($this) {
-					var $r;
-					var e = $this.parseExpr();
-					$r = hscript.Expr.EThrow(e);
-					return $r;
-				}($this));
-				break;
-			case "try":
-				$r = (function($this) {
-					var $r;
-					var e = $this.parseExpr();
-					var tk = $this.token();
-					if(!Type.enumEq(tk,hscript.Token.TId("catch"))) $this.unexpected(tk);
-					$this.ensure(hscript.Token.TPOpen);
-					tk = $this.token();
-					var vname = (function($this) {
-						var $r;
-						var $e = (tk);
-						switch( $e[1] ) {
-						case 2:
-							var id1 = $e[2];
-							$r = id1;
-							break;
-						default:
-							$r = $this.unexpected(tk);
-						}
-						return $r;
-					}($this));
-					$this.ensure(hscript.Token.TDoubleDot);
-					var t = null;
-					if($this.allowTypes) t = $this.parseType(); else {
-						tk = $this.token();
-						if(!Type.enumEq(tk,hscript.Token.TId("Dynamic"))) $this.unexpected(tk);
-					}
-					$this.ensure(hscript.Token.TPClose);
-					var ec = $this.parseExpr();
-					$r = hscript.Expr.ETry(e,vname,t,ec);
-					return $r;
-				}($this));
-				break;
-			default:
-				$r = null;
-			}
-			return $r;
-		}(this));
-	}
-	,parseExprNext: function(e1) {
-		var tk = this.token();
-		var $e = (tk);
-		switch( $e[1] ) {
-		case 3:
-			var op = $e[2];
-			if(this.unops.get(op)) {
-				if(this.isBlock(e1) || (function($this) {
-					var $r;
-					switch( (e1)[1] ) {
-					case 3:
-						$r = true;
-						break;
-					default:
-						$r = false;
-					}
-					return $r;
-				}(this))) {
-					this.tokens.add(tk);
-					return e1;
+				if(!this.allowJSON) this.unexpected(tk);
+				var $e = (c);
+				switch( $e[1] ) {
+				case 2:
+					var s = $e[2];
+					id = s;
+					break;
+				default:
+					this.unexpected(tk);
 				}
-				return this.parseExprNext(hscript.Expr.EUnop(op,false,e1));
-			}
-			return this.makeBinop(op,e1,this.parseExpr());
-		case 8:
-			tk = this.token();
-			var field = null;
-			var $e = (tk);
-			switch( $e[1] ) {
-			case 2:
-				var id = $e[2];
-				field = id;
+				break;
+			case 7:
+				throw "__break__";
 				break;
 			default:
 				this.unexpected(tk);
 			}
-			return this.parseExprNext(hscript.Expr.EField(e1,field));
-		case 4:
-			return this.parseExprNext(hscript.Expr.ECall(e1,this.parseExprList(hscript.Token.TPClose)));
-		case 11:
-			var e2 = this.parseExpr();
-			this.ensure(hscript.Token.TBkClose);
-			return this.parseExprNext(hscript.Expr.EArray(e1,e2));
-		case 13:
-			var e2 = this.parseExpr();
 			this.ensure(hscript.Token.TDoubleDot);
-			var e3 = this.parseExpr();
-			return hscript.Expr.ETernary(e1,e2,e3);
+			fl.push({ name : id, e : this.parseExpr()});
+			tk = this.token();
+			switch( (tk)[1] ) {
+			case 7:
+				throw "__break__";
+				break;
+			case 9:
+				break;
+			default:
+				this.unexpected(tk);
+			}
+		}
+	} catch( e ) { if( e != "__break__" ) throw e; }
+	return this.parseExprNext(hscript.Expr.EObject(fl));
+}
+hscript.Parser.prototype.parseExpr = function() {
+	var tk = this.token();
+	var $e = (tk);
+	switch( $e[1] ) {
+	case 2:
+		var id = $e[2];
+		var e = this.parseStructure(id);
+		if(e == null) e = hscript.Expr.EIdent(id);
+		return this.parseExprNext(e);
+	case 1:
+		var c = $e[2];
+		return this.parseExprNext(hscript.Expr.EConst(c));
+	case 4:
+		var e = this.parseExpr();
+		this.ensure(hscript.Token.TPClose);
+		return this.parseExprNext(hscript.Expr.EParent(e));
+	case 6:
+		tk = this.token();
+		var $e = (tk);
+		switch( $e[1] ) {
+		case 7:
+			return this.parseExprNext(hscript.Expr.EObject([]));
+		case 2:
+			var id = $e[2];
+			var tk2 = this.token();
+			this.tokens.add(tk2);
+			this.tokens.add(tk);
+			switch( (tk2)[1] ) {
+			case 14:
+				return this.parseExprNext(this.parseObject(0));
+			default:
+			}
+			break;
+		case 1:
+			var c = $e[2];
+			if(this.allowJSON) {
+				switch( (c)[1] ) {
+				case 2:
+					var tk2 = this.token();
+					this.tokens.add(tk2);
+					this.tokens.add(tk);
+					switch( (tk2)[1] ) {
+					case 14:
+						return this.parseExprNext(this.parseObject(0));
+					default:
+					}
+					break;
+				default:
+					this.tokens.add(tk);
+				}
+			} else this.tokens.add(tk);
+			break;
 		default:
 			this.tokens.add(tk);
-			return e1;
 		}
+		var a = new Array();
+		while(true) {
+			a.push(this.parseFullExpr());
+			tk = this.token();
+			if(tk == hscript.Token.TBrClose) break;
+			this.tokens.add(tk);
+		}
+		return hscript.Expr.EBlock(a);
+	case 3:
+		var op = $e[2];
+		if(this.unops.exists(op)) return this.makeUnop(op,this.parseExpr());
+		return this.unexpected(tk);
+	case 11:
+		var a = new Array();
+		tk = this.token();
+		while(tk != hscript.Token.TBkClose) {
+			this.tokens.add(tk);
+			a.push(this.parseExpr());
+			tk = this.token();
+			if(tk == hscript.Token.TComma) tk = this.token();
+		}
+		return this.parseExprNext(hscript.Expr.EArrayDecl(a));
+	default:
+		return this.unexpected(tk);
 	}
-	,parseType: function() {
-		var t = this.token();
-		var $e = (t);
+}
+hscript.Parser.prototype.makeUnop = function(op,e) {
+	return (function($this) {
+		var $r;
+		var $e = (e);
+		switch( $e[1] ) {
+		case 6:
+			var e2 = $e[4], e1 = $e[3], bop = $e[2];
+			$r = hscript.Expr.EBinop(bop,$this.makeUnop(op,e1),e2);
+			break;
+		case 22:
+			var e3 = $e[4], e2 = $e[3], e1 = $e[2];
+			$r = hscript.Expr.ETernary($this.makeUnop(op,e1),e2,e3);
+			break;
+		default:
+			$r = hscript.Expr.EUnop(op,true,e);
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.makeBinop = function(op,e1,e) {
+	return (function($this) {
+		var $r;
+		var $e = (e);
+		switch( $e[1] ) {
+		case 6:
+			var e3 = $e[4], e2 = $e[3], op2 = $e[2];
+			$r = $this.opPriority.get(op) <= $this.opPriority.get(op2) && !$this.opRightAssoc.exists(op)?hscript.Expr.EBinop(op2,$this.makeBinop(op,e1,e2),e3):hscript.Expr.EBinop(op,e1,e);
+			break;
+		case 22:
+			var e4 = $e[4], e3 = $e[3], e2 = $e[2];
+			$r = $this.opRightAssoc.exists(op)?hscript.Expr.EBinop(op,e1,e):hscript.Expr.ETernary($this.makeBinop(op,e1,e2),e3,e4);
+			break;
+		default:
+			$r = hscript.Expr.EBinop(op,e1,e);
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.parseStructure = function(id) {
+	return (function($this) {
+		var $r;
+		switch(id) {
+		case "if":
+			$r = (function($this) {
+				var $r;
+				var cond = $this.parseExpr();
+				var e1 = $this.parseExpr();
+				var e2 = null;
+				var semic = false;
+				var tk = $this.token();
+				if(tk == hscript.Token.TSemicolon) {
+					semic = true;
+					tk = $this.token();
+				}
+				if(Type.enumEq(tk,hscript.Token.TId("else"))) e2 = $this.parseExpr(); else {
+					$this.tokens.add(tk);
+					if(semic) $this.tokens.add(hscript.Token.TSemicolon);
+				}
+				$r = hscript.Expr.EIf(cond,e1,e2);
+				return $r;
+			}($this));
+			break;
+		case "var":
+			$r = (function($this) {
+				var $r;
+				var tk = $this.token();
+				var ident = null;
+				var $e = (tk);
+				switch( $e[1] ) {
+				case 2:
+					var id1 = $e[2];
+					ident = id1;
+					break;
+				default:
+					$this.unexpected(tk);
+				}
+				tk = $this.token();
+				var t = null;
+				if(tk == hscript.Token.TDoubleDot && $this.allowTypes) {
+					t = $this.parseType();
+					tk = $this.token();
+				}
+				var e = null;
+				if(Type.enumEq(tk,hscript.Token.TOp("="))) e = $this.parseExpr(); else $this.tokens.add(tk);
+				$r = hscript.Expr.EVar(ident,t,e);
+				return $r;
+			}($this));
+			break;
+		case "while":
+			$r = (function($this) {
+				var $r;
+				var econd = $this.parseExpr();
+				var e = $this.parseExpr();
+				$r = hscript.Expr.EWhile(econd,e);
+				return $r;
+			}($this));
+			break;
+		case "for":
+			$r = (function($this) {
+				var $r;
+				$this.ensure(hscript.Token.TPOpen);
+				var tk = $this.token();
+				var vname = null;
+				var $e = (tk);
+				switch( $e[1] ) {
+				case 2:
+					var id1 = $e[2];
+					vname = id1;
+					break;
+				default:
+					$this.unexpected(tk);
+				}
+				tk = $this.token();
+				if(!Type.enumEq(tk,hscript.Token.TId("in"))) $this.unexpected(tk);
+				var eiter = $this.parseExpr();
+				$this.ensure(hscript.Token.TPClose);
+				var e = $this.parseExpr();
+				$r = hscript.Expr.EFor(vname,eiter,e);
+				return $r;
+			}($this));
+			break;
+		case "break":
+			$r = hscript.Expr.EBreak;
+			break;
+		case "continue":
+			$r = hscript.Expr.EContinue;
+			break;
+		case "else":
+			$r = $this.unexpected(hscript.Token.TId(id));
+			break;
+		case "function":
+			$r = (function($this) {
+				var $r;
+				var tk = $this.token();
+				var name = null;
+				var $e = (tk);
+				switch( $e[1] ) {
+				case 2:
+					var id1 = $e[2];
+					name = id1;
+					break;
+				default:
+					$this.tokens.add(tk);
+				}
+				$this.ensure(hscript.Token.TPOpen);
+				var args = new Array();
+				tk = $this.token();
+				if(tk != hscript.Token.TPClose) try {
+					while(true) {
+						var name1 = null;
+						var $e = (tk);
+						switch( $e[1] ) {
+						case 2:
+							var id1 = $e[2];
+							name1 = id1;
+							break;
+						default:
+							$this.unexpected(tk);
+						}
+						tk = $this.token();
+						var t = null;
+						if(tk == hscript.Token.TDoubleDot && $this.allowTypes) {
+							t = $this.parseType();
+							tk = $this.token();
+						}
+						args.push({ name : name1, t : t});
+						switch( (tk)[1] ) {
+						case 9:
+							break;
+						case 5:
+							throw "__break__";
+							break;
+						default:
+							$this.unexpected(tk);
+						}
+						tk = $this.token();
+					}
+				} catch( e ) { if( e != "__break__" ) throw e; }
+				var ret = null;
+				if($this.allowTypes) {
+					tk = $this.token();
+					if(tk != hscript.Token.TDoubleDot) $this.tokens.add(tk); else ret = $this.parseType();
+				}
+				var body = $this.parseExpr();
+				$r = hscript.Expr.EFunction(args,body,name,ret);
+				return $r;
+			}($this));
+			break;
+		case "return":
+			$r = (function($this) {
+				var $r;
+				var tk = $this.token();
+				$this.tokens.add(tk);
+				var e = tk == hscript.Token.TSemicolon?null:$this.parseExpr();
+				$r = hscript.Expr.EReturn(e);
+				return $r;
+			}($this));
+			break;
+		case "new":
+			$r = (function($this) {
+				var $r;
+				var a = new Array();
+				var tk = $this.token();
+				var $e = (tk);
+				switch( $e[1] ) {
+				case 2:
+					var id1 = $e[2];
+					a.push(id1);
+					break;
+				default:
+					$this.unexpected(tk);
+				}
+				try {
+					while(true) {
+						tk = $this.token();
+						switch( (tk)[1] ) {
+						case 8:
+							tk = $this.token();
+							var $e = (tk);
+							switch( $e[1] ) {
+							case 2:
+								var id1 = $e[2];
+								a.push(id1);
+								break;
+							default:
+								$this.unexpected(tk);
+							}
+							break;
+						case 4:
+							throw "__break__";
+							break;
+						default:
+							$this.unexpected(tk);
+						}
+					}
+				} catch( e ) { if( e != "__break__" ) throw e; }
+				var args = $this.parseExprList(hscript.Token.TPClose);
+				$r = hscript.Expr.ENew(a.join("."),args);
+				return $r;
+			}($this));
+			break;
+		case "throw":
+			$r = (function($this) {
+				var $r;
+				var e = $this.parseExpr();
+				$r = hscript.Expr.EThrow(e);
+				return $r;
+			}($this));
+			break;
+		case "try":
+			$r = (function($this) {
+				var $r;
+				var e = $this.parseExpr();
+				var tk = $this.token();
+				if(!Type.enumEq(tk,hscript.Token.TId("catch"))) $this.unexpected(tk);
+				$this.ensure(hscript.Token.TPOpen);
+				tk = $this.token();
+				var vname = (function($this) {
+					var $r;
+					var $e = (tk);
+					switch( $e[1] ) {
+					case 2:
+						var id1 = $e[2];
+						$r = id1;
+						break;
+					default:
+						$r = $this.unexpected(tk);
+					}
+					return $r;
+				}($this));
+				$this.ensure(hscript.Token.TDoubleDot);
+				var t = null;
+				if($this.allowTypes) t = $this.parseType(); else {
+					tk = $this.token();
+					if(!Type.enumEq(tk,hscript.Token.TId("Dynamic"))) $this.unexpected(tk);
+				}
+				$this.ensure(hscript.Token.TPClose);
+				var ec = $this.parseExpr();
+				$r = hscript.Expr.ETry(e,vname,t,ec);
+				return $r;
+			}($this));
+			break;
+		default:
+			$r = null;
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.parseExprNext = function(e1) {
+	var tk = this.token();
+	var $e = (tk);
+	switch( $e[1] ) {
+	case 3:
+		var op = $e[2];
+		if(this.unops.get(op)) {
+			if(this.isBlock(e1) || (function($this) {
+				var $r;
+				switch( (e1)[1] ) {
+				case 3:
+					$r = true;
+					break;
+				default:
+					$r = false;
+				}
+				return $r;
+			}(this))) {
+				this.tokens.add(tk);
+				return e1;
+			}
+			return this.parseExprNext(hscript.Expr.EUnop(op,false,e1));
+		}
+		return this.makeBinop(op,e1,this.parseExpr());
+	case 8:
+		tk = this.token();
+		var field = null;
+		var $e = (tk);
 		switch( $e[1] ) {
 		case 2:
-			var v = $e[2];
-			var path = [v];
+			var id = $e[2];
+			field = id;
+			break;
+		default:
+			this.unexpected(tk);
+		}
+		return this.parseExprNext(hscript.Expr.EField(e1,field));
+	case 4:
+		return this.parseExprNext(hscript.Expr.ECall(e1,this.parseExprList(hscript.Token.TPClose)));
+	case 11:
+		var e2 = this.parseExpr();
+		this.ensure(hscript.Token.TBkClose);
+		return this.parseExprNext(hscript.Expr.EArray(e1,e2));
+	case 13:
+		var e2 = this.parseExpr();
+		this.ensure(hscript.Token.TDoubleDot);
+		var e3 = this.parseExpr();
+		return hscript.Expr.ETernary(e1,e2,e3);
+	default:
+		this.tokens.add(tk);
+		return e1;
+	}
+}
+hscript.Parser.prototype.parseType = function() {
+	var t = this.token();
+	var $e = (t);
+	switch( $e[1] ) {
+	case 2:
+		var v = $e[2];
+		var path = [v];
+		while(true) {
+			t = this.token();
+			if(t != hscript.Token.TDot) break;
+			t = this.token();
+			var $e = (t);
+			switch( $e[1] ) {
+			case 2:
+				var v1 = $e[2];
+				path.push(v1);
+				break;
+			default:
+				this.unexpected(t);
+			}
+		}
+		var params = null;
+		var $e = (t);
+		switch( $e[1] ) {
+		case 3:
+			var op = $e[2];
+			if(op == "<") {
+				params = [];
+				try {
+					while(true) {
+						params.push(this.parseType());
+						t = this.token();
+						var $e = (t);
+						switch( $e[1] ) {
+						case 9:
+							continue;
+							break;
+						case 3:
+							var op1 = $e[2];
+							if(op1 == ">") throw "__break__";
+							break;
+						default:
+						}
+						this.unexpected(t);
+					}
+				} catch( e ) { if( e != "__break__" ) throw e; }
+			}
+			break;
+		default:
+			this.tokens.add(t);
+		}
+		return this.parseTypeNext(hscript.CType.CTPath(path,params));
+	case 4:
+		var t1 = this.parseType();
+		this.ensure(hscript.Token.TPClose);
+		return this.parseTypeNext(hscript.CType.CTParent(t1));
+	case 6:
+		var fields = [];
+		try {
 			while(true) {
-				t = this.token();
-				if(t != hscript.Token.TDot) break;
 				t = this.token();
 				var $e = (t);
 				switch( $e[1] ) {
+				case 7:
+					throw "__break__";
+					break;
 				case 2:
-					var v1 = $e[2];
-					path.push(v1);
+					var name = $e[2];
+					this.ensure(hscript.Token.TDoubleDot);
+					fields.push({ name : name, t : this.parseType()});
+					t = this.token();
+					switch( (t)[1] ) {
+					case 9:
+						break;
+					case 7:
+						throw "__break__";
+						break;
+					default:
+						this.unexpected(t);
+					}
 					break;
 				default:
 					this.unexpected(t);
 				}
 			}
-			var params = null;
-			var $e = (t);
-			switch( $e[1] ) {
-			case 3:
-				var op = $e[2];
-				if(op == "<") {
-					params = [];
-					try {
-						while(true) {
-							params.push(this.parseType());
-							t = this.token();
-							var $e = (t);
-							switch( $e[1] ) {
-							case 9:
-								continue;
-								break;
-							case 3:
-								var op1 = $e[2];
-								if(op1 == ">") throw "__break__";
-								break;
-							default:
-							}
-							this.unexpected(t);
-						}
-					} catch( e ) { if( e != "__break__" ) throw e; }
-				}
-				break;
-			default:
-				this.tokens.add(t);
-			}
-			return this.parseTypeNext(hscript.CType.CTPath(path,params));
-		case 4:
-			var t1 = this.parseType();
-			this.ensure(hscript.Token.TPClose);
-			return this.parseTypeNext(hscript.CType.CTParent(t1));
-		case 6:
-			var fields = [];
-			try {
-				while(true) {
-					t = this.token();
-					var $e = (t);
-					switch( $e[1] ) {
-					case 7:
-						throw "__break__";
-						break;
-					case 2:
-						var name = $e[2];
-						this.ensure(hscript.Token.TDoubleDot);
-						fields.push({ name : name, t : this.parseType()});
-						t = this.token();
-						switch( (t)[1] ) {
-						case 9:
-							break;
-						case 7:
-							throw "__break__";
-							break;
-						default:
-							this.unexpected(t);
-						}
-						break;
-					default:
-						this.unexpected(t);
-					}
-				}
-			} catch( e ) { if( e != "__break__" ) throw e; }
-			return this.parseTypeNext(hscript.CType.CTAnon(fields));
-		default:
-			return this.unexpected(t);
-		}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+		return this.parseTypeNext(hscript.CType.CTAnon(fields));
+	default:
+		return this.unexpected(t);
 	}
-	,parseTypeNext: function(t) {
-		var tk = this.token();
-		var $e = (tk);
-		switch( $e[1] ) {
-		case 3:
-			var op = $e[2];
-			if(op != "->") {
-				this.tokens.add(tk);
-				return t;
-			}
-			break;
-		default:
+}
+hscript.Parser.prototype.parseTypeNext = function(t) {
+	var tk = this.token();
+	var $e = (tk);
+	switch( $e[1] ) {
+	case 3:
+		var op = $e[2];
+		if(op != "->") {
 			this.tokens.add(tk);
 			return t;
 		}
-		var t2 = this.parseType();
-		var $e = (t2);
-		switch( $e[1] ) {
-		case 1:
-			var ret = $e[3], args = $e[2];
-			args.unshift(t);
-			return t2;
-		default:
-			return hscript.CType.CTFun([t],t2);
+		break;
+	default:
+		this.tokens.add(tk);
+		return t;
+	}
+	var t2 = this.parseType();
+	var $e = (t2);
+	switch( $e[1] ) {
+	case 1:
+		var ret = $e[3], args = $e[2];
+		args.unshift(t);
+		return t2;
+	default:
+		return hscript.CType.CTFun([t],t2);
+	}
+}
+hscript.Parser.prototype.parseExprList = function(etk) {
+	var args = new Array();
+	var tk = this.token();
+	if(tk == etk) return args;
+	this.tokens.add(tk);
+	try {
+		while(true) {
+			args.push(this.parseExpr());
+			tk = this.token();
+			switch( (tk)[1] ) {
+			case 9:
+				break;
+			default:
+				if(tk == etk) throw "__break__";
+				this.unexpected(tk);
+			}
+		}
+	} catch( e ) { if( e != "__break__" ) throw e; }
+	return args;
+}
+hscript.Parser.prototype.incPos = function() {
+}
+hscript.Parser.prototype.readChar = function() {
+	null;
+	return (function($this) {
+		var $r;
+		try {
+			$r = $this.input.readByte();
+		} catch( e ) {
+			$r = 0;
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.readString = function(until) {
+	var c;
+	var b = new haxe.io.BytesOutput();
+	var esc = false;
+	var old = this.line;
+	var s = this.input;
+	while(true) {
+		try {
+			null;
+			c = s.readByte();
+		} catch( e ) {
+			this.line = old;
+			throw hscript.Error.EUnterminatedString;
+		}
+		if(esc) {
+			esc = false;
+			switch(c) {
+			case 110:
+				b.writeByte(10);
+				break;
+			case 114:
+				b.writeByte(13);
+				break;
+			case 116:
+				b.writeByte(9);
+				break;
+			case 39:case 34:case 92:
+				b.writeByte(c);
+				break;
+			case 47:
+				if(this.allowJSON) b.writeByte(c); else this.invalidChar(c);
+				break;
+			case 117:
+				if(!this.allowJSON) throw this.invalidChar(c);
+				var code;
+				try {
+					null;
+					null;
+					null;
+					null;
+					code = s.readString(4);
+				} catch( e ) {
+					this.line = old;
+					throw hscript.Error.EUnterminatedString;
+				}
+				var k = 0;
+				var _g = 0;
+				while(_g < 4) {
+					var i = _g++;
+					k <<= 4;
+					var $char = code.charCodeAt(i);
+					switch($char) {
+					case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
+						k += $char - 48;
+						break;
+					case 65:case 66:case 67:case 68:case 69:case 70:
+						k += $char - 55;
+						break;
+					case 97:case 98:case 99:case 100:case 101:case 102:
+						k += $char - 87;
+						break;
+					default:
+						this.invalidChar($char);
+					}
+				}
+				if(k <= 127) b.writeByte(k); else if(k <= 2047) {
+					b.writeByte(192 | k >> 6);
+					b.writeByte(128 | k & 63);
+				} else {
+					b.writeByte(224 | k >> 12);
+					b.writeByte(128 | k >> 6 & 63);
+					b.writeByte(128 | k & 63);
+				}
+				break;
+			default:
+				this.invalidChar(c);
+			}
+		} else if(c == 92) esc = true; else if(c == until) break; else {
+			if(c == 10) this.line++;
+			b.writeByte(c);
 		}
 	}
-	,parseExprList: function(etk) {
-		var args = new Array();
-		var tk = this.token();
-		if(tk == etk) return args;
-		this.tokens.add(tk);
-		try {
+	return b.getBytes().toString();
+}
+hscript.Parser.prototype.token = function() {
+	if(!(this.tokens.head == null)) return this.tokens.pop();
+	var $char;
+	if(this["char"] < 0) $char = this.readChar(); else {
+		$char = this["char"];
+		this["char"] = -1;
+	}
+	while(true) {
+		switch($char) {
+		case 0:
+			return hscript.Token.TEof;
+		case 32:case 9:case 13:
+			break;
+		case 10:
+			this.line++;
+			break;
+		case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
+			var n = ($char - 48) * 1.0;
+			var exp = 0;
 			while(true) {
-				args.push(this.parseExpr());
-				tk = this.token();
-				switch( (tk)[1] ) {
-				case 9:
+				$char = this.readChar();
+				exp *= 10;
+				switch($char) {
+				case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
+					n = n * 10 + ($char - 48);
 					break;
-				default:
-					if(tk == etk) throw "__break__";
-					this.unexpected(tk);
-				}
-			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-		return args;
-	}
-	,incPos: function() {
-	}
-	,readChar: function() {
-		null;
-		return (function($this) {
-			var $r;
-			try {
-				$r = $this.input.readByte();
-			} catch( e ) {
-				$r = 0;
-			}
-			return $r;
-		}(this));
-	}
-	,readString: function(until) {
-		var c;
-		var b = new haxe.io.BytesOutput();
-		var esc = false;
-		var old = this.line;
-		var s = this.input;
-		while(true) {
-			try {
-				null;
-				c = s.readByte();
-			} catch( e ) {
-				this.line = old;
-				throw hscript.Error.EUnterminatedString;
-			}
-			if(esc) {
-				esc = false;
-				switch(c) {
-				case 110:
-					b.writeByte(10);
-					break;
-				case 114:
-					b.writeByte(13);
-					break;
-				case 116:
-					b.writeByte(9);
-					break;
-				case 39:case 34:case 92:
-					b.writeByte(c);
-					break;
-				case 47:
-					if(this.allowJSON) b.writeByte(c); else this.invalidChar(c);
-					break;
-				case 117:
-					if(!this.allowJSON) throw this.invalidChar(c);
-					var code;
-					try {
-						null;
-						null;
-						null;
-						null;
-						code = s.readString(4);
-					} catch( e ) {
-						this.line = old;
-						throw hscript.Error.EUnterminatedString;
+				case 46:
+					if(exp > 0) {
+						if(exp == 10 && this.readChar() == 46) {
+							this.tokens.add(hscript.Token.TOp("..."));
+							var i = Std["int"](n);
+							return hscript.Token.TConst(i == n?hscript.Const.CInt(i):hscript.Const.CFloat(n));
+						}
+						this.invalidChar($char);
 					}
-					var k = 0;
-					var _g = 0;
-					while(_g < 4) {
-						var i = _g++;
-						k <<= 4;
-						var $char = code.charCodeAt(i);
+					exp = 1;
+					break;
+				case 120:
+					if(n > 0 || exp > 0) this.invalidChar($char);
+					var n1 = 0 | 0;
+					while(true) {
+						$char = this.readChar();
 						switch($char) {
 						case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
-							k += $char - 48;
+							n1 = (n1 << 4) + ($char - 48) | 0;
 							break;
 						case 65:case 66:case 67:case 68:case 69:case 70:
-							k += $char - 55;
+							n1 = (n1 << 4) + ($char - 55) | 0;
 							break;
 						case 97:case 98:case 99:case 100:case 101:case 102:
-							k += $char - 87;
+							n1 = (n1 << 4) + ($char - 87) | 0;
 							break;
 						default:
-							this.invalidChar($char);
+							this["char"] = $char;
+							var v = (function($this) {
+								var $r;
+								try {
+									$r = hscript.Const.CInt((function($this) {
+										var $r;
+										if((n1 >> 30 & 1) != n1 >>> 31) throw "Overflow " + n1;
+										$r = n1;
+										return $r;
+									}($this)));
+								} catch( e ) {
+									$r = hscript.Const.CInt32(n1);
+								}
+								return $r;
+							}(this));
+							return hscript.Token.TConst(v);
 						}
-					}
-					if(k <= 127) b.writeByte(k); else if(k <= 2047) {
-						b.writeByte(192 | k >> 6);
-						b.writeByte(128 | k & 63);
-					} else {
-						b.writeByte(224 | k >> 12);
-						b.writeByte(128 | k >> 6 & 63);
-						b.writeByte(128 | k & 63);
 					}
 					break;
 				default:
-					this.invalidChar(c);
+					this["char"] = $char;
+					var i = Std["int"](n);
+					return hscript.Token.TConst(exp > 0?hscript.Const.CFloat(n * 10 / exp):i == n?hscript.Const.CInt(i):hscript.Const.CFloat(n));
 				}
-			} else if(c == 92) esc = true; else if(c == until) break; else {
-				if(c == 10) this.line++;
-				b.writeByte(c);
 			}
-		}
-		return b.getBytes().toString();
-	}
-	,token: function() {
-		if(!(this.tokens.head == null)) return this.tokens.pop();
-		var $char;
-		if(this["char"] < 0) $char = this.readChar(); else {
-			$char = this["char"];
-			this["char"] = -1;
-		}
-		while(true) {
+			break;
+		case 59:
+			return hscript.Token.TSemicolon;
+		case 40:
+			return hscript.Token.TPOpen;
+		case 41:
+			return hscript.Token.TPClose;
+		case 44:
+			return hscript.Token.TComma;
+		case 46:
+			$char = this.readChar();
 			switch($char) {
-			case 0:
-				return hscript.Token.TEof;
-			case 32:case 9:case 13:
-				break;
-			case 10:
-				this.line++;
-				break;
 			case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
-				var n = ($char - 48) * 1.0;
-				var exp = 0;
+				var n = $char - 48;
+				var exp = 1;
 				while(true) {
 					$char = this.readChar();
 					exp *= 10;
@@ -2511,262 +1979,187 @@ hscript.Parser.prototype = {
 					case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
 						n = n * 10 + ($char - 48);
 						break;
-					case 46:
-						if(exp > 0) {
-							if(exp == 10 && this.readChar() == 46) {
-								this.tokens.add(hscript.Token.TOp("..."));
-								var i = Std["int"](n);
-								return hscript.Token.TConst(i == n?hscript.Const.CInt(i):hscript.Const.CFloat(n));
-							}
-							this.invalidChar($char);
-						}
-						exp = 1;
-						break;
-					case 120:
-						if(n > 0 || exp > 0) this.invalidChar($char);
-						var n1 = 0 | 0;
-						while(true) {
-							$char = this.readChar();
-							switch($char) {
-							case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
-								n1 = (n1 << 4) + ($char - 48) | 0;
-								break;
-							case 65:case 66:case 67:case 68:case 69:case 70:
-								n1 = (n1 << 4) + ($char - 55) | 0;
-								break;
-							case 97:case 98:case 99:case 100:case 101:case 102:
-								n1 = (n1 << 4) + ($char - 87) | 0;
-								break;
-							default:
-								this["char"] = $char;
-								var v = (function($this) {
-									var $r;
-									try {
-										$r = hscript.Const.CInt((function($this) {
-											var $r;
-											if((n1 >> 30 & 1) != n1 >>> 31) throw "Overflow " + n1;
-											$r = n1;
-											return $r;
-										}($this)));
-									} catch( e ) {
-										$r = hscript.Const.CInt32(n1);
-									}
-									return $r;
-								}(this));
-								return hscript.Token.TConst(v);
-							}
-						}
-						break;
 					default:
 						this["char"] = $char;
-						var i = Std["int"](n);
-						return hscript.Token.TConst(exp > 0?hscript.Const.CFloat(n * 10 / exp):i == n?hscript.Const.CInt(i):hscript.Const.CFloat(n));
+						return hscript.Token.TConst(hscript.Const.CFloat(n / exp));
 					}
 				}
 				break;
-			case 59:
-				return hscript.Token.TSemicolon;
-			case 40:
-				return hscript.Token.TPOpen;
-			case 41:
-				return hscript.Token.TPClose;
-			case 44:
-				return hscript.Token.TComma;
 			case 46:
 				$char = this.readChar();
-				switch($char) {
-				case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
-					var n = $char - 48;
-					var exp = 1;
-					while(true) {
-						$char = this.readChar();
-						exp *= 10;
-						switch($char) {
-						case 48:case 49:case 50:case 51:case 52:case 53:case 54:case 55:case 56:case 57:
-							n = n * 10 + ($char - 48);
-							break;
-						default:
-							this["char"] = $char;
-							return hscript.Token.TConst(hscript.Const.CFloat(n / exp));
-						}
-					}
-					break;
-				case 46:
-					$char = this.readChar();
-					if($char != 46) this.invalidChar($char);
-					return hscript.Token.TOp("...");
-				default:
-					this["char"] = $char;
-					return hscript.Token.TDot;
-				}
-				break;
-			case 123:
-				return hscript.Token.TBrOpen;
-			case 125:
-				return hscript.Token.TBrClose;
-			case 91:
-				return hscript.Token.TBkOpen;
-			case 93:
-				return hscript.Token.TBkClose;
-			case 39:
-				return hscript.Token.TConst(hscript.Const.CString(this.readString(39)));
-			case 34:
-				return hscript.Token.TConst(hscript.Const.CString(this.readString(34)));
-			case 63:
-				return hscript.Token.TQuestion;
-			case 58:
-				return hscript.Token.TDoubleDot;
+				if($char != 46) this.invalidChar($char);
+				return hscript.Token.TOp("...");
 			default:
-				if(this.ops[$char]) {
-					var op = String.fromCharCode($char);
-					while(true) {
-						$char = this.readChar();
-						if(!this.ops[$char]) {
-							if(op.charCodeAt(0) == 47) return this.tokenComment(op,$char);
-							this["char"] = $char;
-							return hscript.Token.TOp(op);
-						}
-						op += String.fromCharCode($char);
-					}
-				}
-				if(this.idents[$char]) {
-					var id = String.fromCharCode($char);
-					while(true) {
-						$char = this.readChar();
-						if(!this.idents[$char]) {
-							this["char"] = $char;
-							return hscript.Token.TId(id);
-						}
-						id += String.fromCharCode($char);
-					}
-				}
-				this.invalidChar($char);
-			}
-			$char = this.readChar();
-		}
-		return null;
-	}
-	,tokenComment: function(op,$char) {
-		var c = op.charCodeAt(1);
-		var s = this.input;
-		if(c == 47) {
-			try {
-				while($char != 10 && $char != 13) {
-					null;
-					$char = s.readByte();
-				}
 				this["char"] = $char;
-			} catch( e ) {
+				return hscript.Token.TDot;
 			}
-			return this.token();
-		}
-		if(c == 42) {
-			var old = this.line;
-			try {
+			break;
+		case 123:
+			return hscript.Token.TBrOpen;
+		case 125:
+			return hscript.Token.TBrClose;
+		case 91:
+			return hscript.Token.TBkOpen;
+		case 93:
+			return hscript.Token.TBkClose;
+		case 39:
+			return hscript.Token.TConst(hscript.Const.CString(this.readString(39)));
+		case 34:
+			return hscript.Token.TConst(hscript.Const.CString(this.readString(34)));
+		case 63:
+			return hscript.Token.TQuestion;
+		case 58:
+			return hscript.Token.TDoubleDot;
+		default:
+			if(this.ops[$char]) {
+				var op = String.fromCharCode($char);
 				while(true) {
-					while($char != 42) {
-						if($char == 10) this.line++;
-						null;
-						$char = s.readByte();
+					$char = this.readChar();
+					if(!this.ops[$char]) {
+						if(op.charCodeAt(0) == 47) return this.tokenComment(op,$char);
+						this["char"] = $char;
+						return hscript.Token.TOp(op);
 					}
+					op += String.fromCharCode($char);
+				}
+			}
+			if(this.idents[$char]) {
+				var id = String.fromCharCode($char);
+				while(true) {
+					$char = this.readChar();
+					if(!this.idents[$char]) {
+						this["char"] = $char;
+						return hscript.Token.TId(id);
+					}
+					id += String.fromCharCode($char);
+				}
+			}
+			this.invalidChar($char);
+		}
+		$char = this.readChar();
+	}
+	return null;
+}
+hscript.Parser.prototype.tokenComment = function(op,$char) {
+	var c = op.charCodeAt(1);
+	var s = this.input;
+	if(c == 47) {
+		try {
+			while($char != 10 && $char != 13) {
+				null;
+				$char = s.readByte();
+			}
+			this["char"] = $char;
+		} catch( e ) {
+		}
+		return this.token();
+	}
+	if(c == 42) {
+		var old = this.line;
+		try {
+			while(true) {
+				while($char != 42) {
+					if($char == 10) this.line++;
 					null;
 					$char = s.readByte();
-					if($char == 47) break;
 				}
-			} catch( e ) {
-				this.line = old;
-				throw hscript.Error.EUnterminatedComment;
+				null;
+				$char = s.readByte();
+				if($char == 47) break;
 			}
-			return this.token();
+		} catch( e ) {
+			this.line = old;
+			throw hscript.Error.EUnterminatedComment;
 		}
-		this["char"] = $char;
-		return hscript.Token.TOp(op);
+		return this.token();
 	}
-	,constString: function(c) {
-		return (function($this) {
-			var $r;
-			var $e = (c);
-			switch( $e[1] ) {
-			case 0:
-				var v = $e[2];
-				$r = Std.string(v);
-				break;
-			case 3:
-				var v = $e[2];
-				$r = Std.string(v);
-				break;
-			case 1:
-				var f = $e[2];
-				$r = Std.string(f);
-				break;
-			case 2:
-				var s = $e[2];
-				$r = s;
-				break;
-			}
-			return $r;
-		}(this));
-	}
-	,tokenString: function(t) {
-		return (function($this) {
-			var $r;
-			var $e = (t);
-			switch( $e[1] ) {
-			case 0:
-				$r = "<eof>";
-				break;
-			case 1:
-				var c = $e[2];
-				$r = $this.constString(c);
-				break;
-			case 2:
-				var s = $e[2];
-				$r = s;
-				break;
-			case 3:
-				var s = $e[2];
-				$r = s;
-				break;
-			case 4:
-				$r = "(";
-				break;
-			case 5:
-				$r = ")";
-				break;
-			case 6:
-				$r = "{";
-				break;
-			case 7:
-				$r = "}";
-				break;
-			case 8:
-				$r = ".";
-				break;
-			case 9:
-				$r = ",";
-				break;
-			case 10:
-				$r = ";";
-				break;
-			case 11:
-				$r = "[";
-				break;
-			case 12:
-				$r = "]";
-				break;
-			case 13:
-				$r = "?";
-				break;
-			case 14:
-				$r = ":";
-				break;
-			}
-			return $r;
-		}(this));
-	}
-	,__class__: hscript.Parser
+	this["char"] = $char;
+	return hscript.Token.TOp(op);
 }
-var Reflect = $hxClasses["Reflect"] = function() { }
+hscript.Parser.prototype.constString = function(c) {
+	return (function($this) {
+		var $r;
+		var $e = (c);
+		switch( $e[1] ) {
+		case 0:
+			var v = $e[2];
+			$r = Std.string(v);
+			break;
+		case 3:
+			var v = $e[2];
+			$r = Std.string(v);
+			break;
+		case 1:
+			var f = $e[2];
+			$r = Std.string(f);
+			break;
+		case 2:
+			var s = $e[2];
+			$r = s;
+			break;
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.tokenString = function(t) {
+	return (function($this) {
+		var $r;
+		var $e = (t);
+		switch( $e[1] ) {
+		case 0:
+			$r = "<eof>";
+			break;
+		case 1:
+			var c = $e[2];
+			$r = $this.constString(c);
+			break;
+		case 2:
+			var s = $e[2];
+			$r = s;
+			break;
+		case 3:
+			var s = $e[2];
+			$r = s;
+			break;
+		case 4:
+			$r = "(";
+			break;
+		case 5:
+			$r = ")";
+			break;
+		case 6:
+			$r = "{";
+			break;
+		case 7:
+			$r = "}";
+			break;
+		case 8:
+			$r = ".";
+			break;
+		case 9:
+			$r = ",";
+			break;
+		case 10:
+			$r = ";";
+			break;
+		case 11:
+			$r = "[";
+			break;
+		case 12:
+			$r = "]";
+			break;
+		case 13:
+			$r = "?";
+			break;
+		case 14:
+			$r = ":";
+			break;
+		}
+		return $r;
+	}(this));
+}
+hscript.Parser.prototype.__class__ = hscript.Parser;
+Reflect = function() { }
 Reflect.__name__ = ["Reflect"];
 Reflect.hasField = function(o,field) {
 	if(o.hasOwnProperty != null) return o.hasOwnProperty(field);
@@ -2852,359 +2245,297 @@ Reflect.makeVarArgs = function(f) {
 		return f(a);
 	};
 }
-Reflect.prototype = {
-	__class__: Reflect
-}
-var erazor = erazor || {}
-erazor.Template = $hxClasses["erazor.Template"] = function(template) {
+Reflect.prototype.__class__ = Reflect;
+if(typeof erazor=='undefined') erazor = {}
+erazor.Template = function(template) {
+	if( template === $_ ) return;
 	this.template = template;
-};
+}
 erazor.Template.__name__ = ["erazor","Template"];
-erazor.Template.prototype = {
-	template: null
-	,variables: null
-	,execute: function(content) {
-		var buffer = new StringBuf();
-		var parsedBlocks = new erazor.Parser().parse(this.template);
-		var script = new erazor.ScriptBuilder("__b__").build(parsedBlocks);
-		var parser = new hscript.Parser();
-		var program = parser.parseString(script);
-		var interp = new erazor.hscript.EnhancedInterp();
-		this.variables = interp.variables;
-		var bufferStack = [];
-		this.setInterpreterVars(interp,content);
-		interp.variables.set("__b__",buffer);
-		interp.variables.set("__string_buf__",function(current) {
-			bufferStack.push(current);
-			return new StringBuf();
-		});
-		interp.variables.set("__restore_buf__",function() {
-			return bufferStack.pop();
-		});
-		interp.execute(program);
-		return buffer.b.join("");
-	}
-	,setInterpreterVars: function(interp,content) {
-		if(Std["is"](content,Hash)) {
-			var hash = content;
-			var $it0 = hash.keys();
-			while( $it0.hasNext() ) {
-				var field = $it0.next();
-				interp.variables.set(field,hash.get(field));
-			}
-		} else {
-			var _g = 0, _g1 = Reflect.fields(content);
-			while(_g < _g1.length) {
-				var field = _g1[_g];
-				++_g;
-				interp.variables.set(field,Reflect.field(content,field));
-			}
+erazor.Template.prototype.template = null;
+erazor.Template.prototype.variables = null;
+erazor.Template.prototype.execute = function(content) {
+	var buffer = new StringBuf();
+	var parsedBlocks = new erazor.Parser().parse(this.template);
+	var script = new erazor.ScriptBuilder("__b__").build(parsedBlocks);
+	var parser = new hscript.Parser();
+	var program = parser.parseString(script);
+	var interp = new erazor.hscript.EnhancedInterp();
+	this.variables = interp.variables;
+	var bufferStack = [];
+	this.setInterpreterVars(interp,content);
+	interp.variables.set("__b__",buffer);
+	interp.variables.set("__string_buf__",function(current) {
+		bufferStack.push(current);
+		return new StringBuf();
+	});
+	interp.variables.set("__restore_buf__",function() {
+		return bufferStack.pop();
+	});
+	interp.execute(program);
+	return buffer.b.join("");
+}
+erazor.Template.prototype.setInterpreterVars = function(interp,content) {
+	if(Std["is"](content,Hash)) {
+		var hash = content;
+		var $it0 = hash.keys();
+		while( $it0.hasNext() ) {
+			var field = $it0.next();
+			interp.variables.set(field,hash.get(field));
+		}
+	} else {
+		var _g = 0, _g1 = Reflect.fields(content);
+		while(_g < _g1.length) {
+			var field = _g1[_g];
+			++_g;
+			interp.variables.set(field,Reflect.field(content,field));
 		}
 	}
-	,__class__: erazor.Template
 }
+erazor.Template.prototype.__class__ = erazor.Template;
 if(!app.author) app.author = {}
-app.author.AuthorController = $hxClasses["app.author.AuthorController"] = function() {
+app.author.AuthorController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.author.AuthorView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-};
-app.author.AuthorController.__name__ = ["app","author","AuthorController"];
-app.author.AuthorController.prototype = {
-	view: null
-	,__class__: app.author.AuthorController
 }
-haxe.FastCell = $hxClasses["haxe.FastCell"] = function(elt,next) {
+app.author.AuthorController.__name__ = ["app","author","AuthorController"];
+app.author.AuthorController.prototype.view = null;
+app.author.AuthorController.prototype.__class__ = app.author.AuthorController;
+haxe.FastCell = function(elt,next) {
+	if( elt === $_ ) return;
 	this.elt = elt;
 	this.next = next;
-};
+}
 haxe.FastCell.__name__ = ["haxe","FastCell"];
-haxe.FastCell.prototype = {
-	elt: null
-	,next: null
-	,__class__: haxe.FastCell
+haxe.FastCell.prototype.elt = null;
+haxe.FastCell.prototype.next = null;
+haxe.FastCell.prototype.__class__ = haxe.FastCell;
+haxe.FastList = function(p) {
 }
-haxe.FastList = $hxClasses["haxe.FastList"] = function() {
-};
 haxe.FastList.__name__ = ["haxe","FastList"];
-haxe.FastList.prototype = {
-	head: null
-	,add: function(item) {
-		this.head = new haxe.FastCell(item,this.head);
-	}
-	,first: function() {
-		return this.head == null?null:this.head.elt;
-	}
-	,pop: function() {
-		var k = this.head;
-		if(k == null) return null; else {
-			this.head = k.next;
-			return k.elt;
-		}
-	}
-	,isEmpty: function() {
-		return this.head == null;
-	}
-	,remove: function(v) {
-		var prev = null;
-		var l = this.head;
-		while(l != null) {
-			if(l.elt == v) {
-				if(prev == null) this.head = l.next; else prev.next = l.next;
-				break;
-			}
-			prev = l;
-			l = l.next;
-		}
-		return l != null;
-	}
-	,iterator: function() {
-		var l = this.head;
-		return { hasNext : function() {
-			return l != null;
-		}, next : function() {
-			var k = l;
-			l = k.next;
-			return k.elt;
-		}};
-	}
-	,toString: function() {
-		var a = new Array();
-		var l = this.head;
-		while(l != null) {
-			a.push(l.elt);
-			l = l.next;
-		}
-		return "{" + a.join(",") + "}";
-	}
-	,__class__: haxe.FastList
+haxe.FastList.prototype.head = null;
+haxe.FastList.prototype.add = function(item) {
+	this.head = new haxe.FastCell(item,this.head);
 }
-var IntIter = $hxClasses["IntIter"] = function(min,max) {
+haxe.FastList.prototype.first = function() {
+	return this.head == null?null:this.head.elt;
+}
+haxe.FastList.prototype.pop = function() {
+	var k = this.head;
+	if(k == null) return null; else {
+		this.head = k.next;
+		return k.elt;
+	}
+}
+haxe.FastList.prototype.isEmpty = function() {
+	return this.head == null;
+}
+haxe.FastList.prototype.remove = function(v) {
+	var prev = null;
+	var l = this.head;
+	while(l != null) {
+		if(l.elt == v) {
+			if(prev == null) this.head = l.next; else prev.next = l.next;
+			break;
+		}
+		prev = l;
+		l = l.next;
+	}
+	return l != null;
+}
+haxe.FastList.prototype.iterator = function() {
+	var l = this.head;
+	return { hasNext : function() {
+		return l != null;
+	}, next : function() {
+		var k = l;
+		l = k.next;
+		return k.elt;
+	}};
+}
+haxe.FastList.prototype.toString = function() {
+	var a = new Array();
+	var l = this.head;
+	while(l != null) {
+		a.push(l.elt);
+		l = l.next;
+	}
+	return "{" + a.join(",") + "}";
+}
+haxe.FastList.prototype.__class__ = haxe.FastList;
+IntIter = function(min,max) {
+	if( min === $_ ) return;
 	this.min = min;
 	this.max = max;
-};
+}
 IntIter.__name__ = ["IntIter"];
-IntIter.prototype = {
-	min: null
-	,max: null
-	,hasNext: function() {
-		return this.min < this.max;
-	}
-	,next: function() {
-		return this.min++;
-	}
-	,__class__: IntIter
+IntIter.prototype.min = null;
+IntIter.prototype.max = null;
+IntIter.prototype.hasNext = function() {
+	return this.min < this.max;
 }
-domtools.Traversing = $hxClasses["domtools.Traversing"] = function() { }
-domtools.Traversing.__name__ = ["domtools","Traversing"];
-domtools.Traversing.children = function(node,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var children = new domtools.Query();
-	if(domtools.ElementManipulation.isElement(node)) children.addNodeList(node.childNodes,elementsOnly);
-	return children;
+IntIter.prototype.next = function() {
+	return this.min++;
 }
-domtools.Traversing.firstChildren = function(node,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var firstChild = null;
-	if(domtools.ElementManipulation.isElement(node)) {
-		var e = node.firstChild;
-		while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.nextSibling;
-		if(e != null) firstChild = e;
-	}
-	return firstChild;
+IntIter.prototype.__class__ = IntIter;
+autoform.AbstractRenderer = function(form) {
+	if( form === $_ ) return;
+	this.displays = new Hash();
+	this.form = form;
 }
-domtools.Traversing.lastChildren = function(node,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var lastChild = null;
-	if(domtools.ElementManipulation.isElement(node)) {
-		var e = node.lastChild;
-		while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.previousSibling;
-		if(e != null) lastChild = e;
-	}
-	return lastChild;
+autoform.AbstractRenderer.__name__ = ["autoform","AbstractRenderer"];
+autoform.AbstractRenderer.guessDisplay = function(field) {
+	var display;
+	if(field.display != "") display = field.display; else display = (function($this) {
+		var $r;
+		switch(field.type) {
+		case "String":
+			$r = "text";
+			break;
+		case "Int":
+			$r = "number/int";
+			break;
+		case "Float":
+			$r = "number/float";
+			break;
+		case "Date":
+			$r = "date";
+			break;
+		case "Bool":
+			$r = "checkbox";
+			break;
+		case "Array<Bool>":
+			$r = "checkbox";
+			break;
+		default:
+			$r = "text";
+		}
+		return $r;
+	}(this));
+	return display;
 }
-domtools.Traversing.parent = function(node) {
-	return node.parentNode != null?node.parentNode:null;
+autoform.AbstractRenderer.prototype.form = null;
+autoform.AbstractRenderer.prototype.displays = null;
+autoform.AbstractRenderer.prototype.run = function(fields) {
 }
-domtools.Traversing.ancestors = function(node) {
-	var ancestors = new domtools.Query();
-	{
-		ancestors.collection.push(domtools.Traversing.parent(node));
-		ancestors;
-	}
-	if(ancestors.collection.length > 0) ancestors.addCollection(domtools.QueryTraversing.parent(ancestors));
-	return ancestors;
-}
-domtools.Traversing.next = function(node) {
-	return node.nextSibling != null?node.nextSibling:null;
-}
-domtools.Traversing.prev = function(node) {
-	return node.previousSibling != null?node.previousSibling:null;
-}
-domtools.Traversing.find = function(node,selector) {
-	var newQuery = new domtools.Query();
-	if(domtools.ElementManipulation.isElement(node)) {
-		var element = node;
-		newQuery.addNodeList(element.querySelectorAll(selector));
-	}
-	return newQuery;
-}
-domtools.Traversing.prototype = {
-	__class__: domtools.Traversing
-}
-domtools.QueryTraversing = $hxClasses["domtools.QueryTraversing"] = function() { }
-domtools.QueryTraversing.__name__ = ["domtools","QueryTraversing"];
-domtools.QueryTraversing.children = function(query,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var children = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		if(domtools.ElementManipulation.isElement(node)) children.addNodeList(node.childNodes,elementsOnly);
-	}
-	return children;
-}
-domtools.QueryTraversing.firstChildren = function(query,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var children = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		if(domtools.ElementManipulation.isElement(node)) {
-			var e = node.firstChild;
-			while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.nextSibling;
-			if(e != null) {
-				children.collection.push(e);
-				children;
-			}
+autoform.AbstractRenderer.prototype.__class__ = autoform.AbstractRenderer;
+autoform.FieldInfo = function(field,rtti,meta,formID_in) {
+	if( field === $_ ) return;
+	this.id = "";
+	this.title = "";
+	this.type = "null";
+	this.required = false;
+	this.description = "";
+	this.help = "";
+	this.validDescription = "";
+	this.validatorString = "";
+	this.validator = null;
+	this.display = "";
+	this.displayOptions = { };
+	this.formID = formID_in;
+	this.formPrefix = this.formID + "-";
+	this.id = field.getNodeName();
+	this.title = this.id;
+	this.fullID = this.formID + "-" + this.id;
+	if(field.firstChild() != null) {
+		var firstChild = field;
+		var pathsFound = 0;
+		do {
+			firstChild = firstChild.firstChild();
+			var path = firstChild.get("path");
+			this.type = pathsFound == 0?path:this.type + "<" + path;
+			pathsFound++;
+		} while(firstChild.firstChild() != null);
+		while(pathsFound > 1) {
+			this.type = this.type + ">";
+			pathsFound--;
 		}
 	}
-	return children;
-}
-domtools.QueryTraversing.lastChildren = function(query,elementsOnly) {
-	if(elementsOnly == null) elementsOnly = true;
-	var children = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		if(domtools.ElementManipulation.isElement(node)) {
-			var e = node.lastChild;
-			while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.previousSibling;
-			if(e != null) {
-				children.collection.push(e);
-				children;
-			}
+	if(Reflect.hasField(meta,this.id)) {
+		var fieldMeta = Reflect.field(meta,this.id);
+		if(Reflect.hasField(fieldMeta,"autoform")) {
+			var autoform = fieldMeta.autoform[0];
+			if(Reflect.hasField(autoform,"title")) this.title = Reflect.field(autoform,"title");
+			if(Reflect.hasField(autoform,"required")) this.required = Reflect.field(autoform,"required");
+			if(Reflect.hasField(autoform,"description")) this.description = Reflect.field(autoform,"description");
+			if(Reflect.hasField(autoform,"help")) this.help = Reflect.field(autoform,"help");
+			if(Reflect.hasField(autoform,"validatorString")) this.validatorString = Reflect.field(autoform,"validatorString");
+			this.validator = this.createValidatorFunction(this.validatorString);
+			if(Reflect.hasField(autoform,"display")) this.display = Reflect.field(autoform,"display");
+			if(Reflect.hasField(autoform,"displayOptions")) this.displayOptions = Reflect.field(autoform,"displayOptions");
 		}
 	}
-	return children;
 }
-domtools.QueryTraversing.parent = function(query) {
-	var parents = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		if(node.parentNode != null) {
-			parents.collection.push(node.parentNode);
-			parents;
-		}
-	}
-	return parents;
+autoform.FieldInfo.__name__ = ["autoform","FieldInfo"];
+autoform.FieldInfo.prototype.id = null;
+autoform.FieldInfo.prototype.title = null;
+autoform.FieldInfo.prototype.type = null;
+autoform.FieldInfo.prototype.required = null;
+autoform.FieldInfo.prototype.description = null;
+autoform.FieldInfo.prototype.help = null;
+autoform.FieldInfo.prototype.validDescription = null;
+autoform.FieldInfo.prototype.validatorString = null;
+autoform.FieldInfo.prototype.validator = null;
+autoform.FieldInfo.prototype.display = null;
+autoform.FieldInfo.prototype.displayOptions = null;
+autoform.FieldInfo.prototype.formID = null;
+autoform.FieldInfo.prototype.formPrefix = null;
+autoform.FieldInfo.prototype.fullID = null;
+autoform.FieldInfo.prototype.createValidatorFunction = function(validatorString) {
+	var fn = null;
+	return fn;
 }
-domtools.QueryTraversing.ancestors = function(query) {
-	var ancestors = domtools.QueryTraversing.parent(query);
-	if(ancestors.collection.length > 0) ancestors.addCollection(domtools.QueryTraversing.parent(ancestors));
-	return ancestors;
-}
-domtools.QueryTraversing.next = function(query) {
-	var siblings = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		var sibling = node.nextSibling;
-		if(sibling != null) {
-			siblings.collection.push(sibling);
-			siblings;
-		}
-	}
-	return siblings;
-}
-domtools.QueryTraversing.prev = function(query) {
-	var siblings = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		var sibling = node.previousSibling;
-		if(sibling != null) {
-			siblings.collection.push(sibling);
-			siblings;
-		}
-	}
-	return siblings;
-}
-domtools.QueryTraversing.find = function(query,selector) {
-	var newQuery = new domtools.Query();
-	var $it0 = query.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		if(domtools.ElementManipulation.isElement(node)) {
-			var element = node;
-			newQuery.addNodeList(element.querySelectorAll(selector));
-		}
-	}
-	return newQuery;
-}
-domtools.QueryTraversing.prototype = {
-	__class__: domtools.QueryTraversing
-}
-haxe.remoting.HttpAsyncConnection = $hxClasses["haxe.remoting.HttpAsyncConnection"] = function(data,path) {
+autoform.FieldInfo.prototype.__class__ = autoform.FieldInfo;
+haxe.remoting.HttpAsyncConnection = function(data,path) {
+	if( data === $_ ) return;
 	this.__data = data;
 	this.__path = path;
-};
+}
 haxe.remoting.HttpAsyncConnection.__name__ = ["haxe","remoting","HttpAsyncConnection"];
-haxe.remoting.HttpAsyncConnection.__interfaces__ = [haxe.remoting.AsyncConnection];
 haxe.remoting.HttpAsyncConnection.urlConnect = function(url) {
 	return new haxe.remoting.HttpAsyncConnection({ url : url, error : function(e) {
 		throw e;
 	}},[]);
 }
-haxe.remoting.HttpAsyncConnection.prototype = {
-	__data: null
-	,__path: null
-	,resolve: function(name) {
-		var c = new haxe.remoting.HttpAsyncConnection(this.__data,this.__path.copy());
-		c.__path.push(name);
-		return c;
-	}
-	,setErrorHandler: function(h) {
-		this.__data.error = h;
-	}
-	,call: function(params,onResult) {
-		var h = new haxe.Http(this.__data.url);
-		var s = new haxe.Serializer();
-		s.serialize(this.__path);
-		s.serialize(params);
-		h.setHeader("X-Haxe-Remoting","1");
-		h.setParameter("__x",s.toString());
-		var error = this.__data.error;
-		h.onData = function(response) {
-			var ok = true;
-			var ret;
-			try {
-				if(response.substr(0,3) != "hxr") throw "Invalid response : '" + response + "'";
-				var s1 = new haxe.Unserializer(response.substr(3));
-				ret = s1.unserialize();
-			} catch( err ) {
-				ret = null;
-				ok = false;
-				error(err);
-			}
-			if(ok && onResult != null) onResult(ret);
-		};
-		h.onError = error;
-		h.request(true);
-	}
-	,__class__: haxe.remoting.HttpAsyncConnection
+haxe.remoting.HttpAsyncConnection.prototype.__data = null;
+haxe.remoting.HttpAsyncConnection.prototype.__path = null;
+haxe.remoting.HttpAsyncConnection.prototype.resolve = function(name) {
+	var c = new haxe.remoting.HttpAsyncConnection(this.__data,this.__path.copy());
+	c.__path.push(name);
+	return c;
 }
-client.Client = $hxClasses["client.Client"] = function() { }
+haxe.remoting.HttpAsyncConnection.prototype.setErrorHandler = function(h) {
+	this.__data.error = h;
+}
+haxe.remoting.HttpAsyncConnection.prototype.call = function(params,onResult) {
+	var h = new haxe.Http(this.__data.url);
+	var s = new haxe.Serializer();
+	s.serialize(this.__path);
+	s.serialize(params);
+	h.setHeader("X-Haxe-Remoting","1");
+	h.setParameter("__x",s.toString());
+	var error = this.__data.error;
+	h.onData = function(response) {
+		var ok = true;
+		var ret;
+		try {
+			if(response.substr(0,3) != "hxr") throw "Invalid response : '" + response + "'";
+			var s1 = new haxe.Unserializer(response.substr(3));
+			ret = s1.unserialize();
+		} catch( err ) {
+			ret = null;
+			ok = false;
+			error(err);
+		}
+		if(ok && onResult != null) onResult(ret);
+	};
+	h.onError = error;
+	h.request(true);
+}
+haxe.remoting.HttpAsyncConnection.prototype.__class__ = haxe.remoting.HttpAsyncConnection;
+haxe.remoting.HttpAsyncConnection.__interfaces__ = [haxe.remoting.AsyncConnection];
+client.Client = function() { }
 client.Client.__name__ = ["client","Client"];
 client.Client.notifications = null;
 client.Client.scheduler = null;
@@ -3228,39 +2559,33 @@ client.Client.ready = function(e) {
 	client.Client.editController = new app.edit.EditController();
 	client.Client.slideController = new app.slide.SlideController();
 	client.Client.authorController = new app.author.AuthorController();
+	client.Client.ui.showController("project");
 }
 client.Client.initialiseAPI = function() {
 	client.Client.conn.setErrorHandler(function(err) {
-		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 55, className : "client.Client", methodName : "initialiseAPI"});
+		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 56, className : "client.Client", methodName : "initialiseAPI"});
 	});
 	client.Client.notifications = new server.api.NotificationsProxy(client.Client.conn);
 	client.Client.scheduler = new server.api.SchedulerProxy(client.Client.conn);
 }
-client.Client.prototype = {
-	__class__: client.Client
-}
-app.project.ProjectController = $hxClasses["app.project.ProjectController"] = function() {
+client.Client.prototype.__class__ = client.Client;
+app.project.ProjectController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.project.ProjectView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 	this.listProjects();
-};
-app.project.ProjectController.__name__ = ["app","project","ProjectController"];
-app.project.ProjectController.prototype = {
-	view: null
-	,listProjects: function() {
-		var me = this;
-		app.project.ProjectController.projectAPI.listProjects(function(a) {
-			var _g = 0;
-			while(_g < a.length) {
-				var project = a[_g];
-				++_g;
-				me.view.addProject(project);
-			}
-		});
-	}
-	,__class__: app.project.ProjectController
 }
-hscript.Interp = $hxClasses["hscript.Interp"] = function() {
+app.project.ProjectController.__name__ = ["app","project","ProjectController"];
+app.project.ProjectController.prototype.view = null;
+app.project.ProjectController.prototype.listProjects = function() {
+	var me = this;
+	app.project.ProjectController.projectAPI.listProjects(function(a) {
+		me.view.listProjects(a);
+	});
+}
+app.project.ProjectController.prototype.__class__ = app.project.ProjectController;
+hscript.Interp = function(p) {
+	if( p === $_ ) return;
 	this.locals = new Hash();
 	this.declared = new Array();
 	this.variables = new Hash();
@@ -3271,451 +2596,484 @@ hscript.Interp = $hxClasses["hscript.Interp"] = function() {
 		haxe.Log.trace(Std.string(e),{ fileName : "hscript", lineNumber : 0});
 	});
 	this.initOps();
-};
+}
 hscript.Interp.__name__ = ["hscript","Interp"];
-hscript.Interp.prototype = {
-	variables: null
-	,locals: null
-	,binops: null
-	,declared: null
-	,initOps: function() {
-		var me = this;
-		this.binops = new Hash();
-		this.binops.set("+",function(e1,e2) {
-			return me.expr(e1) + me.expr(e2);
-		});
-		this.binops.set("-",function(e1,e2) {
-			return me.expr(e1) - me.expr(e2);
-		});
-		this.binops.set("*",function(e1,e2) {
-			return me.expr(e1) * me.expr(e2);
-		});
-		this.binops.set("/",function(e1,e2) {
-			return me.expr(e1) / me.expr(e2);
-		});
-		this.binops.set("%",function(e1,e2) {
-			return me.expr(e1) % me.expr(e2);
-		});
-		this.binops.set("&",function(e1,e2) {
-			return me.expr(e1) & me.expr(e2);
-		});
-		this.binops.set("|",function(e1,e2) {
-			return me.expr(e1) | me.expr(e2);
-		});
-		this.binops.set("^",function(e1,e2) {
-			return me.expr(e1) ^ me.expr(e2);
-		});
-		this.binops.set("<<",function(e1,e2) {
-			return me.expr(e1) << me.expr(e2);
-		});
-		this.binops.set(">>",function(e1,e2) {
-			return me.expr(e1) >> me.expr(e2);
-		});
-		this.binops.set(">>>",function(e1,e2) {
-			return me.expr(e1) >>> me.expr(e2);
-		});
-		this.binops.set("==",function(e1,e2) {
-			return me.expr(e1) == me.expr(e2);
-		});
-		this.binops.set("!=",function(e1,e2) {
-			return me.expr(e1) != me.expr(e2);
-		});
-		this.binops.set(">=",function(e1,e2) {
-			return me.expr(e1) >= me.expr(e2);
-		});
-		this.binops.set("<=",function(e1,e2) {
-			return me.expr(e1) <= me.expr(e2);
-		});
-		this.binops.set(">",function(e1,e2) {
-			return me.expr(e1) > me.expr(e2);
-		});
-		this.binops.set("<",function(e1,e2) {
-			return me.expr(e1) < me.expr(e2);
-		});
-		this.binops.set("||",function(e1,e2) {
-			return me.expr(e1) == true || me.expr(e2) == true;
-		});
-		this.binops.set("&&",function(e1,e2) {
-			return me.expr(e1) == true && me.expr(e2) == true;
-		});
-		this.binops.set("=",this.assign.$bind(this));
-		this.binops.set("...",function(e1,e2) {
-			return new IntIter(me.expr(e1),me.expr(e2));
-		});
-		this.assignOp("+=",function(v1,v2) {
-			return v1 + v2;
-		});
-		this.assignOp("-=",function(v1,v2) {
-			return v1 - v2;
-		});
-		this.assignOp("*=",function(v1,v2) {
-			return v1 * v2;
-		});
-		this.assignOp("/=",function(v1,v2) {
-			return v1 / v2;
-		});
-		this.assignOp("%=",function(v1,v2) {
-			return v1 % v2;
-		});
-		this.assignOp("&=",function(v1,v2) {
-			return v1 & v2;
-		});
-		this.assignOp("|=",function(v1,v2) {
-			return v1 | v2;
-		});
-		this.assignOp("^=",function(v1,v2) {
-			return v1 ^ v2;
-		});
-		this.assignOp("<<=",function(v1,v2) {
-			return v1 << v2;
-		});
-		this.assignOp(">>=",function(v1,v2) {
-			return v1 >> v2;
-		});
-		this.assignOp(">>>=",function(v1,v2) {
-			return v1 >>> v2;
-		});
+hscript.Interp.prototype.variables = null;
+hscript.Interp.prototype.locals = null;
+hscript.Interp.prototype.binops = null;
+hscript.Interp.prototype.declared = null;
+hscript.Interp.prototype.initOps = function() {
+	var me = this;
+	this.binops = new Hash();
+	this.binops.set("+",function(e1,e2) {
+		return me.expr(e1) + me.expr(e2);
+	});
+	this.binops.set("-",function(e1,e2) {
+		return me.expr(e1) - me.expr(e2);
+	});
+	this.binops.set("*",function(e1,e2) {
+		return me.expr(e1) * me.expr(e2);
+	});
+	this.binops.set("/",function(e1,e2) {
+		return me.expr(e1) / me.expr(e2);
+	});
+	this.binops.set("%",function(e1,e2) {
+		return me.expr(e1) % me.expr(e2);
+	});
+	this.binops.set("&",function(e1,e2) {
+		return me.expr(e1) & me.expr(e2);
+	});
+	this.binops.set("|",function(e1,e2) {
+		return me.expr(e1) | me.expr(e2);
+	});
+	this.binops.set("^",function(e1,e2) {
+		return me.expr(e1) ^ me.expr(e2);
+	});
+	this.binops.set("<<",function(e1,e2) {
+		return me.expr(e1) << me.expr(e2);
+	});
+	this.binops.set(">>",function(e1,e2) {
+		return me.expr(e1) >> me.expr(e2);
+	});
+	this.binops.set(">>>",function(e1,e2) {
+		return me.expr(e1) >>> me.expr(e2);
+	});
+	this.binops.set("==",function(e1,e2) {
+		return me.expr(e1) == me.expr(e2);
+	});
+	this.binops.set("!=",function(e1,e2) {
+		return me.expr(e1) != me.expr(e2);
+	});
+	this.binops.set(">=",function(e1,e2) {
+		return me.expr(e1) >= me.expr(e2);
+	});
+	this.binops.set("<=",function(e1,e2) {
+		return me.expr(e1) <= me.expr(e2);
+	});
+	this.binops.set(">",function(e1,e2) {
+		return me.expr(e1) > me.expr(e2);
+	});
+	this.binops.set("<",function(e1,e2) {
+		return me.expr(e1) < me.expr(e2);
+	});
+	this.binops.set("||",function(e1,e2) {
+		return me.expr(e1) == true || me.expr(e2) == true;
+	});
+	this.binops.set("&&",function(e1,e2) {
+		return me.expr(e1) == true && me.expr(e2) == true;
+	});
+	this.binops.set("=",$closure(this,"assign"));
+	this.binops.set("...",function(e1,e2) {
+		return new IntIter(me.expr(e1),me.expr(e2));
+	});
+	this.assignOp("+=",function(v1,v2) {
+		return v1 + v2;
+	});
+	this.assignOp("-=",function(v1,v2) {
+		return v1 - v2;
+	});
+	this.assignOp("*=",function(v1,v2) {
+		return v1 * v2;
+	});
+	this.assignOp("/=",function(v1,v2) {
+		return v1 / v2;
+	});
+	this.assignOp("%=",function(v1,v2) {
+		return v1 % v2;
+	});
+	this.assignOp("&=",function(v1,v2) {
+		return v1 & v2;
+	});
+	this.assignOp("|=",function(v1,v2) {
+		return v1 | v2;
+	});
+	this.assignOp("^=",function(v1,v2) {
+		return v1 ^ v2;
+	});
+	this.assignOp("<<=",function(v1,v2) {
+		return v1 << v2;
+	});
+	this.assignOp(">>=",function(v1,v2) {
+		return v1 >> v2;
+	});
+	this.assignOp(">>>=",function(v1,v2) {
+		return v1 >>> v2;
+	});
+}
+hscript.Interp.prototype.assign = function(e1,e2) {
+	var v = this.expr(e2);
+	var $e = (e1);
+	switch( $e[1] ) {
+	case 1:
+		var id = $e[2];
+		var l = this.locals.get(id);
+		if(l == null) this.variables.set(id,v); else l.r = v;
+		break;
+	case 5:
+		var f = $e[3], e = $e[2];
+		v = this.set(this.expr(e),f,v);
+		break;
+	case 16:
+		var index = $e[3], e = $e[2];
+		this.expr(e)[this.expr(index)] = v;
+		break;
+	default:
+		throw hscript.Error.EInvalidOp("=");
 	}
-	,assign: function(e1,e2) {
-		var v = this.expr(e2);
-		var $e = (e1);
-		switch( $e[1] ) {
-		case 1:
-			var id = $e[2];
-			var l = this.locals.get(id);
+	return v;
+}
+hscript.Interp.prototype.assignOp = function(op,fop) {
+	var me = this;
+	this.binops.set(op,function(e1,e2) {
+		return me.evalAssignOp(op,fop,e1,e2);
+	});
+}
+hscript.Interp.prototype.evalAssignOp = function(op,fop,e1,e2) {
+	var v;
+	var $e = (e1);
+	switch( $e[1] ) {
+	case 1:
+		var id = $e[2];
+		var l = this.locals.get(id);
+		v = fop(this.expr(e1),this.expr(e2));
+		if(l == null) this.variables.set(id,v); else l.r = v;
+		break;
+	case 5:
+		var f = $e[3], e = $e[2];
+		var obj = this.expr(e);
+		v = fop(this.get(obj,f),this.expr(e2));
+		v = this.set(obj,f,v);
+		break;
+	case 16:
+		var index = $e[3], e = $e[2];
+		var arr = this.expr(e);
+		var index1 = this.expr(index);
+		v = fop(arr[index1],this.expr(e2));
+		arr[index1] = v;
+		break;
+	default:
+		throw hscript.Error.EInvalidOp(op);
+	}
+	return v;
+}
+hscript.Interp.prototype.increment = function(e,prefix,delta) {
+	var $e = (e);
+	switch( $e[1] ) {
+	case 1:
+		var id = $e[2];
+		var l = this.locals.get(id);
+		var v = l == null?this.variables.get(id):l.r;
+		if(prefix) {
+			v += delta;
 			if(l == null) this.variables.set(id,v); else l.r = v;
-			break;
-		case 5:
-			var f = $e[3], e = $e[2];
-			v = this.set(this.expr(e),f,v);
-			break;
-		case 16:
-			var index = $e[3], e = $e[2];
-			this.expr(e)[this.expr(index)] = v;
-			break;
-		default:
-			throw hscript.Error.EInvalidOp("=");
-		}
+		} else if(l == null) this.variables.set(id,v + delta); else l.r = v + delta;
 		return v;
-	}
-	,assignOp: function(op,fop) {
-		var me = this;
-		this.binops.set(op,function(e1,e2) {
-			return me.evalAssignOp(op,fop,e1,e2);
-		});
-	}
-	,evalAssignOp: function(op,fop,e1,e2) {
-		var v;
-		var $e = (e1);
-		switch( $e[1] ) {
-		case 1:
-			var id = $e[2];
-			var l = this.locals.get(id);
-			v = fop(this.expr(e1),this.expr(e2));
-			if(l == null) this.variables.set(id,v); else l.r = v;
-			break;
-		case 5:
-			var f = $e[3], e = $e[2];
-			var obj = this.expr(e);
-			v = fop(this.get(obj,f),this.expr(e2));
-			v = this.set(obj,f,v);
-			break;
-		case 16:
-			var index = $e[3], e = $e[2];
-			var arr = this.expr(e);
-			var index1 = this.expr(index);
-			v = fop(arr[index1],this.expr(e2));
+	case 5:
+		var f = $e[3], e1 = $e[2];
+		var obj = this.expr(e1);
+		var v = this.get(obj,f);
+		if(prefix) {
+			v += delta;
+			this.set(obj,f,v);
+		} else this.set(obj,f,v + delta);
+		return v;
+	case 16:
+		var index = $e[3], e1 = $e[2];
+		var arr = this.expr(e1);
+		var index1 = this.expr(index);
+		var v = arr[index1];
+		if(prefix) {
+			v += delta;
 			arr[index1] = v;
-			break;
+		} else arr[index1] = v + delta;
+		return v;
+	default:
+		throw hscript.Error.EInvalidOp(delta > 0?"++":"--");
+	}
+}
+hscript.Interp.prototype.execute = function(expr) {
+	this.locals = new Hash();
+	return this.exprReturn(expr);
+}
+hscript.Interp.prototype.exprReturn = function(e) {
+	try {
+		return this.expr(e);
+	} catch( e1 ) {
+		if( js.Boot.__instanceof(e1,hscript._Interp.Stop) ) {
+			var $e = (e1);
+			switch( $e[1] ) {
+			case 0:
+				throw "Invalid break";
+				break;
+			case 1:
+				throw "Invalid continue";
+				break;
+			case 2:
+				var v = $e[2];
+				return v;
+			}
+		} else throw(e1);
+	}
+	return null;
+}
+hscript.Interp.prototype.duplicate = function(h) {
+	var h2 = new Hash();
+	var $it0 = h.keys();
+	while( $it0.hasNext() ) {
+		var k = $it0.next();
+		h2.set(k,h.get(k));
+	}
+	return h2;
+}
+hscript.Interp.prototype.restore = function(old) {
+	while(this.declared.length > old) {
+		var d = this.declared.pop();
+		this.locals.set(d.n,d.old);
+	}
+}
+hscript.Interp.prototype.expr = function(e) {
+	var $e = (e);
+	switch( $e[1] ) {
+	case 0:
+		var c = $e[2];
+		var $e = (c);
+		switch( $e[1] ) {
+		case 0:
+			var v = $e[2];
+			return v;
+		case 3:
+			var v = $e[2];
+			return v;
+		case 1:
+			var f = $e[2];
+			return f;
+		case 2:
+			var s = $e[2];
+			return s;
+		}
+		break;
+	case 1:
+		var id = $e[2];
+		var l = this.locals.get(id);
+		if(l != null) return l.r;
+		var v = this.variables.get(id);
+		if(v == null && !this.variables.exists(id)) throw hscript.Error.EUnknownVariable(id);
+		return v;
+	case 2:
+		var e1 = $e[4], n = $e[2];
+		this.declared.push({ n : n, old : this.locals.get(n)});
+		this.locals.set(n,{ r : e1 == null?null:this.expr(e1)});
+		return null;
+	case 3:
+		var e1 = $e[2];
+		return this.expr(e1);
+	case 4:
+		var exprs = $e[2];
+		var old = this.declared.length;
+		var v = null;
+		var _g = 0;
+		while(_g < exprs.length) {
+			var e1 = exprs[_g];
+			++_g;
+			v = this.expr(e1);
+		}
+		this.restore(old);
+		return v;
+	case 5:
+		var f = $e[3], e1 = $e[2];
+		return this.get(this.expr(e1),f);
+	case 6:
+		var e2 = $e[4], e1 = $e[3], op = $e[2];
+		var fop = this.binops.get(op);
+		if(fop == null) throw hscript.Error.EInvalidOp(op);
+		return fop(e1,e2);
+	case 7:
+		var e1 = $e[4], prefix = $e[3], op = $e[2];
+		switch(op) {
+		case "!":
+			return this.expr(e1) != true;
+		case "-":
+			return -this.expr(e1);
+		case "++":
+			return this.increment(e1,prefix,1);
+		case "--":
+			return this.increment(e1,prefix,-1);
+		case "~":
+			return ~this.expr(e1);
 		default:
 			throw hscript.Error.EInvalidOp(op);
 		}
-		return v;
-	}
-	,increment: function(e,prefix,delta) {
-		var $e = (e);
+		break;
+	case 8:
+		var params = $e[3], e1 = $e[2];
+		var args = new Array();
+		var _g = 0;
+		while(_g < params.length) {
+			var p = params[_g];
+			++_g;
+			args.push(this.expr(p));
+		}
+		var $e = (e1);
 		switch( $e[1] ) {
-		case 1:
-			var id = $e[2];
-			var l = this.locals.get(id);
-			var v = l == null?this.variables.get(id):l.r;
-			if(prefix) {
-				v += delta;
-				if(l == null) this.variables.set(id,v); else l.r = v;
-			} else if(l == null) this.variables.set(id,v + delta); else l.r = v + delta;
-			return v;
 		case 5:
-			var f = $e[3], e1 = $e[2];
-			var obj = this.expr(e1);
-			var v = this.get(obj,f);
-			if(prefix) {
-				v += delta;
-				this.set(obj,f,v);
-			} else this.set(obj,f,v + delta);
-			return v;
-		case 16:
-			var index = $e[3], e1 = $e[2];
-			var arr = this.expr(e1);
-			var index1 = this.expr(index);
-			var v = arr[index1];
-			if(prefix) {
-				v += delta;
-				arr[index1] = v;
-			} else arr[index1] = v + delta;
-			return v;
+			var f = $e[3], e2 = $e[2];
+			var obj = this.expr(e2);
+			if(obj == null) throw hscript.Error.EInvalidAccess(f);
+			return this.call(obj,Reflect.field(obj,f),args);
 		default:
-			throw hscript.Error.EInvalidOp(delta > 0?"++":"--");
+			return this.call(null,this.expr(e1),args);
 		}
-	}
-	,execute: function(expr) {
-		this.locals = new Hash();
-		return this.exprReturn(expr);
-	}
-	,exprReturn: function(e) {
-		try {
-			return this.expr(e);
-		} catch( e1 ) {
-			if( js.Boot.__instanceof(e1,hscript._Interp.Stop) ) {
-				var $e = (e1);
-				switch( $e[1] ) {
-				case 0:
-					throw "Invalid break";
-					break;
-				case 1:
-					throw "Invalid continue";
-					break;
-				case 2:
-					var v = $e[2];
-					return v;
-				}
-			} else throw(e1);
-		}
+		break;
+	case 9:
+		var e2 = $e[4], e1 = $e[3], econd = $e[2];
+		return this.expr(econd) == true?this.expr(e1):e2 == null?null:this.expr(e2);
+	case 10:
+		var e1 = $e[3], econd = $e[2];
+		this.whileLoop(econd,e1);
 		return null;
-	}
-	,duplicate: function(h) {
-		var h2 = new Hash();
-		var $it0 = h.keys();
-		while( $it0.hasNext() ) {
-			var k = $it0.next();
-			h2.set(k,h.get(k));
-		}
-		return h2;
-	}
-	,restore: function(old) {
-		while(this.declared.length > old) {
-			var d = this.declared.pop();
-			this.locals.set(d.n,d.old);
-		}
-	}
-	,expr: function(e) {
-		var $e = (e);
-		switch( $e[1] ) {
-		case 0:
-			var c = $e[2];
-			var $e = (c);
-			switch( $e[1] ) {
-			case 0:
-				var v = $e[2];
-				return v;
-			case 3:
-				var v = $e[2];
-				return v;
-			case 1:
-				var f = $e[2];
-				return f;
-			case 2:
-				var s = $e[2];
-				return s;
+	case 11:
+		var e1 = $e[4], it = $e[3], v = $e[2];
+		this.forLoop(v,it,e1);
+		return null;
+	case 12:
+		throw hscript._Interp.Stop.SBreak;
+		break;
+	case 13:
+		throw hscript._Interp.Stop.SContinue;
+		break;
+	case 15:
+		var e1 = $e[2];
+		throw hscript._Interp.Stop.SReturn(e1 == null?null:this.expr(e1));
+		break;
+	case 14:
+		var name = $e[4], fexpr = $e[3], params = $e[2];
+		var capturedLocals = this.duplicate(this.locals);
+		var me = this;
+		var f = function(args) {
+			if(args.length != params.length) throw "Invalid number of parameters";
+			var old = me.locals;
+			me.locals = me.duplicate(capturedLocals);
+			var _g1 = 0, _g = params.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				me.locals.set(params[i].name,{ r : args[i]});
 			}
-			break;
-		case 1:
-			var id = $e[2];
-			var l = this.locals.get(id);
-			if(l != null) return l.r;
-			var v = this.variables.get(id);
-			if(v == null && !this.variables.exists(id)) throw hscript.Error.EUnknownVariable(id);
-			return v;
-		case 2:
-			var e1 = $e[4], n = $e[2];
-			this.declared.push({ n : n, old : this.locals.get(n)});
-			this.locals.set(n,{ r : e1 == null?null:this.expr(e1)});
-			return null;
-		case 3:
-			var e1 = $e[2];
-			return this.expr(e1);
-		case 4:
-			var exprs = $e[2];
-			var old = this.declared.length;
-			var v = null;
-			var _g = 0;
-			while(_g < exprs.length) {
-				var e1 = exprs[_g];
-				++_g;
-				v = this.expr(e1);
-			}
-			this.restore(old);
-			return v;
-		case 5:
-			var f = $e[3], e1 = $e[2];
-			return this.get(this.expr(e1),f);
-		case 6:
-			var e2 = $e[4], e1 = $e[3], op = $e[2];
-			var fop = this.binops.get(op);
-			if(fop == null) throw hscript.Error.EInvalidOp(op);
-			return fop(e1,e2);
-		case 7:
-			var e1 = $e[4], prefix = $e[3], op = $e[2];
-			switch(op) {
-			case "!":
-				return this.expr(e1) != true;
-			case "-":
-				return -this.expr(e1);
-			case "++":
-				return this.increment(e1,prefix,1);
-			case "--":
-				return this.increment(e1,prefix,-1);
-			case "~":
-				return ~this.expr(e1);
-			default:
-				throw hscript.Error.EInvalidOp(op);
-			}
-			break;
-		case 8:
-			var params = $e[3], e1 = $e[2];
-			var args = new Array();
-			var _g = 0;
-			while(_g < params.length) {
-				var p = params[_g];
-				++_g;
-				args.push(this.expr(p));
-			}
-			var $e = (e1);
-			switch( $e[1] ) {
-			case 5:
-				var f = $e[3], e2 = $e[2];
-				var obj = this.expr(e2);
-				if(obj == null) throw hscript.Error.EInvalidAccess(f);
-				return this.call(obj,Reflect.field(obj,f),args);
-			default:
-				return this.call(null,this.expr(e1),args);
-			}
-			break;
-		case 9:
-			var e2 = $e[4], e1 = $e[3], econd = $e[2];
-			return this.expr(econd) == true?this.expr(e1):e2 == null?null:this.expr(e2);
-		case 10:
-			var e1 = $e[3], econd = $e[2];
-			this.whileLoop(econd,e1);
-			return null;
-		case 11:
-			var e1 = $e[4], it = $e[3], v = $e[2];
-			this.forLoop(v,it,e1);
-			return null;
-		case 12:
-			throw hscript._Interp.Stop.SBreak;
-			break;
-		case 13:
-			throw hscript._Interp.Stop.SContinue;
-			break;
-		case 15:
-			var e1 = $e[2];
-			throw hscript._Interp.Stop.SReturn(e1 == null?null:this.expr(e1));
-			break;
-		case 14:
-			var name = $e[4], fexpr = $e[3], params = $e[2];
-			var capturedLocals = this.duplicate(this.locals);
-			var me = this;
-			var f = function(args) {
-				if(args.length != params.length) throw "Invalid number of parameters";
-				var old = me.locals;
-				me.locals = me.duplicate(capturedLocals);
-				var _g1 = 0, _g = params.length;
-				while(_g1 < _g) {
-					var i = _g1++;
-					me.locals.set(params[i].name,{ r : args[i]});
-				}
-				var r = null;
-				try {
-					r = me.exprReturn(fexpr);
-				} catch( e1 ) {
-					me.locals = old;
-					throw e1;
-				}
-				me.locals = old;
-				return r;
-			};
-			var f1 = Reflect.makeVarArgs(f);
-			if(name != null) this.variables.set(name,f1);
-			return f1;
-		case 17:
-			var arr = $e[2];
-			var a = new Array();
-			var _g = 0;
-			while(_g < arr.length) {
-				var e1 = arr[_g];
-				++_g;
-				a.push(this.expr(e1));
-			}
-			return a;
-		case 16:
-			var index = $e[3], e1 = $e[2];
-			return this.expr(e1)[this.expr(index)];
-		case 18:
-			var params = $e[3], cl = $e[2];
-			var a = new Array();
-			var _g = 0;
-			while(_g < params.length) {
-				var e1 = params[_g];
-				++_g;
-				a.push(this.expr(e1));
-			}
-			return this.cnew(cl,a);
-		case 19:
-			var e1 = $e[2];
-			throw this.expr(e1);
-			break;
-		case 20:
-			var ecatch = $e[5], n = $e[3], e1 = $e[2];
-			var old = this.declared.length;
+			var r = null;
 			try {
-				var v = this.expr(e1);
-				this.restore(old);
-				return v;
-			} catch( $e0 ) {
-				if( js.Boot.__instanceof($e0,hscript._Interp.Stop) ) {
-					var err = $e0;
-					throw err;
-				} else {
-				var err = $e0;
-				this.restore(old);
-				this.declared.push({ n : n, old : this.locals.get(n)});
-				this.locals.set(n,{ r : err});
-				var v = this.expr(ecatch);
-				this.restore(old);
-				return v;
-				}
+				r = me.exprReturn(fexpr);
+			} catch( e1 ) {
+				me.locals = old;
+				throw e1;
 			}
-			break;
-		case 21:
-			var fl = $e[2];
-			var o = { };
-			var _g = 0;
-			while(_g < fl.length) {
-				var f = fl[_g];
-				++_g;
-				this.set(o,f.name,this.expr(f.e));
-			}
-			return o;
-		case 22:
-			var e2 = $e[4], e1 = $e[3], econd = $e[2];
-			return this.expr(econd) == true?this.expr(e1):this.expr(e2);
+			me.locals = old;
+			return r;
+		};
+		var f1 = Reflect.makeVarArgs(f);
+		if(name != null) this.variables.set(name,f1);
+		return f1;
+	case 17:
+		var arr = $e[2];
+		var a = new Array();
+		var _g = 0;
+		while(_g < arr.length) {
+			var e1 = arr[_g];
+			++_g;
+			a.push(this.expr(e1));
 		}
-		return null;
-	}
-	,whileLoop: function(econd,e) {
+		return a;
+	case 16:
+		var index = $e[3], e1 = $e[2];
+		return this.expr(e1)[this.expr(index)];
+	case 18:
+		var params = $e[3], cl = $e[2];
+		var a = new Array();
+		var _g = 0;
+		while(_g < params.length) {
+			var e1 = params[_g];
+			++_g;
+			a.push(this.expr(e1));
+		}
+		return this.cnew(cl,a);
+	case 19:
+		var e1 = $e[2];
+		throw this.expr(e1);
+		break;
+	case 20:
+		var ecatch = $e[5], n = $e[3], e1 = $e[2];
 		var old = this.declared.length;
 		try {
-			while(this.expr(econd) == true) try {
+			var v = this.expr(e1);
+			this.restore(old);
+			return v;
+		} catch( $e0 ) {
+			if( js.Boot.__instanceof($e0,hscript._Interp.Stop) ) {
+				var err = $e0;
+				throw err;
+			} else {
+			var err = $e0;
+			this.restore(old);
+			this.declared.push({ n : n, old : this.locals.get(n)});
+			this.locals.set(n,{ r : err});
+			var v = this.expr(ecatch);
+			this.restore(old);
+			return v;
+			}
+		}
+		break;
+	case 21:
+		var fl = $e[2];
+		var o = { };
+		var _g = 0;
+		while(_g < fl.length) {
+			var f = fl[_g];
+			++_g;
+			this.set(o,f.name,this.expr(f.e));
+		}
+		return o;
+	case 22:
+		var e2 = $e[4], e1 = $e[3], econd = $e[2];
+		return this.expr(econd) == true?this.expr(e1):this.expr(e2);
+	}
+	return null;
+}
+hscript.Interp.prototype.whileLoop = function(econd,e) {
+	var old = this.declared.length;
+	try {
+		while(this.expr(econd) == true) try {
+			this.expr(e);
+		} catch( err ) {
+			if( js.Boot.__instanceof(err,hscript._Interp.Stop) ) {
+				switch( (err)[1] ) {
+				case 1:
+					break;
+				case 0:
+					throw "__break__";
+					break;
+				case 2:
+					throw err;
+					break;
+				}
+			} else throw(err);
+		}
+	} catch( e ) { if( e != "__break__" ) throw e; }
+	this.restore(old);
+}
+hscript.Interp.prototype.makeIterator = function(v) {
+	try {
+		v = v.iterator();
+	} catch( e ) {
+	}
+	if(v.hasNext == null || v.next == null) throw hscript.Error.EInvalidIterator(v);
+	return v;
+}
+hscript.Interp.prototype.forLoop = function(n,it,e) {
+	var old = this.declared.length;
+	this.declared.push({ n : n, old : this.locals.get(n)});
+	var it1 = this.makeIterator(this.expr(it));
+	try {
+		while(it1.hasNext()) {
+			this.locals.set(n,{ r : it1.next()});
+			try {
 				this.expr(e);
 			} catch( err ) {
 				if( js.Boot.__instanceof(err,hscript._Interp.Stop) ) {
@@ -3731,79 +3089,44 @@ hscript.Interp.prototype = {
 					}
 				} else throw(err);
 			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-		this.restore(old);
-	}
-	,makeIterator: function(v) {
-		try {
-			v = v.iterator();
-		} catch( e ) {
 		}
-		if(v.hasNext == null || v.next == null) throw hscript.Error.EInvalidIterator(v);
-		return v;
-	}
-	,forLoop: function(n,it,e) {
-		var old = this.declared.length;
-		this.declared.push({ n : n, old : this.locals.get(n)});
-		var it1 = this.makeIterator(this.expr(it));
-		try {
-			while(it1.hasNext()) {
-				this.locals.set(n,{ r : it1.next()});
-				try {
-					this.expr(e);
-				} catch( err ) {
-					if( js.Boot.__instanceof(err,hscript._Interp.Stop) ) {
-						switch( (err)[1] ) {
-						case 1:
-							break;
-						case 0:
-							throw "__break__";
-							break;
-						case 2:
-							throw err;
-							break;
-						}
-					} else throw(err);
-				}
-			}
-		} catch( e ) { if( e != "__break__" ) throw e; }
-		this.restore(old);
-	}
-	,get: function(o,f) {
-		if(o == null) throw hscript.Error.EInvalidAccess(f);
-		return Reflect.field(o,f);
-	}
-	,set: function(o,f,v) {
-		if(o == null) throw hscript.Error.EInvalidAccess(f);
-		o[f] = v;
-		return v;
-	}
-	,call: function(o,f,args) {
-		return f.apply(o,args);
-	}
-	,cnew: function(cl,args) {
-		return Type.createInstance(Type.resolveClass(cl),args);
-	}
-	,__class__: hscript.Interp
+	} catch( e ) { if( e != "__break__" ) throw e; }
+	this.restore(old);
 }
+hscript.Interp.prototype.get = function(o,f) {
+	if(o == null) throw hscript.Error.EInvalidAccess(f);
+	return Reflect.field(o,f);
+}
+hscript.Interp.prototype.set = function(o,f,v) {
+	if(o == null) throw hscript.Error.EInvalidAccess(f);
+	o[f] = v;
+	return v;
+}
+hscript.Interp.prototype.call = function(o,f,args) {
+	return f.apply(o,args);
+}
+hscript.Interp.prototype.cnew = function(cl,args) {
+	return Type.createInstance(Type.resolveClass(cl),args);
+}
+hscript.Interp.prototype.__class__ = hscript.Interp;
 if(!erazor.hscript) erazor.hscript = {}
-erazor.hscript.EnhancedInterp = $hxClasses["erazor.hscript.EnhancedInterp"] = function() {
+erazor.hscript.EnhancedInterp = function(p) {
+	if( p === $_ ) return;
 	hscript.Interp.call(this);
-};
+}
 erazor.hscript.EnhancedInterp.__name__ = ["erazor","hscript","EnhancedInterp"];
 erazor.hscript.EnhancedInterp.__super__ = hscript.Interp;
-erazor.hscript.EnhancedInterp.prototype = $extend(hscript.Interp.prototype,{
-	get: function(o,f) {
-		if(o == null) throw hscript.Error.EInvalidAccess(f);
-		return Reflect.field(o,f);
-	}
-	,call: function(o,f,args) {
-		args = args.concat([null,null,null,null,null]);
-		return f.apply(o,args);
-	}
-	,__class__: erazor.hscript.EnhancedInterp
-});
-var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
+for(var k in hscript.Interp.prototype ) erazor.hscript.EnhancedInterp.prototype[k] = hscript.Interp.prototype[k];
+erazor.hscript.EnhancedInterp.prototype.get = function(o,f) {
+	if(o == null) throw hscript.Error.EInvalidAccess(f);
+	return Reflect.field(o,f);
+}
+erazor.hscript.EnhancedInterp.prototype.call = function(o,f,args) {
+	args = args.concat([null,null,null,null,null]);
+	return f.apply(o,args);
+}
+erazor.hscript.EnhancedInterp.prototype.__class__ = erazor.hscript.EnhancedInterp;
+ValueType = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
 ValueType.TNull.toString = $estr;
 ValueType.TNull.__enum__ = ValueType;
@@ -3827,7 +3150,7 @@ ValueType.TEnum = function(e) { var $x = ["TEnum",7,e]; $x.__enum__ = ValueType;
 ValueType.TUnknown = ["TUnknown",8];
 ValueType.TUnknown.toString = $estr;
 ValueType.TUnknown.__enum__ = ValueType;
-var Type = $hxClasses["Type"] = function() { }
+Type = function() { }
 Type.__name__ = ["Type"];
 Type.getClass = function(o) {
 	if(o == null) return null;
@@ -3959,11 +3282,9 @@ Type.enumParameters = function(e) {
 Type.enumIndex = function(e) {
 	return e[1];
 }
-Type.prototype = {
-	__class__: Type
-}
-var js = js || {}
-js.Boot = $hxClasses["js.Boot"] = function() { }
+Type.prototype.__class__ = Type;
+if(typeof js=='undefined') js = {}
+js.Boot = function() { }
 js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
 	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
@@ -4143,10 +3464,8 @@ js.Boot.__init = function() {
 	};
 	$closure = js.Boot.__closure;
 }
-js.Boot.prototype = {
-	__class__: js.Boot
-}
-haxe.Firebug = $hxClasses["haxe.Firebug"] = function() { }
+js.Boot.prototype.__class__ = js.Boot;
+haxe.Firebug = function() { }
 haxe.Firebug.__name__ = ["haxe","Firebug"];
 haxe.Firebug.detect = function() {
 	try {
@@ -4175,105 +3494,1282 @@ haxe.Firebug.trace = function(v,inf) {
 	if(type != "warn" && type != "info" && type != "debug" && type != "error") type = inf == null?"error":"log";
 	console[type]((inf == null?"":inf.fileName + ":" + inf.lineNumber + " : ") + Std.string(v));
 }
-haxe.Firebug.prototype = {
-	__class__: haxe.Firebug
+haxe.Firebug.prototype.__class__ = haxe.Firebug;
+EReg = function(r,opt) {
+	if( r === $_ ) return;
+	opt = opt.split("u").join("");
+	this.r = new RegExp(r,opt);
 }
-var IntHash = $hxClasses["IntHash"] = function() {
+EReg.__name__ = ["EReg"];
+EReg.prototype.r = null;
+EReg.prototype.match = function(s) {
+	this.r.m = this.r.exec(s);
+	this.r.s = s;
+	this.r.l = RegExp.leftContext;
+	this.r.r = RegExp.rightContext;
+	return this.r.m != null;
+}
+EReg.prototype.matched = function(n) {
+	return this.r.m != null && n >= 0 && n < this.r.m.length?this.r.m[n]:(function($this) {
+		var $r;
+		throw "EReg::matched";
+		return $r;
+	}(this));
+}
+EReg.prototype.matchedLeft = function() {
+	if(this.r.m == null) throw "No string matched";
+	if(this.r.l == null) return this.r.s.substr(0,this.r.m.index);
+	return this.r.l;
+}
+EReg.prototype.matchedRight = function() {
+	if(this.r.m == null) throw "No string matched";
+	if(this.r.r == null) {
+		var sz = this.r.m.index + this.r.m[0].length;
+		return this.r.s.substr(sz,this.r.s.length - sz);
+	}
+	return this.r.r;
+}
+EReg.prototype.matchedPos = function() {
+	if(this.r.m == null) throw "No string matched";
+	return { pos : this.r.m.index, len : this.r.m[0].length};
+}
+EReg.prototype.split = function(s) {
+	var d = "#__delim__#";
+	return s.replace(this.r,d).split(d);
+}
+EReg.prototype.replace = function(s,by) {
+	return s.replace(this.r,by);
+}
+EReg.prototype.customReplace = function(s,f) {
+	var buf = new StringBuf();
+	while(true) {
+		if(!this.match(s)) break;
+		buf.add(this.matchedLeft());
+		buf.add(f(this));
+		s = this.matchedRight();
+	}
+	buf.b[buf.b.length] = s == null?"null":s;
+	return buf.b.join("");
+}
+EReg.prototype.__class__ = EReg;
+Xml = function(p) {
+}
+Xml.__name__ = ["Xml"];
+Xml.Element = null;
+Xml.PCData = null;
+Xml.CData = null;
+Xml.Comment = null;
+Xml.DocType = null;
+Xml.Prolog = null;
+Xml.Document = null;
+Xml.parse = function(str) {
+	var rules = [Xml.enode,Xml.epcdata,Xml.eend,Xml.ecdata,Xml.edoctype,Xml.ecomment,Xml.eprolog];
+	var nrules = rules.length;
+	var current = Xml.createDocument();
+	var stack = new List();
+	while(str.length > 0) {
+		var i = 0;
+		try {
+			while(i < nrules) {
+				var r = rules[i];
+				if(r.match(str)) {
+					switch(i) {
+					case 0:
+						var x = Xml.createElement(r.matched(1));
+						current.addChild(x);
+						str = r.matchedRight();
+						while(Xml.eattribute.match(str)) {
+							x.set(Xml.eattribute.matched(1),Xml.eattribute.matched(3));
+							str = Xml.eattribute.matchedRight();
+						}
+						if(!Xml.eclose.match(str)) {
+							i = nrules;
+							throw "__break__";
+						}
+						if(Xml.eclose.matched(1) == ">") {
+							stack.push(current);
+							current = x;
+						}
+						str = Xml.eclose.matchedRight();
+						break;
+					case 1:
+						var x = Xml.createPCData(r.matched(0));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					case 2:
+						if(current._children != null && current._children.length == 0) {
+							var e = Xml.createPCData("");
+							current.addChild(e);
+						}
+						if(r.matched(1) != current._nodeName || stack.isEmpty()) {
+							i = nrules;
+							throw "__break__";
+						}
+						current = stack.pop();
+						str = r.matchedRight();
+						break;
+					case 3:
+						str = r.matchedRight();
+						if(!Xml.ecdata_end.match(str)) throw "End of CDATA section not found";
+						var x = Xml.createCData(Xml.ecdata_end.matchedLeft());
+						current.addChild(x);
+						str = Xml.ecdata_end.matchedRight();
+						break;
+					case 4:
+						var pos = 0;
+						var count = 0;
+						var old = str;
+						try {
+							while(true) {
+								if(!Xml.edoctype_elt.match(str)) throw "End of DOCTYPE section not found";
+								var p = Xml.edoctype_elt.matchedPos();
+								pos += p.pos + p.len;
+								str = Xml.edoctype_elt.matchedRight();
+								switch(Xml.edoctype_elt.matched(0)) {
+								case "[":
+									count++;
+									break;
+								case "]":
+									count--;
+									if(count < 0) throw "Invalid ] found in DOCTYPE declaration";
+									break;
+								default:
+									if(count == 0) throw "__break__";
+								}
+							}
+						} catch( e ) { if( e != "__break__" ) throw e; }
+						var x = Xml.createDocType(old.substr(10,pos - 11));
+						current.addChild(x);
+						break;
+					case 5:
+						if(!Xml.ecomment_end.match(str)) throw "Unclosed Comment";
+						var p = Xml.ecomment_end.matchedPos();
+						var x = Xml.createComment(str.substr(4,p.pos + p.len - 7));
+						current.addChild(x);
+						str = Xml.ecomment_end.matchedRight();
+						break;
+					case 6:
+						var prolog = r.matched(0);
+						var x = Xml.createProlog(prolog.substr(2,prolog.length - 4));
+						current.addChild(x);
+						str = r.matchedRight();
+						break;
+					}
+					throw "__break__";
+				}
+				i += 1;
+			}
+		} catch( e ) { if( e != "__break__" ) throw e; }
+		if(i == nrules) {
+			if(str.length > 10) throw "Xml parse error : Unexpected " + str.substr(0,10) + "..."; else throw "Xml parse error : Unexpected " + str;
+		}
+	}
+	if(!stack.isEmpty()) throw "Xml parse error : Unclosed " + stack.last().getNodeName();
+	return current;
+}
+Xml.createElement = function(name) {
+	var r = new Xml();
+	r.nodeType = Xml.Element;
+	r._children = new Array();
+	r._attributes = new Hash();
+	r.setNodeName(name);
+	return r;
+}
+Xml.createPCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.PCData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createCData = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.CData;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createComment = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Comment;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocType = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.DocType;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createProlog = function(data) {
+	var r = new Xml();
+	r.nodeType = Xml.Prolog;
+	r.setNodeValue(data);
+	return r;
+}
+Xml.createDocument = function() {
+	var r = new Xml();
+	r.nodeType = Xml.Document;
+	r._children = new Array();
+	return r;
+}
+Xml.prototype.nodeType = null;
+Xml.prototype.nodeName = null;
+Xml.prototype.nodeValue = null;
+Xml.prototype.parent = null;
+Xml.prototype._nodeName = null;
+Xml.prototype._nodeValue = null;
+Xml.prototype._attributes = null;
+Xml.prototype._children = null;
+Xml.prototype._parent = null;
+Xml.prototype.getNodeName = function() {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._nodeName;
+}
+Xml.prototype.setNodeName = function(n) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._nodeName = n;
+}
+Xml.prototype.getNodeValue = function() {
+	if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+	return this._nodeValue;
+}
+Xml.prototype.setNodeValue = function(v) {
+	if(this.nodeType == Xml.Element || this.nodeType == Xml.Document) throw "bad nodeType";
+	return this._nodeValue = v;
+}
+Xml.prototype.getParent = function() {
+	return this._parent;
+}
+Xml.prototype.get = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.get(att);
+}
+Xml.prototype.set = function(att,value) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	this._attributes.set(att,value);
+}
+Xml.prototype.remove = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	this._attributes.remove(att);
+}
+Xml.prototype.exists = function(att) {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.exists(att);
+}
+Xml.prototype.attributes = function() {
+	if(this.nodeType != Xml.Element) throw "bad nodeType";
+	return this._attributes.keys();
+}
+Xml.prototype.iterator = function() {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		return this.cur < this.x.length;
+	}, next : function() {
+		return this.x[this.cur++];
+	}};
+}
+Xml.prototype.elements = function() {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			if(this.x[k].nodeType == Xml.Element) break;
+			k += 1;
+		}
+		this.cur = k;
+		return k < l;
+	}, next : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			k += 1;
+			if(n.nodeType == Xml.Element) {
+				this.cur = k;
+				return n;
+			}
+		}
+		return null;
+	}};
+}
+Xml.prototype.elementsNamed = function(name) {
+	if(this._children == null) throw "bad nodetype";
+	return { cur : 0, x : this._children, hasNext : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			if(n.nodeType == Xml.Element && n._nodeName == name) break;
+			k++;
+		}
+		this.cur = k;
+		return k < l;
+	}, next : function() {
+		var k = this.cur;
+		var l = this.x.length;
+		while(k < l) {
+			var n = this.x[k];
+			k++;
+			if(n.nodeType == Xml.Element && n._nodeName == name) {
+				this.cur = k;
+				return n;
+			}
+		}
+		return null;
+	}};
+}
+Xml.prototype.firstChild = function() {
+	if(this._children == null) throw "bad nodetype";
+	return this._children[0];
+}
+Xml.prototype.firstElement = function() {
+	if(this._children == null) throw "bad nodetype";
+	var cur = 0;
+	var l = this._children.length;
+	while(cur < l) {
+		var n = this._children[cur];
+		if(n.nodeType == Xml.Element) return n;
+		cur++;
+	}
+	return null;
+}
+Xml.prototype.addChild = function(x) {
+	if(this._children == null) throw "bad nodetype";
+	if(x._parent != null) x._parent._children.remove(x);
+	x._parent = this;
+	this._children.push(x);
+}
+Xml.prototype.removeChild = function(x) {
+	if(this._children == null) throw "bad nodetype";
+	var b = this._children.remove(x);
+	if(b) x._parent = null;
+	return b;
+}
+Xml.prototype.insertChild = function(x,pos) {
+	if(this._children == null) throw "bad nodetype";
+	if(x._parent != null) x._parent._children.remove(x);
+	x._parent = this;
+	this._children.insert(pos,x);
+}
+Xml.prototype.toString = function() {
+	if(this.nodeType == Xml.PCData) return this._nodeValue;
+	if(this.nodeType == Xml.CData) return "<![CDATA[" + this._nodeValue + "]]>";
+	if(this.nodeType == Xml.Comment) return "<!--" + this._nodeValue + "-->";
+	if(this.nodeType == Xml.DocType) return "<!DOCTYPE " + this._nodeValue + ">";
+	if(this.nodeType == Xml.Prolog) return "<?" + this._nodeValue + "?>";
+	var s = new StringBuf();
+	if(this.nodeType == Xml.Element) {
+		s.b[s.b.length] = "<" == null?"null":"<";
+		s.add(this._nodeName);
+		var $it0 = this._attributes.keys();
+		while( $it0.hasNext() ) {
+			var k = $it0.next();
+			s.b[s.b.length] = " " == null?"null":" ";
+			s.b[s.b.length] = k == null?"null":k;
+			s.b[s.b.length] = "=\"" == null?"null":"=\"";
+			s.add(this._attributes.get(k));
+			s.b[s.b.length] = "\"" == null?"null":"\"";
+		}
+		if(this._children.length == 0) {
+			s.b[s.b.length] = "/>" == null?"null":"/>";
+			return s.b.join("");
+		}
+		s.b[s.b.length] = ">" == null?"null":">";
+	}
+	var $it1 = this.iterator();
+	while( $it1.hasNext() ) {
+		var x = $it1.next();
+		s.add(x.toString());
+	}
+	if(this.nodeType == Xml.Element) {
+		s.b[s.b.length] = "</" == null?"null":"</";
+		s.add(this._nodeName);
+		s.b[s.b.length] = ">" == null?"null":">";
+	}
+	return s.b.join("");
+}
+Xml.prototype.__class__ = Xml;
+IntHash = function(p) {
+	if( p === $_ ) return;
 	this.h = {}
 	if(this.h.__proto__ != null) {
 		this.h.__proto__ = null;
 		delete(this.h.__proto__);
 	}
-};
-IntHash.__name__ = ["IntHash"];
-IntHash.prototype = {
-	h: null
-	,set: function(key,value) {
-		this.h[key] = value;
-	}
-	,get: function(key) {
-		return this.h[key];
-	}
-	,exists: function(key) {
-		return this.h[key] != null;
-	}
-	,remove: function(key) {
-		if(this.h[key] == null) return false;
-		delete(this.h[key]);
-		return true;
-	}
-	,keys: function() {
-		var a = new Array();
-		for( x in this.h ) a.push(x);
-		return a.iterator();
-	}
-	,iterator: function() {
-		return { ref : this.h, it : this.keys(), hasNext : function() {
-			return this.it.hasNext();
-		}, next : function() {
-			var i = this.it.next();
-			return this.ref[i];
-		}};
-	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b[s.b.length] = "{";
-		var it = this.keys();
-		while( it.hasNext() ) {
-			var i = it.next();
-			s.b[s.b.length] = i == null?"null":i;
-			s.b[s.b.length] = " => ";
-			s.add(Std.string(this.get(i)));
-			if(it.hasNext()) s.b[s.b.length] = ", ";
-		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
-	}
-	,__class__: IntHash
 }
+IntHash.__name__ = ["IntHash"];
+IntHash.prototype.h = null;
+IntHash.prototype.set = function(key,value) {
+	this.h[key] = value;
+}
+IntHash.prototype.get = function(key) {
+	return this.h[key];
+}
+IntHash.prototype.exists = function(key) {
+	return this.h[key] != null;
+}
+IntHash.prototype.remove = function(key) {
+	if(this.h[key] == null) return false;
+	delete(this.h[key]);
+	return true;
+}
+IntHash.prototype.keys = function() {
+	var a = new Array();
+	for( x in this.h ) a.push(x);
+	return a.iterator();
+}
+IntHash.prototype.iterator = function() {
+	return { ref : this.h, it : this.keys(), hasNext : function() {
+		return this.it.hasNext();
+	}, next : function() {
+		var i = this.it.next();
+		return this.ref[i];
+	}};
+}
+IntHash.prototype.toString = function() {
+	var s = new StringBuf();
+	s.b[s.b.length] = "{" == null?"null":"{";
+	var it = this.keys();
+	while( it.hasNext() ) {
+		var i = it.next();
+		s.b[s.b.length] = i == null?"null":i;
+		s.b[s.b.length] = " => " == null?"null":" => ";
+		s.add(Std.string(this.get(i)));
+		if(it.hasNext()) s.b[s.b.length] = ", " == null?"null":", ";
+	}
+	s.b[s.b.length] = "}" == null?"null":"}";
+	return s.b.join("");
+}
+IntHash.prototype.__class__ = IntHash;
+if(!haxe.rtti) haxe.rtti = {}
+haxe.rtti.Infos = function() { }
+haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
+haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 if(!app.video) app.video = {}
-app.video.VideoController = $hxClasses["app.video.VideoController"] = function() {
+app.video.VideoController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.video.VideoView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-};
-app.video.VideoController.__name__ = ["app","video","VideoController"];
-app.video.VideoController.prototype = {
-	view: null
-	,__class__: app.video.VideoController
 }
-app.video.VideoView = $hxClasses["app.video.VideoView"] = function(c) {
+app.video.VideoController.__name__ = ["app","video","VideoController"];
+app.video.VideoController.prototype.view = null;
+app.video.VideoController.prototype.__class__ = app.video.VideoController;
+app.video.VideoView = function(c) {
+	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"video");
 	domtools.QueryElementManipulation.setText(this,"Video Controller");
-};
+}
 app.video.VideoView.__name__ = ["app","video","VideoView"];
 app.video.VideoView.__super__ = domtools.AbstractCustomElement;
-app.video.VideoView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,__class__: app.video.VideoView
-});
-var StringBuf = $hxClasses["StringBuf"] = function() {
-	this.b = new Array();
-};
-StringBuf.__name__ = ["StringBuf"];
-StringBuf.prototype = {
-	add: function(x) {
-		this.b[this.b.length] = x == null?"null":x;
-	}
-	,addSub: function(s,pos,len) {
-		this.b[this.b.length] = s.substr(pos,len);
-	}
-	,addChar: function(c) {
-		this.b[this.b.length] = String.fromCharCode(c);
-	}
-	,toString: function() {
-		return this.b.join("");
-	}
-	,b: null
-	,__class__: StringBuf
+for(var k in domtools.AbstractCustomElement.prototype ) app.video.VideoView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.video.VideoView.prototype.controller = null;
+app.video.VideoView.prototype.__class__ = app.video.VideoView;
+domtools.Tools = function(p) {
 }
-var CommonJS = $hxClasses["CommonJS"] = function() { }
+domtools.Tools.__name__ = ["domtools","Tools"];
+domtools.Tools.prototype.__class__ = domtools.Tools;
+domtools.ElementManipulation = function() { }
+domtools.ElementManipulation.__name__ = ["domtools","ElementManipulation"];
+domtools.ElementManipulation.isElement = function(node) {
+	return node.nodeType == domtools.ElementManipulation.NodeTypeElement;
+}
+domtools.ElementManipulation.attr = function(elm,attName) {
+	var ret = "";
+	if(domtools.ElementManipulation.isElement(elm)) {
+		var element = elm;
+		ret = element.getAttribute(attName);
+		if(ret == null) ret = "";
+	}
+	return ret;
+}
+domtools.ElementManipulation.setAttr = function(elm,attName,attValue) {
+	if(elm.nodeType == domtools.ElementManipulation.NodeTypeElement) {
+		var element = elm;
+		element.setAttribute(attName,attValue);
+	}
+	return elm;
+}
+domtools.ElementManipulation.removeAttr = function(elm,attName) {
+	if(elm.nodeType == domtools.ElementManipulation.NodeTypeElement) {
+		var element = elm;
+		element.removeAttribute(attName);
+	}
+	return elm;
+}
+domtools.ElementManipulation.hasClass = function(elm,className) {
+	return (" " + domtools.ElementManipulation.attr(elm,"class") + " ").indexOf(" " + className + " ") > -1;
+}
+domtools.ElementManipulation.addClass = function(elm,className) {
+	if(domtools.ElementManipulation.hasClass(elm,className) == false) {
+		var oldClassName = domtools.ElementManipulation.attr(elm,"class");
+		var newClassName = oldClassName == ""?className:oldClassName + " " + className;
+		domtools.ElementManipulation.setAttr(elm,"class",newClassName);
+	}
+	return elm;
+}
+domtools.ElementManipulation.removeClass = function(elm,className) {
+	var classes = domtools.ElementManipulation.attr(elm,"class").split(" ");
+	classes.remove(className);
+	var newClassValue = classes.join(" ");
+	domtools.ElementManipulation.setAttr(elm,"class",newClassValue);
+	return elm;
+}
+domtools.ElementManipulation.toggleClass = function(elm,className) {
+	if(domtools.ElementManipulation.hasClass(elm,className)) domtools.ElementManipulation.removeClass(elm,className); else domtools.ElementManipulation.addClass(elm,className);
+	return elm;
+}
+domtools.ElementManipulation.tagName = function(elm) {
+	return elm.nodeName.toLowerCase();
+}
+domtools.ElementManipulation.val = function(elm) {
+	return domtools.ElementManipulation.attr(elm,"value");
+}
+domtools.ElementManipulation.text = function(elm) {
+	return elm.textContent;
+}
+domtools.ElementManipulation.setText = function(elm,text) {
+	return (function($this) {
+		var $r;
+		elm.textContent = text;
+		$r = elm;
+		return $r;
+	}(this));
+}
+domtools.ElementManipulation.innerHTML = function(elm) {
+	var ret = "";
+	switch(elm.nodeType) {
+	case domtools.ElementManipulation.NodeTypeElement:
+		var element = elm;
+		ret = element.innerHTML;
+		break;
+	default:
+		ret = elm.textContent;
+	}
+	return ret;
+}
+domtools.ElementManipulation.setInnerHTML = function(elm,html) {
+	switch(elm.nodeType) {
+	case domtools.ElementManipulation.NodeTypeElement:
+		var element = elm;
+		element.innerHTML = html;
+		break;
+	default:
+		elm.textContent = html;
+	}
+	return elm;
+}
+domtools.ElementManipulation.clone = function(elm,deep) {
+	if(deep == null) deep = true;
+	return elm.cloneNode(deep);
+}
+domtools.ElementManipulation.prototype.__class__ = domtools.ElementManipulation;
+domtools.QueryElementManipulation = function() { }
+domtools.QueryElementManipulation.__name__ = ["domtools","QueryElementManipulation"];
+domtools.QueryElementManipulation.attr = function(query,attName) {
+	return query.collection.length > 0?domtools.ElementManipulation.attr(query.collection[0],attName):"";
+}
+domtools.QueryElementManipulation.setAttr = function(query,attName,attValue) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.setAttr(node,attName,attValue);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.removeAttr = function(query,attName) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.removeAttr(node,attName);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.hasClass = function(query,className) {
+	return query.collection.length > 0?domtools.ElementManipulation.hasClass(query.collection[0],className):false;
+}
+domtools.QueryElementManipulation.addClass = function(query,className) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.addClass(node,className);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.removeClass = function(query,className) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.removeClass(node,className);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.toggleClass = function(query,className) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.toggleClass(node,className);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.tagName = function(query) {
+	return query.collection.length > 0?query.collection[0].nodeName.toLowerCase():"";
+}
+domtools.QueryElementManipulation.tagNames = function(query) {
+	var names = new Array();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		names.push(node.nodeName.toLowerCase());
+	}
+	return names;
+}
+domtools.QueryElementManipulation.val = function(query) {
+	return query.collection.length > 0?domtools.ElementManipulation.attr(query.collection[0],"value"):"";
+}
+domtools.QueryElementManipulation.text = function(query) {
+	var text = "";
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		text = text + node.textContent;
+	}
+	return text;
+}
+domtools.QueryElementManipulation.setText = function(query,text) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		{
+			node.textContent = text;
+			node;
+		}
+	}
+	return query;
+}
+domtools.QueryElementManipulation.innerHTML = function(query) {
+	var ret = "";
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		ret += domtools.ElementManipulation.innerHTML(node);
+	}
+	return ret;
+}
+domtools.QueryElementManipulation.setInnerHTML = function(query,html) {
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.ElementManipulation.setInnerHTML(node,html);
+	}
+	return query;
+}
+domtools.QueryElementManipulation.clone = function(query,deep) {
+	if(deep == null) deep = true;
+	var newQuery = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		{
+			newQuery.collection.push(node.cloneNode(true));
+			newQuery;
+		}
+	}
+	return newQuery;
+}
+domtools.QueryElementManipulation.prototype.__class__ = domtools.QueryElementManipulation;
+domtools.DOMManipulation = function() { }
+domtools.DOMManipulation.__name__ = ["domtools","DOMManipulation"];
+domtools.DOMManipulation.append = function(parent,childNode,childCollection) {
+	if(childNode != null) parent.appendChild(childNode); else if(childCollection != null) {
+		var $it0 = childCollection.collection.iterator();
+		while( $it0.hasNext() ) {
+			var child = $it0.next();
+			parent.appendChild(child);
+		}
+	}
+	return parent;
+}
+domtools.DOMManipulation.prepend = function(parent,newChildNode,newChildCollection) {
+	if(newChildNode != null) domtools.DOMManipulation.insertThisBefore(newChildNode,parent.firstChild); else if(newChildCollection != null) domtools.QueryDOMManipulation.insertThisBefore(newChildCollection,parent.firstChild);
+	return parent;
+}
+domtools.DOMManipulation.appendTo = function(child,parentNode,parentCollection) {
+	if(parentNode != null) domtools.DOMManipulation.append(parentNode,child); else if(parentCollection != null) domtools.QueryDOMManipulation.append(parentCollection,child);
+	return child;
+}
+domtools.DOMManipulation.prependTo = function(child,parentNode,parentCollection) {
+	return domtools.DOMManipulation.insertThisBefore(child,parentNode.firstChild,parentCollection);
+}
+domtools.DOMManipulation.insertThisBefore = function(content,targetNode,targetCollection) {
+	if(targetNode != null) targetNode.parentNode.insertBefore(content,targetNode); else if(targetCollection != null) {
+		var firstChildUsed = false;
+		var $it0 = targetCollection.collection.iterator();
+		while( $it0.hasNext() ) {
+			var target = $it0.next();
+			var childToInsert;
+			if(firstChildUsed) {
+				childToInsert = content;
+				firstChildUsed = true;
+			} else childToInsert = content.cloneNode(true);
+			target.parentNode.insertBefore(childToInsert,target);
+		}
+	}
+	return content;
+}
+domtools.DOMManipulation.insertThisAfter = function(content,targetNode,targetCollection) {
+	return domtools.DOMManipulation.insertThisBefore(content,targetNode.nextSibling,targetCollection);
+}
+domtools.DOMManipulation.beforeThisInsert = function(target,contentNode,contentQuery) {
+	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,target); else if(contentQuery != null) domtools.QueryDOMManipulation.insertThisBefore(contentQuery,target);
+	return target;
+}
+domtools.DOMManipulation.afterThisInsert = function(target,contentNode,contentQuery) {
+	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,target.nextSibling,null); else if(contentQuery != null) domtools.QueryDOMManipulation.insertThisBefore(contentQuery,target.nextSibling,domtools.QueryTraversing.next(null));
+	return target;
+}
+domtools.DOMManipulation.remove = function(childToRemove) {
+	childToRemove.parentNode.removeChild(childToRemove);
+	return childToRemove;
+}
+domtools.DOMManipulation.empty = function(container) {
+	while(container.hasChildNodes()) container.removeChild(container.firstChild);
+	return container;
+}
+domtools.DOMManipulation.prototype.__class__ = domtools.DOMManipulation;
+domtools.QueryDOMManipulation = function() { }
+domtools.QueryDOMManipulation.__name__ = ["domtools","QueryDOMManipulation"];
+domtools.QueryDOMManipulation.append = function(parentCollection,childNode,childCollection) {
+	var firstChildUsed = true;
+	var $it0 = parentCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var parent = $it0.next();
+		childNode = firstChildUsed || childNode == null?childNode:childNode.cloneNode(true);
+		childCollection = firstChildUsed || childCollection == null?childCollection:childCollection.clone();
+		domtools.DOMManipulation.append(parent,childNode,childCollection);
+		firstChildUsed = false;
+	}
+	return parentCollection;
+}
+domtools.QueryDOMManipulation.prepend = function(parentCollection,childNode,childCollection) {
+	var firstChildUsed = false;
+	var $it0 = parentCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var parent = $it0.next();
+		childNode = firstChildUsed || childNode == null?childNode:childNode.cloneNode(true);
+		childCollection = firstChildUsed || childCollection == null?childCollection:childCollection.clone();
+		domtools.DOMManipulation.prepend(parent,childNode,childCollection);
+		firstChildUsed = true;
+	}
+	return parentCollection;
+}
+domtools.QueryDOMManipulation.appendTo = function(children,parentNode,parentCollection) {
+	if(parentNode != null) domtools.DOMManipulation.append(parentNode,null,children); else if(parentCollection != null) domtools.QueryDOMManipulation.append(parentCollection,null,children);
+	return children;
+}
+domtools.QueryDOMManipulation.prependTo = function(children,parentNode,parentCollection) {
+	return domtools.QueryDOMManipulation.insertThisBefore(children,parentNode.firstChild,domtools.QueryTraversing.firstChildren(parentCollection));
+}
+domtools.QueryDOMManipulation.insertThisBefore = function(content,targetNode,targetCollection) {
+	if(targetNode != null) {
+		var $it0 = content.collection.iterator();
+		while( $it0.hasNext() ) {
+			var childToAdd = $it0.next();
+			domtools.DOMManipulation.insertThisBefore(childToAdd,targetNode);
+		}
+	} else if(targetCollection != null) {
+		var firstChildUsed = false;
+		var childCollection = content;
+		var $it1 = targetCollection.collection.iterator();
+		while( $it1.hasNext() ) {
+			var target = $it1.next();
+			childCollection = firstChildUsed?childCollection:childCollection.clone();
+			domtools.QueryDOMManipulation.insertThisBefore(childCollection,target);
+			firstChildUsed = true;
+		}
+	}
+	return content;
+}
+domtools.QueryDOMManipulation.insertThisAfter = function(content,targetNode,targetCollection) {
+	return domtools.QueryDOMManipulation.insertThisBefore(content,targetNode.nextSibling,domtools.QueryTraversing.next(targetCollection));
+}
+domtools.QueryDOMManipulation.beforeThisInsert = function(target,contentNode,contentCollection) {
+	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,null,target); else if(contentCollection != null) domtools.QueryDOMManipulation.insertThisBefore(contentCollection,null,target);
+	return target;
+}
+domtools.QueryDOMManipulation.afterThisInsert = function(target,contentNode,contentCollection) {
+	if(contentNode != null) domtools.DOMManipulation.insertThisBefore(contentNode,null.nextSibling,target); else if(contentCollection != null) domtools.QueryDOMManipulation.insertThisBefore(contentCollection,null.nextSibling,domtools.QueryTraversing.next(target));
+	return target;
+}
+domtools.QueryDOMManipulation.remove = function(nodesToRemove) {
+	var $it0 = nodesToRemove.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.DOMManipulation.remove(node);
+	}
+	return nodesToRemove;
+}
+domtools.QueryDOMManipulation.empty = function(containers) {
+	var $it0 = containers.collection.iterator();
+	while( $it0.hasNext() ) {
+		var container = $it0.next();
+		while(container.hasChildNodes()) container.removeChild(container.firstChild);
+	}
+	return containers;
+}
+domtools.QueryDOMManipulation.prototype.__class__ = domtools.QueryDOMManipulation;
+domtools.Traversing = function() { }
+domtools.Traversing.__name__ = ["domtools","Traversing"];
+domtools.Traversing.children = function(node,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var children = new domtools.Query();
+	if(domtools.ElementManipulation.isElement(node)) children.addNodeList(node.childNodes,elementsOnly);
+	return children;
+}
+domtools.Traversing.firstChildren = function(node,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var firstChild = null;
+	if(domtools.ElementManipulation.isElement(node)) {
+		var e = node.firstChild;
+		while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.nextSibling;
+		if(e != null) firstChild = e;
+	}
+	return firstChild;
+}
+domtools.Traversing.lastChildren = function(node,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var lastChild = null;
+	if(domtools.ElementManipulation.isElement(node)) {
+		var e = node.lastChild;
+		while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.previousSibling;
+		if(e != null) lastChild = e;
+	}
+	return lastChild;
+}
+domtools.Traversing.parent = function(node) {
+	return node.parentNode != null?node.parentNode:null;
+}
+domtools.Traversing.ancestors = function(node) {
+	var ancestors = new domtools.Query();
+	{
+		ancestors.collection.push(domtools.Traversing.parent(node));
+		ancestors;
+	}
+	if(ancestors.collection.length > 0) ancestors.addCollection(domtools.QueryTraversing.parent(ancestors));
+	return ancestors;
+}
+domtools.Traversing.next = function(node) {
+	return node.nextSibling != null?node.nextSibling:null;
+}
+domtools.Traversing.prev = function(node) {
+	return node.previousSibling != null?node.previousSibling:null;
+}
+domtools.Traversing.find = function(node,selector) {
+	var newQuery = new domtools.Query();
+	if(domtools.ElementManipulation.isElement(node)) {
+		var element = node;
+		newQuery.addNodeList(element.querySelectorAll(selector));
+	}
+	return newQuery;
+}
+domtools.Traversing.prototype.__class__ = domtools.Traversing;
+domtools.QueryTraversing = function() { }
+domtools.QueryTraversing.__name__ = ["domtools","QueryTraversing"];
+domtools.QueryTraversing.children = function(query,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var children = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		if(domtools.ElementManipulation.isElement(node)) children.addNodeList(node.childNodes,elementsOnly);
+	}
+	return children;
+}
+domtools.QueryTraversing.firstChildren = function(query,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var children = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		if(domtools.ElementManipulation.isElement(node)) {
+			var e = node.firstChild;
+			while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.nextSibling;
+			if(e != null) {
+				children.collection.push(e);
+				children;
+			}
+		}
+	}
+	return children;
+}
+domtools.QueryTraversing.lastChildren = function(query,elementsOnly) {
+	if(elementsOnly == null) elementsOnly = true;
+	var children = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		if(domtools.ElementManipulation.isElement(node)) {
+			var e = node.lastChild;
+			while(elementsOnly == true && e != null && domtools.ElementManipulation.isElement(e) == false) e = e.previousSibling;
+			if(e != null) {
+				children.collection.push(e);
+				children;
+			}
+		}
+	}
+	return children;
+}
+domtools.QueryTraversing.parent = function(query) {
+	var parents = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		if(node.parentNode != null) {
+			parents.collection.push(node.parentNode);
+			parents;
+		}
+	}
+	return parents;
+}
+domtools.QueryTraversing.ancestors = function(query) {
+	var ancestors = domtools.QueryTraversing.parent(query);
+	if(ancestors.collection.length > 0) ancestors.addCollection(domtools.QueryTraversing.parent(ancestors));
+	return ancestors;
+}
+domtools.QueryTraversing.next = function(query) {
+	var siblings = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		var sibling = node.nextSibling;
+		if(sibling != null) {
+			siblings.collection.push(sibling);
+			siblings;
+		}
+	}
+	return siblings;
+}
+domtools.QueryTraversing.prev = function(query) {
+	var siblings = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		var sibling = node.previousSibling;
+		if(sibling != null) {
+			siblings.collection.push(sibling);
+			siblings;
+		}
+	}
+	return siblings;
+}
+domtools.QueryTraversing.find = function(query,selector) {
+	var newQuery = new domtools.Query();
+	var $it0 = query.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		if(domtools.ElementManipulation.isElement(node)) {
+			var element = node;
+			newQuery.addNodeList(element.querySelectorAll(selector));
+		}
+	}
+	return newQuery;
+}
+domtools.QueryTraversing.prototype.__class__ = domtools.QueryTraversing;
+domtools.Style = function() { }
+domtools.Style.__name__ = ["domtools","Style"];
+domtools.Style.getComputedStyle = function(node) {
+	var style = null;
+	if(domtools.ElementManipulation.isElement(node)) {
+	}
+	return style;
+}
+domtools.Style.css = function(node,property) {
+	domtools.Style.getComputedStyle(node).getPropertyValue("property");
+}
+domtools.Style.setCSS = function(node,property,value) {
+	if(domtools.ElementManipulation.isElement(node)) {
+		var style = node.style;
+		style[property] = value;
+	}
+}
+domtools.Style.innerWidth = function(node) {
+	var style = domtools.Style.getComputedStyle(node);
+	if(style != null) {
+	}
+	return 0;
+}
+domtools.Style.prototype.__class__ = domtools.Style;
+domtools.QueryStyle = function() { }
+domtools.QueryStyle.__name__ = ["domtools","QueryStyle"];
+domtools.QueryStyle.setCSS = function(collection,property,value) {
+	var $it0 = collection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.Style.setCSS(node,property,value);
+	}
+}
+domtools.QueryStyle.prototype.__class__ = domtools.QueryStyle;
+domtools.EventManagement = function() { }
+domtools.EventManagement.__name__ = ["domtools","EventManagement"];
+domtools.EventManagement.triggerHandler = function(target,event) {
+	return target;
+}
+domtools.EventManagement.on = function(target,eventType,listener) {
+	var elm = target;
+	elm.addEventListener(eventType,listener,false);
+	return target;
+}
+domtools.EventManagement.off = function(target,eventType,listener) {
+	var elm = target;
+	elm.removeEventListener(eventType,listener,false);
+	return target;
+}
+domtools.EventManagement.one = function(target,eventType,listener) {
+	var fn = null;
+	fn = function(e) {
+		listener(e);
+		target.removeEventListener(eventType,fn,false);
+	};
+	target.addEventListener(eventType,fn,false);
+	return target;
+}
+domtools.EventManagement.mousedown = function(target,listener) {
+	return domtools.EventManagement.on(target,"mousedown",listener);
+}
+domtools.EventManagement.mouseenter = function(target,listener) {
+	return domtools.EventManagement.on(target,"mouseover",listener);
+}
+domtools.EventManagement.mouseleave = function(target,listener) {
+	return domtools.EventManagement.on(target,"mouseout",listener);
+}
+domtools.EventManagement.mousemove = function(target,listener) {
+	return domtools.EventManagement.on(target,"mousemove",listener);
+}
+domtools.EventManagement.mouseout = function(target,listener) {
+	return domtools.EventManagement.on(target,"mouseout",listener);
+}
+domtools.EventManagement.mouseover = function(target,listener) {
+	return domtools.EventManagement.on(target,"mouseover",listener);
+}
+domtools.EventManagement.mouseup = function(target,listener) {
+	return domtools.EventManagement.on(target,"mouseup",listener);
+}
+domtools.EventManagement.keydown = function(target,listener) {
+	return domtools.EventManagement.on(target,"keydown",listener);
+}
+domtools.EventManagement.keypress = function(target,listener) {
+	return domtools.EventManagement.on(target,"keypress",listener);
+}
+domtools.EventManagement.keyup = function(target,listener) {
+	return domtools.EventManagement.on(target,"keyup",listener);
+}
+domtools.EventManagement.hover = function(target,listener1,listener2) {
+	domtools.EventManagement.on(target,"mouseover",listener1);
+	if(listener2 == null) domtools.EventManagement.on(target,"mouseout",listener1); else domtools.EventManagement.on(target,"mouseout",listener2);
+	return target;
+}
+domtools.EventManagement.submit = function(target,listener) {
+	return domtools.EventManagement.on(target,"submit",listener);
+}
+domtools.EventManagement.toggleClick = function(target,listenerFirstClick,listenerSecondClick) {
+	var fn1 = null;
+	var fn2 = null;
+	fn1 = function(e) {
+		listenerFirstClick(e);
+		target.removeEventListener("click",fn1,false);
+		target.addEventListener("click",fn2,false);
+	};
+	fn2 = function(e) {
+		listenerSecondClick(e);
+		target.removeEventListener("click",fn2,false);
+		target.addEventListener("click",fn1,false);
+	};
+	target.addEventListener("click",fn1,false);
+	return target;
+}
+domtools.EventManagement.blur = function(target,listener) {
+	return domtools.EventManagement.on(target,"blur",listener);
+}
+domtools.EventManagement.change = function(target,listener) {
+	return domtools.EventManagement.on(target,"change",listener);
+}
+domtools.EventManagement.click = function(target,listener) {
+	return domtools.EventManagement.on(target,"click",listener);
+}
+domtools.EventManagement.dblclick = function(target,listener) {
+	return domtools.EventManagement.on(target,"dblclick",listener);
+}
+domtools.EventManagement.focus = function(target,listener) {
+	return domtools.EventManagement.on(target,"focus",listener);
+}
+domtools.EventManagement.focusIn = function(target,listener) {
+	return domtools.EventManagement.on(target,"focusIn",listener);
+}
+domtools.EventManagement.focusOut = function(target,listener) {
+	return domtools.EventManagement.on(target,"focusOut",listener);
+}
+domtools.EventManagement.resize = function(target,listener) {
+	return domtools.EventManagement.on(target,"resize",listener);
+}
+domtools.EventManagement.scroll = function(target,listener) {
+	return domtools.EventManagement.on(target,"scroll",listener);
+}
+domtools.EventManagement.select = function(target,listener) {
+	return domtools.EventManagement.on(target,"select",listener);
+}
+domtools.EventManagement.load = function(target,listener) {
+	return domtools.EventManagement.on(target,"load",listener);
+}
+domtools.EventManagement.unload = function(target,listener) {
+	return domtools.EventManagement.on(target,"unload",listener);
+}
+domtools.EventManagement.error = function(target,listener) {
+	return domtools.EventManagement.on(target,"error",listener);
+}
+domtools.EventManagement.ready = function(target,listener) {
+	return domtools.EventManagement.on(target,"ready",listener);
+}
+domtools.EventManagement.prototype.__class__ = domtools.EventManagement;
+domtools.QueryEventManagement = function() { }
+domtools.QueryEventManagement.__name__ = ["domtools","QueryEventManagement"];
+domtools.QueryEventManagement.on = function(targetCollection,eventType,listener) {
+	var $it0 = targetCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var target = $it0.next();
+		domtools.EventManagement.on(target,eventType,listener);
+	}
+	return targetCollection;
+}
+domtools.QueryEventManagement.off = function(targetCollection,eventType,listener) {
+	var $it0 = targetCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var target = $it0.next();
+		domtools.EventManagement.off(target,eventType,listener);
+	}
+	return targetCollection;
+}
+domtools.QueryEventManagement.one = function(targetCollection,eventType,listener) {
+	var $it0 = targetCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var target = $it0.next();
+		domtools.EventManagement.one(target,eventType,listener);
+	}
+	return targetCollection;
+}
+domtools.QueryEventManagement.mousedown = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mousedown",listener);
+}
+domtools.QueryEventManagement.mouseenter = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mouseenter",listener);
+}
+domtools.QueryEventManagement.mouseleave = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mouseleave",listener);
+}
+domtools.QueryEventManagement.mousemove = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mousemove",listener);
+}
+domtools.QueryEventManagement.mouseout = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mouseout",listener);
+}
+domtools.QueryEventManagement.mouseover = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mouseover",listener);
+}
+domtools.QueryEventManagement.mouseup = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"mouseup",listener);
+}
+domtools.QueryEventManagement.keydown = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"keydown",listener);
+}
+domtools.QueryEventManagement.keypress = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"keypress",listener);
+}
+domtools.QueryEventManagement.keyup = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"keyup",listener);
+}
+domtools.QueryEventManagement.hover = function(targetCollection,listener1,listener2) {
+	var $it0 = targetCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var node = $it0.next();
+		domtools.EventManagement.hover(node,listener1,listener2);
+	}
+	return targetCollection;
+}
+domtools.QueryEventManagement.submit = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"submit",listener);
+}
+domtools.QueryEventManagement.toggleClick = function(targetCollection,listenerFirstClick,listenerSecondClick) {
+	var $it0 = targetCollection.collection.iterator();
+	while( $it0.hasNext() ) {
+		var target = $it0.next();
+		domtools.EventManagement.toggleClick(target,listenerFirstClick,listenerSecondClick);
+	}
+	return targetCollection;
+}
+domtools.QueryEventManagement.blur = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"blur",listener);
+}
+domtools.QueryEventManagement.change = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"change",listener);
+}
+domtools.QueryEventManagement.click = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"click",listener);
+}
+domtools.QueryEventManagement.dblclick = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"dblclick",listener);
+}
+domtools.QueryEventManagement.focus = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"focus",listener);
+}
+domtools.QueryEventManagement.focusIn = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"focusIn",listener);
+}
+domtools.QueryEventManagement.focusOut = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"focusOut",listener);
+}
+domtools.QueryEventManagement.resize = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"resize",listener);
+}
+domtools.QueryEventManagement.scroll = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"scroll",listener);
+}
+domtools.QueryEventManagement.select = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"select",listener);
+}
+domtools.QueryEventManagement.load = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"load",listener);
+}
+domtools.QueryEventManagement.unload = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"unload",listener);
+}
+domtools.QueryEventManagement.error = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"error",listener);
+}
+domtools.QueryEventManagement.ready = function(target,listener) {
+	return domtools.QueryEventManagement.on(target,"ready",listener);
+}
+domtools.QueryEventManagement.prototype.__class__ = domtools.QueryEventManagement;
+StringBuf = function(p) {
+	if( p === $_ ) return;
+	this.b = new Array();
+}
+StringBuf.__name__ = ["StringBuf"];
+StringBuf.prototype.add = function(x) {
+	this.b[this.b.length] = x == null?"null":x;
+}
+StringBuf.prototype.addSub = function(s,pos,len) {
+	this.b[this.b.length] = s.substr(pos,len);
+}
+StringBuf.prototype.addChar = function(c) {
+	this.b[this.b.length] = String.fromCharCode(c);
+}
+StringBuf.prototype.toString = function() {
+	return this.b.join("");
+}
+StringBuf.prototype.b = null;
+StringBuf.prototype.__class__ = StringBuf;
+CommonJS = function() { }
 CommonJS.__name__ = ["CommonJS"];
 CommonJS.getWindow = function() {
 	var window = window;
@@ -4335,10 +4831,8 @@ CommonJS.setStyle = function(domSelection,cssStyle,value) {
 		element.style[cssStyle] = value;
 	}
 }
-CommonJS.prototype = {
-	__class__: CommonJS
-}
-var Lambda = $hxClasses["Lambda"] = function() { }
+CommonJS.prototype.__class__ = CommonJS;
+Lambda = function() { }
 Lambda.__name__ = ["Lambda"];
 Lambda.array = function(it) {
 	var a = new Array();
@@ -4477,254 +4971,294 @@ Lambda.concat = function(a,b) {
 	}
 	return l;
 }
-Lambda.prototype = {
-	__class__: Lambda
+Lambda.prototype.__class__ = Lambda;
+autoform.ui.TextArea = function(field) {
+	if( field === $_ ) return;
+	autoform.AbstractField.call(this,"div");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
+	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><textarea />");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"textarea"),"id",field.fullID),".input");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
+	if(field.description != "") domtools.QueryDOMManipulation.append(domtools.QueryTraversing.find(this,"label"),domtools.ElementManipulation.setText(document.createElement("p"),field.description));
 }
-erazor.ScriptBuilder = $hxClasses["erazor.ScriptBuilder"] = function(context) {
+autoform.ui.TextArea.__name__ = ["autoform","ui","TextArea"];
+autoform.ui.TextArea.__super__ = autoform.AbstractField;
+for(var k in autoform.AbstractField.prototype ) autoform.ui.TextArea.prototype[k] = autoform.AbstractField.prototype[k];
+autoform.ui.TextArea.prototype.__class__ = autoform.ui.TextArea;
+erazor.ScriptBuilder = function(context) {
+	if( context === $_ ) return;
 	this.context = context;
-};
-erazor.ScriptBuilder.__name__ = ["erazor","ScriptBuilder"];
-erazor.ScriptBuilder.prototype = {
-	context: null
-	,build: function(blocks) {
-		var buffer = new StringBuf();
-		var _g = 0;
-		while(_g < blocks.length) {
-			var block = blocks[_g];
-			++_g;
-			buffer.add(this.blockToString(block));
-		}
-		return buffer.b.join("");
-	}
-	,blockToString: function(block) {
-		var $e = (block);
-		switch( $e[1] ) {
-		case 0:
-			var s = $e[2];
-			return this.context + ".add('" + StringTools.replace(s,"'","\\'") + "');\n";
-		case 1:
-			var s = $e[2];
-			return s + "\n";
-		case 2:
-			var s = $e[2];
-			return this.context + ".add(" + s + ");\n";
-		}
-	}
-	,__class__: erazor.ScriptBuilder
 }
-haxe.io.StringInput = $hxClasses["haxe.io.StringInput"] = function(s) {
+erazor.ScriptBuilder.__name__ = ["erazor","ScriptBuilder"];
+erazor.ScriptBuilder.prototype.context = null;
+erazor.ScriptBuilder.prototype.build = function(blocks) {
+	var buffer = new StringBuf();
+	var _g = 0;
+	while(_g < blocks.length) {
+		var block = blocks[_g];
+		++_g;
+		buffer.add(this.blockToString(block));
+	}
+	return buffer.b.join("");
+}
+erazor.ScriptBuilder.prototype.blockToString = function(block) {
+	var $e = (block);
+	switch( $e[1] ) {
+	case 0:
+		var s = $e[2];
+		return this.context + ".add('" + StringTools.replace(s,"'","\\'") + "');\n";
+	case 1:
+		var s = $e[2];
+		return s + "\n";
+	case 2:
+		var s = $e[2];
+		return this.context + ".add(" + s + ");\n";
+	}
+}
+erazor.ScriptBuilder.prototype.__class__ = erazor.ScriptBuilder;
+haxe.rtti.Meta = function() { }
+haxe.rtti.Meta.__name__ = ["haxe","rtti","Meta"];
+haxe.rtti.Meta.getType = function(t) {
+	var meta = t.__meta__;
+	return meta == null || meta.obj == null?{ }:meta.obj;
+}
+haxe.rtti.Meta.getStatics = function(t) {
+	var meta = t.__meta__;
+	return meta == null || meta.statics == null?{ }:meta.statics;
+}
+haxe.rtti.Meta.getFields = function(t) {
+	var meta = t.__meta__;
+	return meta == null || meta.fields == null?{ }:meta.fields;
+}
+haxe.rtti.Meta.prototype.__class__ = haxe.rtti.Meta;
+haxe.io.StringInput = function(s) {
+	if( s === $_ ) return;
 	haxe.io.BytesInput.call(this,haxe.io.Bytes.ofString(s));
-};
+}
 haxe.io.StringInput.__name__ = ["haxe","io","StringInput"];
 haxe.io.StringInput.__super__ = haxe.io.BytesInput;
-haxe.io.StringInput.prototype = $extend(haxe.io.BytesInput.prototype,{
-	__class__: haxe.io.StringInput
-});
-haxe.io.Output = $hxClasses["haxe.io.Output"] = function() { }
+for(var k in haxe.io.BytesInput.prototype ) haxe.io.StringInput.prototype[k] = haxe.io.BytesInput.prototype[k];
+haxe.io.StringInput.prototype.__class__ = haxe.io.StringInput;
+haxe.io.Output = function() { }
 haxe.io.Output.__name__ = ["haxe","io","Output"];
-haxe.io.Output.prototype = {
-	bigEndian: null
-	,writeByte: function(c) {
-		throw "Not implemented";
-	}
-	,writeBytes: function(s,pos,len) {
-		var k = len;
-		var b = s.b;
-		if(pos < 0 || len < 0 || pos + len > s.length) throw haxe.io.Error.OutsideBounds;
-		while(k > 0) {
-			this.writeByte(b[pos]);
-			pos++;
-			k--;
-		}
-		return len;
-	}
-	,flush: function() {
-	}
-	,close: function() {
-	}
-	,setEndian: function(b) {
-		this.bigEndian = b;
-		return b;
-	}
-	,write: function(s) {
-		var l = s.length;
-		var p = 0;
-		while(l > 0) {
-			var k = this.writeBytes(s,p,l);
-			if(k == 0) throw haxe.io.Error.Blocked;
-			p += k;
-			l -= k;
-		}
-	}
-	,writeFullBytes: function(s,pos,len) {
-		while(len > 0) {
-			var k = this.writeBytes(s,pos,len);
-			pos += k;
-			len -= k;
-		}
-	}
-	,writeFloat: function(x) {
-		throw "Not implemented";
-	}
-	,writeDouble: function(x) {
-		throw "Not implemented";
-	}
-	,writeInt8: function(x) {
-		if(x < -128 || x >= 128) throw haxe.io.Error.Overflow;
-		this.writeByte(x & 255);
-	}
-	,writeInt16: function(x) {
-		if(x < -32768 || x >= 32768) throw haxe.io.Error.Overflow;
-		this.writeUInt16(x & 65535);
-	}
-	,writeUInt16: function(x) {
-		if(x < 0 || x >= 65536) throw haxe.io.Error.Overflow;
-		if(this.bigEndian) {
-			this.writeByte(x >> 8);
-			this.writeByte(x & 255);
-		} else {
-			this.writeByte(x & 255);
-			this.writeByte(x >> 8);
-		}
-	}
-	,writeInt24: function(x) {
-		if(x < -8388608 || x >= 8388608) throw haxe.io.Error.Overflow;
-		this.writeUInt24(x & 16777215);
-	}
-	,writeUInt24: function(x) {
-		if(x < 0 || x >= 16777216) throw haxe.io.Error.Overflow;
-		if(this.bigEndian) {
-			this.writeByte(x >> 16);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x & 255);
-		} else {
-			this.writeByte(x & 255);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x >> 16);
-		}
-	}
-	,writeInt31: function(x) {
-		if(x < -1073741824 || x >= 1073741824) throw haxe.io.Error.Overflow;
-		if(this.bigEndian) {
-			this.writeByte(x >>> 24);
-			this.writeByte(x >> 16 & 255);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x & 255);
-		} else {
-			this.writeByte(x & 255);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x >> 16 & 255);
-			this.writeByte(x >>> 24);
-		}
-	}
-	,writeUInt30: function(x) {
-		if(x < 0 || x >= 1073741824) throw haxe.io.Error.Overflow;
-		if(this.bigEndian) {
-			this.writeByte(x >>> 24);
-			this.writeByte(x >> 16 & 255);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x & 255);
-		} else {
-			this.writeByte(x & 255);
-			this.writeByte(x >> 8 & 255);
-			this.writeByte(x >> 16 & 255);
-			this.writeByte(x >>> 24);
-		}
-	}
-	,writeInt32: function(x) {
-		if(this.bigEndian) {
-			this.writeByte(haxe.Int32.toInt(x >>> 24));
-			this.writeByte(haxe.Int32.toInt(x >>> 16) & 255);
-			this.writeByte(haxe.Int32.toInt(x >>> 8) & 255);
-			this.writeByte(haxe.Int32.toInt(x & (255 | 0)));
-		} else {
-			this.writeByte(haxe.Int32.toInt(x & (255 | 0)));
-			this.writeByte(haxe.Int32.toInt(x >>> 8) & 255);
-			this.writeByte(haxe.Int32.toInt(x >>> 16) & 255);
-			this.writeByte(haxe.Int32.toInt(x >>> 24));
-		}
-	}
-	,prepare: function(nbytes) {
-	}
-	,writeInput: function(i,bufsize) {
-		if(bufsize == null) bufsize = 4096;
-		var buf = haxe.io.Bytes.alloc(bufsize);
-		try {
-			while(true) {
-				var len = i.readBytes(buf,0,bufsize);
-				if(len == 0) throw haxe.io.Error.Blocked;
-				var p = 0;
-				while(len > 0) {
-					var k = this.writeBytes(buf,p,len);
-					if(k == 0) throw haxe.io.Error.Blocked;
-					p += k;
-					len -= k;
-				}
-			}
-		} catch( e ) {
-			if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
-			} else throw(e);
-		}
-	}
-	,writeString: function(s) {
-		var b = haxe.io.Bytes.ofString(s);
-		this.writeFullBytes(b,0,b.length);
-	}
-	,__class__: haxe.io.Output
-	,__properties__: {set_bigEndian:"setEndian"}
+haxe.io.Output.prototype.bigEndian = null;
+haxe.io.Output.prototype.writeByte = function(c) {
+	throw "Not implemented";
 }
-erazor.TBlock = $hxClasses["erazor.TBlock"] = { __ename__ : ["erazor","TBlock"], __constructs__ : ["literal","codeBlock","printBlock"] }
+haxe.io.Output.prototype.writeBytes = function(s,pos,len) {
+	var k = len;
+	var b = s.b;
+	if(pos < 0 || len < 0 || pos + len > s.length) throw haxe.io.Error.OutsideBounds;
+	while(k > 0) {
+		this.writeByte(b[pos]);
+		pos++;
+		k--;
+	}
+	return len;
+}
+haxe.io.Output.prototype.flush = function() {
+}
+haxe.io.Output.prototype.close = function() {
+}
+haxe.io.Output.prototype.setEndian = function(b) {
+	this.bigEndian = b;
+	return b;
+}
+haxe.io.Output.prototype.write = function(s) {
+	var l = s.length;
+	var p = 0;
+	while(l > 0) {
+		var k = this.writeBytes(s,p,l);
+		if(k == 0) throw haxe.io.Error.Blocked;
+		p += k;
+		l -= k;
+	}
+}
+haxe.io.Output.prototype.writeFullBytes = function(s,pos,len) {
+	while(len > 0) {
+		var k = this.writeBytes(s,pos,len);
+		pos += k;
+		len -= k;
+	}
+}
+haxe.io.Output.prototype.writeFloat = function(x) {
+	throw "Not implemented";
+}
+haxe.io.Output.prototype.writeDouble = function(x) {
+	throw "Not implemented";
+}
+haxe.io.Output.prototype.writeInt8 = function(x) {
+	if(x < -128 || x >= 128) throw haxe.io.Error.Overflow;
+	this.writeByte(x & 255);
+}
+haxe.io.Output.prototype.writeInt16 = function(x) {
+	if(x < -32768 || x >= 32768) throw haxe.io.Error.Overflow;
+	this.writeUInt16(x & 65535);
+}
+haxe.io.Output.prototype.writeUInt16 = function(x) {
+	if(x < 0 || x >= 65536) throw haxe.io.Error.Overflow;
+	if(this.bigEndian) {
+		this.writeByte(x >> 8);
+		this.writeByte(x & 255);
+	} else {
+		this.writeByte(x & 255);
+		this.writeByte(x >> 8);
+	}
+}
+haxe.io.Output.prototype.writeInt24 = function(x) {
+	if(x < -8388608 || x >= 8388608) throw haxe.io.Error.Overflow;
+	this.writeUInt24(x & 16777215);
+}
+haxe.io.Output.prototype.writeUInt24 = function(x) {
+	if(x < 0 || x >= 16777216) throw haxe.io.Error.Overflow;
+	if(this.bigEndian) {
+		this.writeByte(x >> 16);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x & 255);
+	} else {
+		this.writeByte(x & 255);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x >> 16);
+	}
+}
+haxe.io.Output.prototype.writeInt31 = function(x) {
+	if(x < -1073741824 || x >= 1073741824) throw haxe.io.Error.Overflow;
+	if(this.bigEndian) {
+		this.writeByte(x >>> 24);
+		this.writeByte(x >> 16 & 255);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x & 255);
+	} else {
+		this.writeByte(x & 255);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x >> 16 & 255);
+		this.writeByte(x >>> 24);
+	}
+}
+haxe.io.Output.prototype.writeUInt30 = function(x) {
+	if(x < 0 || x >= 1073741824) throw haxe.io.Error.Overflow;
+	if(this.bigEndian) {
+		this.writeByte(x >>> 24);
+		this.writeByte(x >> 16 & 255);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x & 255);
+	} else {
+		this.writeByte(x & 255);
+		this.writeByte(x >> 8 & 255);
+		this.writeByte(x >> 16 & 255);
+		this.writeByte(x >>> 24);
+	}
+}
+haxe.io.Output.prototype.writeInt32 = function(x) {
+	if(this.bigEndian) {
+		this.writeByte(haxe.Int32.toInt(x >>> 24));
+		this.writeByte(haxe.Int32.toInt(x >>> 16) & 255);
+		this.writeByte(haxe.Int32.toInt(x >>> 8) & 255);
+		this.writeByte(haxe.Int32.toInt(x & (255 | 0)));
+	} else {
+		this.writeByte(haxe.Int32.toInt(x & (255 | 0)));
+		this.writeByte(haxe.Int32.toInt(x >>> 8) & 255);
+		this.writeByte(haxe.Int32.toInt(x >>> 16) & 255);
+		this.writeByte(haxe.Int32.toInt(x >>> 24));
+	}
+}
+haxe.io.Output.prototype.prepare = function(nbytes) {
+}
+haxe.io.Output.prototype.writeInput = function(i,bufsize) {
+	if(bufsize == null) bufsize = 4096;
+	var buf = haxe.io.Bytes.alloc(bufsize);
+	try {
+		while(true) {
+			var len = i.readBytes(buf,0,bufsize);
+			if(len == 0) throw haxe.io.Error.Blocked;
+			var p = 0;
+			while(len > 0) {
+				var k = this.writeBytes(buf,p,len);
+				if(k == 0) throw haxe.io.Error.Blocked;
+				p += k;
+				len -= k;
+			}
+		}
+	} catch( e ) {
+		if( js.Boot.__instanceof(e,haxe.io.Eof) ) {
+		} else throw(e);
+	}
+}
+haxe.io.Output.prototype.writeString = function(s) {
+	var b = haxe.io.Bytes.ofString(s);
+	this.writeFullBytes(b,0,b.length);
+}
+haxe.io.Output.prototype.__class__ = haxe.io.Output;
+erazor.TBlock = { __ename__ : ["erazor","TBlock"], __constructs__ : ["literal","codeBlock","printBlock"] }
 erazor.TBlock.literal = function(s) { var $x = ["literal",0,s]; $x.__enum__ = erazor.TBlock; $x.toString = $estr; return $x; }
 erazor.TBlock.codeBlock = function(s) { var $x = ["codeBlock",1,s]; $x.__enum__ = erazor.TBlock; $x.toString = $estr; return $x; }
 erazor.TBlock.printBlock = function(s) { var $x = ["printBlock",2,s]; $x.__enum__ = erazor.TBlock; $x.toString = $estr; return $x; }
-domtools.Style = $hxClasses["domtools.Style"] = function() { }
-domtools.Style.__name__ = ["domtools","Style"];
-domtools.Style.getComputedStyle = function(node) {
-	var style = null;
-	if(domtools.ElementManipulation.isElement(node)) {
+autoform.AutoForm = function(c,formID) {
+	if( c === $_ ) return;
+	domtools.AbstractCustomElement.call(this,"form");
+	if(formID == null) {
+		autoform.AutoForm.formIDIncrement = autoform.AutoForm.formIDIncrement + 1;
+		formID = "af-" + autoform.AutoForm.formIDIncrement;
 	}
-	return style;
-}
-domtools.Style.css = function(node,property) {
-	domtools.Style.getComputedStyle(node).getPropertyValue("property");
-}
-domtools.Style.setCSS = function(node,property,value) {
-	if(domtools.ElementManipulation.isElement(node)) {
-		var style = node.style;
-		style[property] = value;
+	haxe.Log.trace(formID,{ fileName : "AutoForm.hx", lineNumber : 28, className : "autoform.AutoForm", methodName : "new"});
+	this.fields = new Array();
+	this.classval = c;
+	var rttiString = c.__rtti;
+	var rtti = Xml.parse(rttiString).firstElement();
+	this.meta = haxe.rtti.Meta.getFields(c);
+	haxe.Log.trace(rtti.toString(),{ fileName : "AutoForm.hx", lineNumber : 37, className : "autoform.AutoForm", methodName : "new"});
+	var fieldsXml = rtti.elements();
+	while( fieldsXml.hasNext() ) {
+		var field = fieldsXml.next();
+		if(field.getNodeName() != "implements") {
+			haxe.Log.trace(field,{ fileName : "AutoForm.hx", lineNumber : 45, className : "autoform.AutoForm", methodName : "new"});
+			this.fields.push(new autoform.FieldInfo(field,rtti,this.meta,formID));
+		} else haxe.Log.trace("gotcha",{ fileName : "AutoForm.hx", lineNumber : 49, className : "autoform.AutoForm", methodName : "new"});
 	}
+	var renderer = new autoform.renderer.DefaultRenderer(this);
+	renderer.run(this.fields);
 }
-domtools.Style.innerWidth = function(node) {
-	var style = domtools.Style.getComputedStyle(node);
-	if(style != null) {
-	}
-	return 0;
+autoform.AutoForm.__name__ = ["autoform","AutoForm"];
+autoform.AutoForm.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) autoform.AutoForm.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+autoform.AutoForm.prototype.classval = null;
+autoform.AutoForm.prototype.rtti = null;
+autoform.AutoForm.prototype.meta = null;
+autoform.AutoForm.prototype.fields = null;
+autoform.AutoForm.prototype.populateForm = function(object) {
 }
-domtools.Style.prototype = {
-	__class__: domtools.Style
+autoform.AutoForm.prototype.readForm = function() {
+	var object = Type.createEmptyInstance(this.classval);
+	return object;
 }
-domtools.QueryStyle = $hxClasses["domtools.QueryStyle"] = function() { }
-domtools.QueryStyle.__name__ = ["domtools","QueryStyle"];
-domtools.QueryStyle.setCSS = function(collection,property,value) {
-	var $it0 = collection.collection.iterator();
-	while( $it0.hasNext() ) {
-		var node = $it0.next();
-		domtools.Style.setCSS(node,property,value);
-	}
-}
-domtools.QueryStyle.prototype = {
-	__class__: domtools.QueryStyle
-}
-app.copy.CopyController = $hxClasses["app.copy.CopyController"] = function() {
+autoform.AutoForm.prototype.__class__ = autoform.AutoForm;
+app.copy.CopyController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.copy.CopyView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-};
-app.copy.CopyController.__name__ = ["app","copy","CopyController"];
-app.copy.CopyController.prototype = {
-	view: null
-	,__class__: app.copy.CopyController
 }
-haxe.Log = $hxClasses["haxe.Log"] = function() { }
+app.copy.CopyController.__name__ = ["app","copy","CopyController"];
+app.copy.CopyController.prototype.view = null;
+app.copy.CopyController.prototype.__class__ = app.copy.CopyController;
+autoform.ui.CheckBox = function(field) {
+	if( field === $_ ) return;
+	autoform.AbstractField.call(this,"div");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
+	domtools.QueryElementManipulation.setInnerHTML(this,"<div><input /><label></label></div>");
+	domtools.QueryElementManipulation.addClass(domtools.QueryTraversing.find(this,"div"),"checkbox");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"input"),"type","checkbox"),"id",field.fullID);
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
+	haxe.Log.trace(field.description,{ fileName : "CheckBox.hx", lineNumber : 21, className : "autoform.ui.CheckBox", methodName : "new"});
+	if(field.description != "") {
+		haxe.Log.trace("hey?",{ fileName : "CheckBox.hx", lineNumber : 24, className : "autoform.ui.CheckBox", methodName : "new"});
+		domtools.QueryDOMManipulation.prepend(this,domtools.ElementManipulation.setText(document.createElement("p"),field.description));
+	}
+}
+autoform.ui.CheckBox.__name__ = ["autoform","ui","CheckBox"];
+autoform.ui.CheckBox.__super__ = autoform.AbstractField;
+for(var k in autoform.AbstractField.prototype ) autoform.ui.CheckBox.prototype[k] = autoform.AbstractField.prototype[k];
+autoform.ui.CheckBox.prototype.__class__ = autoform.ui.CheckBox;
+haxe.Log = function() { }
 haxe.Log.__name__ = ["haxe","Log"];
 haxe.Log.trace = function(v,infos) {
 	js.Boot.__trace(v,infos);
@@ -4732,142 +5266,136 @@ haxe.Log.trace = function(v,infos) {
 haxe.Log.clear = function() {
 	js.Boot.__clear_trace();
 }
-haxe.Log.prototype = {
-	__class__: haxe.Log
+haxe.Log.prototype.__class__ = haxe.Log;
+autoform.ui.HiddenField = function(field) {
+	if( field === $_ ) return;
+	autoform.AbstractField.call(this,"div");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setInnerHTML(this,"<input />"),field.id);
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"input"),"type","hidden"),"id",field.fullID);
 }
-var Hash = $hxClasses["Hash"] = function() {
+autoform.ui.HiddenField.__name__ = ["autoform","ui","HiddenField"];
+autoform.ui.HiddenField.__super__ = autoform.AbstractField;
+for(var k in autoform.AbstractField.prototype ) autoform.ui.HiddenField.prototype[k] = autoform.AbstractField.prototype[k];
+autoform.ui.HiddenField.prototype.__class__ = autoform.ui.HiddenField;
+Hash = function(p) {
+	if( p === $_ ) return;
 	this.h = {}
 	if(this.h.__proto__ != null) {
 		this.h.__proto__ = null;
 		delete(this.h.__proto__);
 	}
-};
-Hash.__name__ = ["Hash"];
-Hash.prototype = {
-	h: null
-	,set: function(key,value) {
-		this.h["$" + key] = value;
-	}
-	,get: function(key) {
-		return this.h["$" + key];
-	}
-	,exists: function(key) {
-		try {
-			key = "$" + key;
-			return this.hasOwnProperty.call(this.h,key);
-		} catch( e ) {
-			for(var i in this.h) if( i == key ) return true;
-			return false;
-		}
-	}
-	,remove: function(key) {
-		if(!this.exists(key)) return false;
-		delete(this.h["$" + key]);
-		return true;
-	}
-	,keys: function() {
-		var a = new Array();
-		for(var i in this.h) a.push(i.substr(1));
-		return a.iterator();
-	}
-	,iterator: function() {
-		return { ref : this.h, it : this.keys(), hasNext : function() {
-			return this.it.hasNext();
-		}, next : function() {
-			var i = this.it.next();
-			return this.ref["$" + i];
-		}};
-	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b[s.b.length] = "{";
-		var it = this.keys();
-		while( it.hasNext() ) {
-			var i = it.next();
-			s.b[s.b.length] = i == null?"null":i;
-			s.b[s.b.length] = " => ";
-			s.add(Std.string(this.get(i)));
-			if(it.hasNext()) s.b[s.b.length] = ", ";
-		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
-	}
-	,__class__: Hash
 }
-client.Interface = $hxClasses["client.Interface"] = function() {
+Hash.__name__ = ["Hash"];
+Hash.prototype.h = null;
+Hash.prototype.set = function(key,value) {
+	this.h["$" + key] = value;
+}
+Hash.prototype.get = function(key) {
+	return this.h["$" + key];
+}
+Hash.prototype.exists = function(key) {
+	try {
+		key = "$" + key;
+		return this.hasOwnProperty.call(this.h,key);
+	} catch( e ) {
+		for(var i in this.h) if( i == key ) return true;
+		return false;
+	}
+}
+Hash.prototype.remove = function(key) {
+	if(!this.exists(key)) return false;
+	delete(this.h["$" + key]);
+	return true;
+}
+Hash.prototype.keys = function() {
+	var a = new Array();
+	for(var i in this.h) a.push(i.substr(1));
+	return a.iterator();
+}
+Hash.prototype.iterator = function() {
+	return { ref : this.h, it : this.keys(), hasNext : function() {
+		return this.it.hasNext();
+	}, next : function() {
+		var i = this.it.next();
+		return this.ref["$" + i];
+	}};
+}
+Hash.prototype.toString = function() {
+	var s = new StringBuf();
+	s.b[s.b.length] = "{" == null?"null":"{";
+	var it = this.keys();
+	while( it.hasNext() ) {
+		var i = it.next();
+		s.b[s.b.length] = i == null?"null":i;
+		s.b[s.b.length] = " => " == null?"null":" => ";
+		s.add(Std.string(this.get(i)));
+		if(it.hasNext()) s.b[s.b.length] = ", " == null?"null":", ";
+	}
+	s.b[s.b.length] = "}" == null?"null":"}";
+	return s.b.join("");
+}
+Hash.prototype.__class__ = Hash;
+client.Interface = function(p) {
+	if( p === $_ ) return;
 	this.setTitle("Loading...");
 	this.drawMenu();
 	this.setTitle("Vose");
-};
+}
 client.Interface.__name__ = ["client","Interface"];
 client.Interface.currentControllerShowing = null;
 client.Interface.templateFile = null;
-client.Interface.activateMenuItem = function(e) {
-	var menuItem = e.currentTarget;
-	var id = StringTools.replace(domtools.ElementManipulation.attr(menuItem.firstChild,"href"),"#","");
+client.Interface.prototype.title = null;
+client.Interface.prototype.drawMenu = function() {
+	var me = this;
+	var nav = new client.ui.menu.NavBar("Vose Video");
+	var menu = nav.menu;
+	menu.addMenuItem("project","Project");
+	menu.addMenuItem("video","Video");
+	menu.addMenuItem("copy","Copy Clips");
+	menu.addMenuItem("edit","Edit Video");
+	menu.addMenuItem("slide","Create Slides");
+	menu.addMenuItem("author","Author DVD");
+	document.body.appendChild(nav.collection[0]);
+	domtools.QueryEventManagement.on(new domtools.Query(".menu li"),"click",function(e) {
+		var menuItem = e.currentTarget;
+		var id = StringTools.replace(domtools.ElementManipulation.attr(menuItem.firstChild,"href"),"#","");
+		me.showController(id);
+	});
+}
+client.Interface.prototype.showController = function(id) {
 	if(client.Interface.currentControllerShowing != id) {
 		domtools.QueryStyle.setCSS(new domtools.Query(".controller"),"display","none");
-		haxe.Log.trace(id,{ fileName : "Interface.hx", lineNumber : 76, className : "client.Interface", methodName : "activateMenuItem"});
 		domtools.QueryStyle.setCSS(new domtools.Query(".controller." + id),"display","block");
-		switch(id) {
-		case "copy":
-			break;
-		case "edit":
-			break;
-		case "slides":
-			break;
-		case "dvd":
-			break;
-		default:
-		}
 	}
 	client.Interface.currentControllerShowing = id;
 }
-client.Interface.prototype = {
-	title: null
-	,drawMenu: function() {
-		var nav = new client.ui.menu.NavBar("Vose Video");
-		var menu = nav.menu;
-		menu.addMenuItem("project","Project");
-		menu.addMenuItem("video","Video");
-		menu.addMenuItem("copy","Copy Clips");
-		menu.addMenuItem("edit","Edit Video");
-		menu.addMenuItem("slide","Create Slides");
-		menu.addMenuItem("author","Author DVD");
-		document.body.appendChild(nav.collection[0]);
-		domtools.QueryEventManagement.on(new domtools.Query(".menu li"),"click",client.Interface.activateMenuItem);
-	}
-	,getTitle: function() {
-		return js.Lib.document.title;
-	}
-	,setTitle: function(string) {
-		var title = "Vose Video Production";
-		if(string != null) title = title + ": " + string;
-		js.Lib.document.title = title;
-		return string;
-	}
-	,__class__: client.Interface
-	,__properties__: {set_title:"setTitle",get_title:"getTitle"}
+client.Interface.prototype.getTitle = function() {
+	return js.Lib.document.title;
 }
-haxe.remoting.Macros = $hxClasses["haxe.remoting.Macros"] = function() { }
+client.Interface.prototype.setTitle = function(string) {
+	var title = "Vose Video Production";
+	if(string != null) title = title + ": " + string;
+	js.Lib.document.title = title;
+	return string;
+}
+client.Interface.prototype.__class__ = client.Interface;
+haxe.remoting.Macros = function() { }
 haxe.remoting.Macros.__name__ = ["haxe","remoting","Macros"];
-haxe.remoting.Macros.prototype = {
-	__class__: haxe.remoting.Macros
-}
+haxe.remoting.Macros.prototype.__class__ = haxe.remoting.Macros;
 if(!app.edit) app.edit = {}
-app.edit.EditView = $hxClasses["app.edit.EditView"] = function(c) {
+app.edit.EditView = function(c) {
+	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"edit");
 	domtools.QueryElementManipulation.setText(this,"Edit Controller");
-};
+}
 app.edit.EditView.__name__ = ["app","edit","EditView"];
 app.edit.EditView.__super__ = domtools.AbstractCustomElement;
-app.edit.EditView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,__class__: app.edit.EditView
-});
-var Std = $hxClasses["Std"] = function() { }
+for(var k in domtools.AbstractCustomElement.prototype ) app.edit.EditView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.edit.EditView.prototype.controller = null;
+app.edit.EditView.prototype.__class__ = app.edit.EditView;
+Std = function() { }
 Std.__name__ = ["Std"];
 Std["is"] = function(v,t) {
 	return js.Boot.__instanceof(v,t);
@@ -4891,11 +5419,10 @@ Std.parseFloat = function(x) {
 Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
-Std.prototype = {
-	__class__: Std
-}
+Std.prototype.__class__ = Std;
 if(!client.ui.basic) client.ui.basic = {}
-client.ui.basic.Link = $hxClasses["client.ui.basic.Link"] = function(text,href,title) {
+client.ui.basic.Link = function(text,href,title) {
+	if( text === $_ ) return;
 	if(href == null) href = "#";
 	if(text == null) text = "Link";
 	domtools.AbstractCustomElement.call(this,"a");
@@ -4903,113 +5430,54 @@ client.ui.basic.Link = $hxClasses["client.ui.basic.Link"] = function(text,href,t
 	domtools.QueryElementManipulation.setInnerHTML(this,text);
 	if(title == null) title = domtools.QueryElementManipulation.text(this);
 	domtools.QueryElementManipulation.setAttr(this,"title",title);
-};
+}
 client.ui.basic.Link.__name__ = ["client","ui","basic","Link"];
 client.ui.basic.Link.__super__ = domtools.AbstractCustomElement;
-client.ui.basic.Link.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	__class__: client.ui.basic.Link
-});
-var EReg = $hxClasses["EReg"] = function(r,opt) {
-	opt = opt.split("u").join("");
-	this.r = new RegExp(r,opt);
-};
-EReg.__name__ = ["EReg"];
-EReg.prototype = {
-	r: null
-	,match: function(s) {
-		this.r.m = this.r.exec(s);
-		this.r.s = s;
-		this.r.l = RegExp.leftContext;
-		this.r.r = RegExp.rightContext;
-		return this.r.m != null;
-	}
-	,matched: function(n) {
-		return this.r.m != null && n >= 0 && n < this.r.m.length?this.r.m[n]:(function($this) {
-			var $r;
-			throw "EReg::matched";
-			return $r;
-		}(this));
-	}
-	,matchedLeft: function() {
-		if(this.r.m == null) throw "No string matched";
-		if(this.r.l == null) return this.r.s.substr(0,this.r.m.index);
-		return this.r.l;
-	}
-	,matchedRight: function() {
-		if(this.r.m == null) throw "No string matched";
-		if(this.r.r == null) {
-			var sz = this.r.m.index + this.r.m[0].length;
-			return this.r.s.substr(sz,this.r.s.length - sz);
-		}
-		return this.r.r;
-	}
-	,matchedPos: function() {
-		if(this.r.m == null) throw "No string matched";
-		return { pos : this.r.m.index, len : this.r.m[0].length};
-	}
-	,split: function(s) {
-		var d = "#__delim__#";
-		return s.replace(this.r,d).split(d);
-	}
-	,replace: function(s,by) {
-		return s.replace(this.r,by);
-	}
-	,customReplace: function(s,f) {
-		var buf = new StringBuf();
-		while(true) {
-			if(!this.match(s)) break;
-			buf.add(this.matchedLeft());
-			buf.add(f(this));
-			s = this.matchedRight();
-		}
-		buf.b[buf.b.length] = s == null?"null":s;
-		return buf.b.join("");
-	}
-	,__class__: EReg
-}
-client.ui.menu.MenuItem = $hxClasses["client.ui.menu.MenuItem"] = function(id,text) {
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.basic.Link.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.basic.Link.prototype.__class__ = client.ui.basic.Link;
+client.ui.menu.MenuItem = function(id,text) {
+	if( id === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"li");
 	domtools.QueryDOMManipulation.append(this,document.createElement("a"));
 	this.a = domtools.QueryTraversing.firstChildren(this);
 	this.setID(id).setText(text);
-};
+}
 client.ui.menu.MenuItem.__name__ = ["client","ui","menu","MenuItem"];
 client.ui.menu.MenuItem.__super__ = domtools.AbstractCustomElement;
-client.ui.menu.MenuItem.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	a: null
-	,id: null
-	,text: null
-	,setID: function(id) {
-		this.id = id;
-		domtools.QueryElementManipulation.addClass(this,"menulink-" + id);
-		domtools.QueryElementManipulation.setAttr(this.a,"href","#" + id);
-		return this;
-	}
-	,setText: function(text) {
-		this.text = text;
-		domtools.QueryElementManipulation.setText(this.a,text);
-		return this;
-	}
-	,__class__: client.ui.menu.MenuItem
-});
-app.author.AuthorView = $hxClasses["app.author.AuthorView"] = function(c) {
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.menu.MenuItem.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.menu.MenuItem.prototype.a = null;
+client.ui.menu.MenuItem.prototype.id = null;
+client.ui.menu.MenuItem.prototype.text = null;
+client.ui.menu.MenuItem.prototype.setID = function(id) {
+	this.id = id;
+	domtools.QueryElementManipulation.addClass(this,"menulink-" + id);
+	domtools.QueryElementManipulation.setAttr(this.a,"href","#" + id);
+	return this;
+}
+client.ui.menu.MenuItem.prototype.setText = function(text) {
+	this.text = text;
+	domtools.QueryElementManipulation.setText(this.a,text);
+	return this;
+}
+client.ui.menu.MenuItem.prototype.__class__ = client.ui.menu.MenuItem;
+app.author.AuthorView = function(c) {
+	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"author");
 	domtools.QueryElementManipulation.setText(this,"Author Controller");
-};
+}
 app.author.AuthorView.__name__ = ["app","author","AuthorView"];
 app.author.AuthorView.__super__ = domtools.AbstractCustomElement;
-app.author.AuthorView.prototype = $extend(domtools.AbstractCustomElement.prototype,{
-	controller: null
-	,__class__: app.author.AuthorView
-});
-hscript.Const = $hxClasses["hscript.Const"] = { __ename__ : ["hscript","Const"], __constructs__ : ["CInt","CFloat","CString","CInt32"] }
+for(var k in domtools.AbstractCustomElement.prototype ) app.author.AuthorView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+app.author.AuthorView.prototype.controller = null;
+app.author.AuthorView.prototype.__class__ = app.author.AuthorView;
+hscript.Const = { __ename__ : ["hscript","Const"], __constructs__ : ["CInt","CFloat","CString","CInt32"] }
 hscript.Const.CInt = function(v) { var $x = ["CInt",0,v]; $x.__enum__ = hscript.Const; $x.toString = $estr; return $x; }
 hscript.Const.CFloat = function(f) { var $x = ["CFloat",1,f]; $x.__enum__ = hscript.Const; $x.toString = $estr; return $x; }
 hscript.Const.CString = function(s) { var $x = ["CString",2,s]; $x.__enum__ = hscript.Const; $x.toString = $estr; return $x; }
 hscript.Const.CInt32 = function(v) { var $x = ["CInt32",3,v]; $x.__enum__ = hscript.Const; $x.toString = $estr; return $x; }
-hscript.Expr = $hxClasses["hscript.Expr"] = { __ename__ : ["hscript","Expr"], __constructs__ : ["EConst","EIdent","EVar","EParent","EBlock","EField","EBinop","EUnop","ECall","EIf","EWhile","EFor","EBreak","EContinue","EFunction","EReturn","EArray","EArrayDecl","ENew","EThrow","ETry","EObject","ETernary"] }
+hscript.Expr = { __ename__ : ["hscript","Expr"], __constructs__ : ["EConst","EIdent","EVar","EParent","EBlock","EField","EBinop","EUnop","ECall","EIf","EWhile","EFor","EBreak","EContinue","EFunction","EReturn","EArray","EArrayDecl","ENew","EThrow","ETry","EObject","ETernary"] }
 hscript.Expr.EConst = function(c) { var $x = ["EConst",0,c]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
 hscript.Expr.EIdent = function(v) { var $x = ["EIdent",1,v]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
 hscript.Expr.EVar = function(n,t,e) { var $x = ["EVar",2,n,t,e]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
@@ -5037,12 +5505,12 @@ hscript.Expr.EThrow = function(e) { var $x = ["EThrow",19,e]; $x.__enum__ = hscr
 hscript.Expr.ETry = function(e,v,t,ecatch) { var $x = ["ETry",20,e,v,t,ecatch]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
 hscript.Expr.EObject = function(fl) { var $x = ["EObject",21,fl]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
 hscript.Expr.ETernary = function(cond,e1,e2) { var $x = ["ETernary",22,cond,e1,e2]; $x.__enum__ = hscript.Expr; $x.toString = $estr; return $x; }
-hscript.CType = $hxClasses["hscript.CType"] = { __ename__ : ["hscript","CType"], __constructs__ : ["CTPath","CTFun","CTAnon","CTParent"] }
+hscript.CType = { __ename__ : ["hscript","CType"], __constructs__ : ["CTPath","CTFun","CTAnon","CTParent"] }
 hscript.CType.CTPath = function(path,params) { var $x = ["CTPath",0,path,params]; $x.__enum__ = hscript.CType; $x.toString = $estr; return $x; }
 hscript.CType.CTFun = function(args,ret) { var $x = ["CTFun",1,args,ret]; $x.__enum__ = hscript.CType; $x.toString = $estr; return $x; }
 hscript.CType.CTAnon = function(fields) { var $x = ["CTAnon",2,fields]; $x.__enum__ = hscript.CType; $x.toString = $estr; return $x; }
 hscript.CType.CTParent = function(t) { var $x = ["CTParent",3,t]; $x.__enum__ = hscript.CType; $x.toString = $estr; return $x; }
-hscript.Error = $hxClasses["hscript.Error"] = { __ename__ : ["hscript","Error"], __constructs__ : ["EInvalidChar","EUnexpected","EUnterminatedString","EUnterminatedComment","EUnknownVariable","EInvalidIterator","EInvalidOp","EInvalidAccess"] }
+hscript.Error = { __ename__ : ["hscript","Error"], __constructs__ : ["EInvalidChar","EUnexpected","EUnterminatedString","EUnterminatedComment","EUnknownVariable","EInvalidIterator","EInvalidOp","EInvalidAccess"] }
 hscript.Error.EInvalidChar = function(c) { var $x = ["EInvalidChar",0,c]; $x.__enum__ = hscript.Error; $x.toString = $estr; return $x; }
 hscript.Error.EUnexpected = function(s) { var $x = ["EUnexpected",1,s]; $x.__enum__ = hscript.Error; $x.toString = $estr; return $x; }
 hscript.Error.EUnterminatedString = ["EUnterminatedString",2];
@@ -5055,7 +5523,8 @@ hscript.Error.EUnknownVariable = function(v) { var $x = ["EUnknownVariable",4,v]
 hscript.Error.EInvalidIterator = function(v) { var $x = ["EInvalidIterator",5,v]; $x.__enum__ = hscript.Error; $x.toString = $estr; return $x; }
 hscript.Error.EInvalidOp = function(op) { var $x = ["EInvalidOp",6,op]; $x.__enum__ = hscript.Error; $x.toString = $estr; return $x; }
 hscript.Error.EInvalidAccess = function(f) { var $x = ["EInvalidAccess",7,f]; $x.__enum__ = hscript.Error; $x.toString = $estr; return $x; }
-haxe.Unserializer = $hxClasses["haxe.Unserializer"] = function(buf) {
+haxe.Unserializer = function(buf) {
+	if( buf === $_ ) return;
 	this.buf = buf;
 	this.length = buf.length;
 	this.pos = 0;
@@ -5067,7 +5536,7 @@ haxe.Unserializer = $hxClasses["haxe.Unserializer"] = function(buf) {
 		haxe.Unserializer.DEFAULT_RESOLVER = r;
 	}
 	this.setResolver(r);
-};
+}
 haxe.Unserializer.__name__ = ["haxe","Unserializer"];
 haxe.Unserializer.initCodes = function() {
 	var codes = new Array();
@@ -5081,284 +5550,276 @@ haxe.Unserializer.initCodes = function() {
 haxe.Unserializer.run = function(v) {
 	return new haxe.Unserializer(v).unserialize();
 }
-haxe.Unserializer.prototype = {
-	buf: null
-	,pos: null
-	,length: null
-	,cache: null
-	,scache: null
-	,resolver: null
-	,setResolver: function(r) {
-		if(r == null) this.resolver = { resolveClass : function(_) {
-			return null;
-		}, resolveEnum : function(_) {
-			return null;
-		}}; else this.resolver = r;
-	}
-	,getResolver: function() {
-		return this.resolver;
-	}
-	,get: function(p) {
-		return this.buf.cca(p);
-	}
-	,readDigits: function() {
-		var k = 0;
-		var s = false;
-		var fpos = this.pos;
-		while(true) {
-			var c = this.buf.cca(this.pos);
-			if(c != c) break;
-			if(c == 45) {
-				if(this.pos != fpos) break;
-				s = true;
-				this.pos++;
-				continue;
-			}
-			if(c < 48 || c > 57) break;
-			k = k * 10 + (c - 48);
+haxe.Unserializer.prototype.buf = null;
+haxe.Unserializer.prototype.pos = null;
+haxe.Unserializer.prototype.length = null;
+haxe.Unserializer.prototype.cache = null;
+haxe.Unserializer.prototype.scache = null;
+haxe.Unserializer.prototype.resolver = null;
+haxe.Unserializer.prototype.setResolver = function(r) {
+	if(r == null) this.resolver = { resolveClass : function(_) {
+		return null;
+	}, resolveEnum : function(_) {
+		return null;
+	}}; else this.resolver = r;
+}
+haxe.Unserializer.prototype.getResolver = function() {
+	return this.resolver;
+}
+haxe.Unserializer.prototype.get = function(p) {
+	return this.buf.cca(p);
+}
+haxe.Unserializer.prototype.readDigits = function() {
+	var k = 0;
+	var s = false;
+	var fpos = this.pos;
+	while(true) {
+		var c = this.buf.cca(this.pos);
+		if(c != c) break;
+		if(c == 45) {
+			if(this.pos != fpos) break;
+			s = true;
 			this.pos++;
+			continue;
 		}
-		if(s) k *= -1;
-		return k;
-	}
-	,unserializeObject: function(o) {
-		while(true) {
-			if(this.pos >= this.length) throw "Invalid object";
-			if(this.buf.cca(this.pos) == 103) break;
-			var k = this.unserialize();
-			if(!Std["is"](k,String)) throw "Invalid object key";
-			var v = this.unserialize();
-			o[k] = v;
-		}
+		if(c < 48 || c > 57) break;
+		k = k * 10 + (c - 48);
 		this.pos++;
 	}
-	,unserializeEnum: function(edecl,tag) {
-		var constr = Reflect.field(edecl,tag);
-		if(constr == null) throw "Unknown enum tag " + Type.getEnumName(edecl) + "." + tag;
-		if(this.buf.cca(this.pos++) != 58) throw "Invalid enum format";
-		var nargs = this.readDigits();
-		if(nargs == 0) {
-			this.cache.push(constr);
-			return constr;
-		}
-		var args = new Array();
-		while(nargs > 0) {
-			args.push(this.unserialize());
-			nargs -= 1;
-		}
-		var e = constr.apply(edecl,args);
-		this.cache.push(e);
-		return e;
+	if(s) k *= -1;
+	return k;
+}
+haxe.Unserializer.prototype.unserializeObject = function(o) {
+	while(true) {
+		if(this.pos >= this.length) throw "Invalid object";
+		if(this.buf.cca(this.pos) == 103) break;
+		var k = this.unserialize();
+		if(!Std["is"](k,String)) throw "Invalid object key";
+		var v = this.unserialize();
+		o[k] = v;
 	}
-	,unserialize: function() {
-		switch(this.buf.cca(this.pos++)) {
-		case 110:
-			return null;
-		case 116:
-			return true;
-		case 102:
-			return false;
-		case 122:
-			return 0;
-		case 105:
-			return this.readDigits();
-		case 100:
-			var p1 = this.pos;
-			while(true) {
-				var c = this.buf.cca(this.pos);
-				if(c >= 43 && c < 58 || c == 101 || c == 69) this.pos++; else break;
+	this.pos++;
+}
+haxe.Unserializer.prototype.unserializeEnum = function(edecl,tag) {
+	var constr = Reflect.field(edecl,tag);
+	if(constr == null) throw "Unknown enum tag " + Type.getEnumName(edecl) + "." + tag;
+	if(this.buf.cca(this.pos++) != 58) throw "Invalid enum format";
+	var nargs = this.readDigits();
+	if(nargs == 0) {
+		this.cache.push(constr);
+		return constr;
+	}
+	var args = new Array();
+	while(nargs > 0) {
+		args.push(this.unserialize());
+		nargs -= 1;
+	}
+	var e = constr.apply(edecl,args);
+	this.cache.push(e);
+	return e;
+}
+haxe.Unserializer.prototype.unserialize = function() {
+	switch(this.buf.cca(this.pos++)) {
+	case 110:
+		return null;
+	case 116:
+		return true;
+	case 102:
+		return false;
+	case 122:
+		return 0;
+	case 105:
+		return this.readDigits();
+	case 100:
+		var p1 = this.pos;
+		while(true) {
+			var c = this.buf.cca(this.pos);
+			if(c >= 43 && c < 58 || c == 101 || c == 69) this.pos++; else break;
+		}
+		return Std.parseFloat(this.buf.substr(p1,this.pos - p1));
+	case 121:
+		var len = this.readDigits();
+		if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid string length";
+		var s = this.buf.substr(this.pos,len);
+		this.pos += len;
+		s = StringTools.urlDecode(s);
+		this.scache.push(s);
+		return s;
+	case 107:
+		return Math.NaN;
+	case 109:
+		return Math.NEGATIVE_INFINITY;
+	case 112:
+		return Math.POSITIVE_INFINITY;
+	case 97:
+		var buf = this.buf;
+		var a = new Array();
+		this.cache.push(a);
+		while(true) {
+			var c = this.buf.cca(this.pos);
+			if(c == 104) {
+				this.pos++;
+				break;
 			}
-			return Std.parseFloat(this.buf.substr(p1,this.pos - p1));
-		case 121:
-			var len = this.readDigits();
-			if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid string length";
-			var s = this.buf.substr(this.pos,len);
-			this.pos += len;
-			s = StringTools.urlDecode(s);
-			this.scache.push(s);
-			return s;
-		case 107:
-			return Math.NaN;
-		case 109:
-			return Math.NEGATIVE_INFINITY;
-		case 112:
-			return Math.POSITIVE_INFINITY;
-		case 97:
-			var buf = this.buf;
-			var a = new Array();
-			this.cache.push(a);
-			while(true) {
-				var c = this.buf.cca(this.pos);
-				if(c == 104) {
-					this.pos++;
-					break;
-				}
-				if(c == 117) {
-					this.pos++;
-					var n = this.readDigits();
-					a[a.length + n - 1] = null;
-				} else a.push(this.unserialize());
-			}
-			return a;
-		case 111:
-			var o = { };
-			this.cache.push(o);
-			this.unserializeObject(o);
-			return o;
-		case 114:
-			var n = this.readDigits();
-			if(n < 0 || n >= this.cache.length) throw "Invalid reference";
-			return this.cache[n];
-		case 82:
-			var n = this.readDigits();
-			if(n < 0 || n >= this.scache.length) throw "Invalid string reference";
-			return this.scache[n];
-		case 120:
-			throw this.unserialize();
-			break;
-		case 99:
-			var name = this.unserialize();
-			var cl = this.resolver.resolveClass(name);
-			if(cl == null) throw "Class not found " + name;
-			var o = Type.createEmptyInstance(cl);
-			this.cache.push(o);
-			this.unserializeObject(o);
-			return o;
-		case 119:
-			var name = this.unserialize();
-			var edecl = this.resolver.resolveEnum(name);
-			if(edecl == null) throw "Enum not found " + name;
-			return this.unserializeEnum(edecl,this.unserialize());
-		case 106:
-			var name = this.unserialize();
-			var edecl = this.resolver.resolveEnum(name);
-			if(edecl == null) throw "Enum not found " + name;
-			this.pos++;
-			var index = this.readDigits();
-			var tag = Type.getEnumConstructs(edecl)[index];
-			if(tag == null) throw "Unknown enum index " + name + "@" + index;
-			return this.unserializeEnum(edecl,tag);
-		case 108:
-			var l = new List();
-			this.cache.push(l);
-			var buf = this.buf;
-			while(this.buf.cca(this.pos) != 104) l.add(this.unserialize());
-			this.pos++;
-			return l;
-		case 98:
-			var h = new Hash();
-			this.cache.push(h);
-			var buf = this.buf;
-			while(this.buf.cca(this.pos) != 104) {
-				var s = this.unserialize();
-				h.set(s,this.unserialize());
-			}
-			this.pos++;
-			return h;
-		case 113:
-			var h = new IntHash();
-			this.cache.push(h);
-			var buf = this.buf;
-			var c = this.buf.cca(this.pos++);
-			while(c == 58) {
-				var i = this.readDigits();
-				h.set(i,this.unserialize());
-				c = this.buf.cca(this.pos++);
-			}
-			if(c != 104) throw "Invalid IntHash format";
-			return h;
-		case 118:
-			var d = Date.fromString(this.buf.substr(this.pos,19));
-			this.cache.push(d);
-			this.pos += 19;
-			return d;
-		case 115:
-			var len = this.readDigits();
-			var buf = this.buf;
-			if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid bytes length";
-			var codes = haxe.Unserializer.CODES;
-			if(codes == null) {
-				codes = haxe.Unserializer.initCodes();
-				haxe.Unserializer.CODES = codes;
-			}
-			var i = this.pos;
-			var rest = len & 3;
-			var size = (len >> 2) * 3 + (rest >= 2?rest - 1:0);
-			var max = i + (len - rest);
-			var bytes = haxe.io.Bytes.alloc(size);
-			var bpos = 0;
-			while(i < max) {
-				var c1 = codes[buf.cca(i++)];
-				var c2 = codes[buf.cca(i++)];
-				bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
+			if(c == 117) {
+				this.pos++;
+				var n = this.readDigits();
+				a[a.length + n - 1] = null;
+			} else a.push(this.unserialize());
+		}
+		return a;
+	case 111:
+		var o = { };
+		this.cache.push(o);
+		this.unserializeObject(o);
+		return o;
+	case 114:
+		var n = this.readDigits();
+		if(n < 0 || n >= this.cache.length) throw "Invalid reference";
+		return this.cache[n];
+	case 82:
+		var n = this.readDigits();
+		if(n < 0 || n >= this.scache.length) throw "Invalid string reference";
+		return this.scache[n];
+	case 120:
+		throw this.unserialize();
+		break;
+	case 99:
+		var name = this.unserialize();
+		var cl = this.resolver.resolveClass(name);
+		if(cl == null) throw "Class not found " + name;
+		var o = Type.createEmptyInstance(cl);
+		this.cache.push(o);
+		this.unserializeObject(o);
+		return o;
+	case 119:
+		var name = this.unserialize();
+		var edecl = this.resolver.resolveEnum(name);
+		if(edecl == null) throw "Enum not found " + name;
+		return this.unserializeEnum(edecl,this.unserialize());
+	case 106:
+		var name = this.unserialize();
+		var edecl = this.resolver.resolveEnum(name);
+		if(edecl == null) throw "Enum not found " + name;
+		this.pos++;
+		var index = this.readDigits();
+		var tag = Type.getEnumConstructs(edecl)[index];
+		if(tag == null) throw "Unknown enum index " + name + "@" + index;
+		return this.unserializeEnum(edecl,tag);
+	case 108:
+		var l = new List();
+		this.cache.push(l);
+		var buf = this.buf;
+		while(this.buf.cca(this.pos) != 104) l.add(this.unserialize());
+		this.pos++;
+		return l;
+	case 98:
+		var h = new Hash();
+		this.cache.push(h);
+		var buf = this.buf;
+		while(this.buf.cca(this.pos) != 104) {
+			var s = this.unserialize();
+			h.set(s,this.unserialize());
+		}
+		this.pos++;
+		return h;
+	case 113:
+		var h = new IntHash();
+		this.cache.push(h);
+		var buf = this.buf;
+		var c = this.buf.cca(this.pos++);
+		while(c == 58) {
+			var i = this.readDigits();
+			h.set(i,this.unserialize());
+			c = this.buf.cca(this.pos++);
+		}
+		if(c != 104) throw "Invalid IntHash format";
+		return h;
+	case 118:
+		var d = Date.fromString(this.buf.substr(this.pos,19));
+		this.cache.push(d);
+		this.pos += 19;
+		return d;
+	case 115:
+		var len = this.readDigits();
+		var buf = this.buf;
+		if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid bytes length";
+		var codes = haxe.Unserializer.CODES;
+		if(codes == null) {
+			codes = haxe.Unserializer.initCodes();
+			haxe.Unserializer.CODES = codes;
+		}
+		var i = this.pos;
+		var rest = len & 3;
+		var size = (len >> 2) * 3 + (rest >= 2?rest - 1:0);
+		var max = i + (len - rest);
+		var bytes = haxe.io.Bytes.alloc(size);
+		var bpos = 0;
+		while(i < max) {
+			var c1 = codes[buf.cca(i++)];
+			var c2 = codes[buf.cca(i++)];
+			bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
+			var c3 = codes[buf.cca(i++)];
+			bytes.b[bpos++] = (c2 << 4 | c3 >> 2) & 255;
+			var c4 = codes[buf.cca(i++)];
+			bytes.b[bpos++] = (c3 << 6 | c4) & 255;
+		}
+		if(rest >= 2) {
+			var c1 = codes[buf.cca(i++)];
+			var c2 = codes[buf.cca(i++)];
+			bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
+			if(rest == 3) {
 				var c3 = codes[buf.cca(i++)];
 				bytes.b[bpos++] = (c2 << 4 | c3 >> 2) & 255;
-				var c4 = codes[buf.cca(i++)];
-				bytes.b[bpos++] = (c3 << 6 | c4) & 255;
 			}
-			if(rest >= 2) {
-				var c1 = codes[buf.cca(i++)];
-				var c2 = codes[buf.cca(i++)];
-				bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
-				if(rest == 3) {
-					var c3 = codes[buf.cca(i++)];
-					bytes.b[bpos++] = (c2 << 4 | c3 >> 2) & 255;
-				}
-			}
-			this.pos += len;
-			this.cache.push(bytes);
-			return bytes;
-		case 67:
-			var name = this.unserialize();
-			var cl = this.resolver.resolveClass(name);
-			if(cl == null) throw "Class not found " + name;
-			var o = Type.createEmptyInstance(cl);
-			this.cache.push(o);
-			o.hxUnserialize(this);
-			if(this.buf.cca(this.pos++) != 103) throw "Invalid custom data";
-			return o;
-		default:
 		}
-		this.pos--;
-		throw "Invalid char " + this.buf.charAt(this.pos) + " at position " + this.pos;
+		this.pos += len;
+		this.cache.push(bytes);
+		return bytes;
+	case 67:
+		var name = this.unserialize();
+		var cl = this.resolver.resolveClass(name);
+		if(cl == null) throw "Class not found " + name;
+		var o = Type.createEmptyInstance(cl);
+		this.cache.push(o);
+		o.hxUnserialize(this);
+		if(this.buf.cca(this.pos++) != 103) throw "Invalid custom data";
+		return o;
+	default:
 	}
-	,__class__: haxe.Unserializer
+	this.pos--;
+	throw "Invalid char " + this.buf.charAt(this.pos) + " at position " + this.pos;
 }
-server.api.NotificationsProxy = $hxClasses["server.api.NotificationsProxy"] = function(c) {
+haxe.Unserializer.prototype.__class__ = haxe.Unserializer;
+server.api.NotificationsProxy = function(c) {
+	if( c === $_ ) return;
 	this._conn = c.resolve("server.api.NotificationsService");
-};
-server.api.NotificationsProxy.__name__ = ["server","api","NotificationsProxy"];
-server.api.NotificationsProxy.prototype = {
-	_conn: null
-	,getTheFoo: function(fooId,cb) {
-		this._conn.resolve("getTheFoo").call([fooId],cb);
-	}
-	,__class__: server.api.NotificationsProxy
 }
-app.edit.EditController = $hxClasses["app.edit.EditController"] = function() {
+server.api.NotificationsProxy.__name__ = ["server","api","NotificationsProxy"];
+server.api.NotificationsProxy.prototype._conn = null;
+server.api.NotificationsProxy.prototype.getTheFoo = function(fooId,cb) {
+	this._conn.resolve("getTheFoo").call([fooId],cb);
+}
+server.api.NotificationsProxy.prototype.__class__ = server.api.NotificationsProxy;
+app.edit.EditController = function(p) {
+	if( p === $_ ) return;
 	this.view = new app.edit.EditView(this);
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-};
+}
 app.edit.EditController.__name__ = ["app","edit","EditController"];
-app.edit.EditController.prototype = {
-	view: null
-	,__class__: app.edit.EditController
-}
+app.edit.EditController.prototype.view = null;
+app.edit.EditController.prototype.__class__ = app.edit.EditController;
 if(!app.project.model) app.project.model = {}
-app.project.model.Project = $hxClasses["app.project.model.Project"] = function() {
-};
-app.project.model.Project.__name__ = ["app","project","model","Project"];
-app.project.model.Project.prototype = {
-	id: null
-	,title: null
-	,lecturer: null
-	,notes: null
-	,oldID: null
-	,save: function() {
-	}
-	,__class__: app.project.model.Project
+app.project.model.Project = function(p) {
 }
-haxe.io.Error = $hxClasses["haxe.io.Error"] = { __ename__ : ["haxe","io","Error"], __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"] }
+app.project.model.Project.__name__ = ["app","project","model","Project"];
+app.project.model.Project.prototype.id = null;
+app.project.model.Project.prototype.title = null;
+app.project.model.Project.prototype.lecturer = null;
+app.project.model.Project.prototype.notes = null;
+app.project.model.Project.prototype.__class__ = app.project.model.Project;
+app.project.model.Project.__interfaces__ = [haxe.rtti.Infos];
+haxe.io.Error = { __ename__ : ["haxe","io","Error"], __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"] }
 haxe.io.Error.Blocked = ["Blocked",0];
 haxe.io.Error.Blocked.toString = $estr;
 haxe.io.Error.Blocked.__enum__ = haxe.io.Error;
@@ -5369,34 +5830,60 @@ haxe.io.Error.OutsideBounds = ["OutsideBounds",2];
 haxe.io.Error.OutsideBounds.toString = $estr;
 haxe.io.Error.OutsideBounds.__enum__ = haxe.io.Error;
 haxe.io.Error.Custom = function(e) { var $x = ["Custom",3,e]; $x.__enum__ = haxe.io.Error; $x.toString = $estr; return $x; }
-haxe.io.BytesOutput = $hxClasses["haxe.io.BytesOutput"] = function() {
+if(!autoform.renderer) autoform.renderer = {}
+autoform.renderer.DefaultRenderer = function(form) {
+	if( form === $_ ) return;
+	autoform.AbstractRenderer.call(this,form);
+	this.displays.set("text",autoform.ui.TextField);
+	this.displays.set("textarea",autoform.ui.TextArea);
+	this.displays.set("hidden",autoform.ui.HiddenField);
+	this.displays.set("checkbox",autoform.ui.CheckBox);
+}
+autoform.renderer.DefaultRenderer.__name__ = ["autoform","renderer","DefaultRenderer"];
+autoform.renderer.DefaultRenderer.__super__ = autoform.AbstractRenderer;
+for(var k in autoform.AbstractRenderer.prototype ) autoform.renderer.DefaultRenderer.prototype[k] = autoform.AbstractRenderer.prototype[k];
+autoform.renderer.DefaultRenderer.prototype.run = function(fields) {
+	var _g = 0;
+	while(_g < fields.length) {
+		var field = fields[_g];
+		++_g;
+		var thisClass = String;
+		var element;
+		var display = autoform.AbstractRenderer.guessDisplay(field);
+		var classOfFieldUI = this.displays.exists(display)?this.displays.get(display):this.displays.get("text");
+		element = Type.createInstance(classOfFieldUI,[field]);
+		domtools.QueryDOMManipulation.appendTo(element,null,this.form);
+	}
+}
+autoform.renderer.DefaultRenderer.prototype.__class__ = autoform.renderer.DefaultRenderer;
+haxe.io.BytesOutput = function(p) {
+	if( p === $_ ) return;
 	this.b = new haxe.io.BytesBuffer();
-};
+}
 haxe.io.BytesOutput.__name__ = ["haxe","io","BytesOutput"];
 haxe.io.BytesOutput.__super__ = haxe.io.Output;
-haxe.io.BytesOutput.prototype = $extend(haxe.io.Output.prototype,{
-	b: null
-	,writeByte: function(c) {
-		this.b.b.push(c);
-	}
-	,writeBytes: function(buf,pos,len) {
-		this.b.addBytes(buf,pos,len);
-		return len;
-	}
-	,getBytes: function() {
-		return this.b.getBytes();
-	}
-	,__class__: haxe.io.BytesOutput
-});
+for(var k in haxe.io.Output.prototype ) haxe.io.BytesOutput.prototype[k] = haxe.io.Output.prototype[k];
+haxe.io.BytesOutput.prototype.b = null;
+haxe.io.BytesOutput.prototype.writeByte = function(c) {
+	this.b.b.push(c);
+}
+haxe.io.BytesOutput.prototype.writeBytes = function(buf,pos,len) {
+	this.b.addBytes(buf,pos,len);
+	return len;
+}
+haxe.io.BytesOutput.prototype.getBytes = function() {
+	return this.b.getBytes();
+}
+haxe.io.BytesOutput.prototype.__class__ = haxe.io.BytesOutput;
 if(!erazor._Parser) erazor._Parser = {}
-erazor._Parser.ParseContext = $hxClasses["erazor._Parser.ParseContext"] = { __ename__ : ["erazor","_Parser","ParseContext"], __constructs__ : ["literal","code"] }
+erazor._Parser.ParseContext = { __ename__ : ["erazor","_Parser","ParseContext"], __constructs__ : ["literal","code"] }
 erazor._Parser.ParseContext.literal = ["literal",0];
 erazor._Parser.ParseContext.literal.toString = $estr;
 erazor._Parser.ParseContext.literal.__enum__ = erazor._Parser.ParseContext;
 erazor._Parser.ParseContext.code = ["code",1];
 erazor._Parser.ParseContext.code.toString = $estr;
 erazor._Parser.ParseContext.code.__enum__ = erazor._Parser.ParseContext;
-erazor._Parser.ParseResult = $hxClasses["erazor._Parser.ParseResult"] = { __ename__ : ["erazor","_Parser","ParseResult"], __constructs__ : ["keepGoing","doneIncludeCurrent","doneSkipCurrent"] }
+erazor._Parser.ParseResult = { __ename__ : ["erazor","_Parser","ParseResult"], __constructs__ : ["keepGoing","doneIncludeCurrent","doneSkipCurrent"] }
 erazor._Parser.ParseResult.keepGoing = ["keepGoing",0];
 erazor._Parser.ParseResult.keepGoing.toString = $estr;
 erazor._Parser.ParseResult.keepGoing.__enum__ = erazor._Parser.ParseResult;
@@ -5406,216 +5893,216 @@ erazor._Parser.ParseResult.doneIncludeCurrent.__enum__ = erazor._Parser.ParseRes
 erazor._Parser.ParseResult.doneSkipCurrent = ["doneSkipCurrent",2];
 erazor._Parser.ParseResult.doneSkipCurrent.toString = $estr;
 erazor._Parser.ParseResult.doneSkipCurrent.__enum__ = erazor._Parser.ParseResult;
-erazor.Parser = $hxClasses["erazor.Parser"] = function() {
+erazor.Parser = function(p) {
+	if( p === $_ ) return;
 	this.condMatch = new EReg("^@(?:if|for|while)\\b","");
 	this.inConditionalMatch = new EReg("^(?:\\}[\\s\r\n]*else if\\b|\\}[\\s\r\n]*else[\\s\r\n]*{)","");
 	this.variableChar = new EReg("^[_\\w\\.]$","");
-};
+}
 erazor.Parser.__name__ = ["erazor","Parser"];
-erazor.Parser.prototype = {
-	condMatch: null
-	,inConditionalMatch: null
-	,variableChar: null
-	,context: null
-	,bracketStack: null
-	,conditionalStack: null
-	,parseScriptPart: function(template,startBrace,endBrace) {
-		var insideSingleQuote = false;
-		var insideDoubleQuote = false;
-		var stack = startBrace == ""?1:0;
-		var i = -1;
-		while(++i < template.length) {
-			var $char = template.charAt(i);
-			if(!insideDoubleQuote && !insideSingleQuote) switch($char) {
-			case startBrace:
-				++stack;
-				break;
-			case endBrace:
-				--stack;
-				if(stack == 0) return template.substr(0,i + 1);
-				if(stack < 0) throw "Unbalanced braces for block: " + template.substr(0,100) + " ...";
-				break;
-			case "\"":
-				insideDoubleQuote = true;
-				break;
-			case "'":
-				insideSingleQuote = true;
-				break;
-			} else if(insideDoubleQuote && $char == "\"" && template.charAt(i - 1) != "\\") insideDoubleQuote = false; else if(insideSingleQuote && $char == "'" && template.charAt(i - 1) != "\\") insideSingleQuote = false;
+erazor.Parser.prototype.condMatch = null;
+erazor.Parser.prototype.inConditionalMatch = null;
+erazor.Parser.prototype.variableChar = null;
+erazor.Parser.prototype.context = null;
+erazor.Parser.prototype.bracketStack = null;
+erazor.Parser.prototype.conditionalStack = null;
+erazor.Parser.prototype.parseScriptPart = function(template,startBrace,endBrace) {
+	var insideSingleQuote = false;
+	var insideDoubleQuote = false;
+	var stack = startBrace == ""?1:0;
+	var i = -1;
+	while(++i < template.length) {
+		var $char = template.charAt(i);
+		if(!insideDoubleQuote && !insideSingleQuote) switch($char) {
+		case startBrace:
+			++stack;
+			break;
+		case endBrace:
+			--stack;
+			if(stack == 0) return template.substr(0,i + 1);
+			if(stack < 0) throw "Unbalanced braces for block: " + template.substr(0,100) + " ...";
+			break;
+		case "\"":
+			insideDoubleQuote = true;
+			break;
+		case "'":
+			insideSingleQuote = true;
+			break;
+		} else if(insideDoubleQuote && $char == "\"" && template.charAt(i - 1) != "\\") insideDoubleQuote = false; else if(insideSingleQuote && $char == "'" && template.charAt(i - 1) != "\\") insideSingleQuote = false;
+	}
+	throw "Failed to find a closing delimiter for the script block: " + template.substr(0,100);
+}
+erazor.Parser.prototype.parseContext = function(template) {
+	if(this.peek(template) == erazor.Parser.at && this.peek(template,1) != erazor.Parser.at) return erazor._Parser.ParseContext.code;
+	if(this.conditionalStack > 0 && this.peek(template) == "}") {
+		switch( (this.bracketStack[this.bracketStack.length - 1])[1] ) {
+		case 1:
+			return erazor._Parser.ParseContext.code;
+		default:
 		}
-		throw "Failed to find a closing delimiter for the script block: " + template.substr(0,100);
 	}
-	,parseContext: function(template) {
-		if(this.peek(template) == erazor.Parser.at && this.peek(template,1) != erazor.Parser.at) return erazor._Parser.ParseContext.code;
-		if(this.conditionalStack > 0 && this.peek(template) == "}") {
-			switch( (this.bracketStack[this.bracketStack.length - 1])[1] ) {
-			case 1:
-				return erazor._Parser.ParseContext.code;
-			default:
-			}
-		}
-		return erazor._Parser.ParseContext.literal;
-	}
-	,accept: function(template,acceptor,throwAtEnd) {
-		return this.parseString(template,function(chr) {
-			return acceptor(chr)?erazor._Parser.ParseResult.keepGoing:erazor._Parser.ParseResult.doneSkipCurrent;
-		},throwAtEnd);
-	}
-	,isIdentifier: function($char,first) {
-		if(first == null) first = true;
-		return first?$char >= "a" && $char <= "z" || $char >= "A" && $char <= "Z" || $char == "_":$char >= "a" && $char <= "z" || $char >= "A" && $char <= "Z" || $char >= "0" && $char <= "9" || $char == "_";
-	}
-	,acceptIdentifier: function(template) {
-		var first = true;
-		var self = this;
-		return this.accept(template,function(chr) {
-			var status = self.isIdentifier(chr,first);
-			first = false;
-			return status;
-		},false);
-	}
-	,acceptBracket: function(template,bracket) {
-		return this.parseScriptPart(template,bracket,bracket == "("?")":"]");
-	}
-	,parseBlock: function(template) {
-		return this.context == erazor._Parser.ParseContext.code?this.parseCodeBlock(template):this.parseLiteral(template);
-	}
-	,parseConditional: function(template) {
-		var str = this.parseScriptPart(template,"","{");
-		return { block : erazor.TBlock.codeBlock(str.substr(1)), length : str.length};
-	}
-	,peek: function(template,offset) {
-		if(offset == null) offset = 0;
-		return template.length > offset?template.charAt(offset):null;
-	}
-	,parseVariable: function(template) {
-		var output = "";
-		var $char = null;
-		var part = null;
-		template = template.substr(1);
-		do {
-			part = this.acceptIdentifier(template);
+	return erazor._Parser.ParseContext.literal;
+}
+erazor.Parser.prototype.accept = function(template,acceptor,throwAtEnd) {
+	return this.parseString(template,function(chr) {
+		return acceptor(chr)?erazor._Parser.ParseResult.keepGoing:erazor._Parser.ParseResult.doneSkipCurrent;
+	},throwAtEnd);
+}
+erazor.Parser.prototype.isIdentifier = function($char,first) {
+	if(first == null) first = true;
+	return first?$char >= "a" && $char <= "z" || $char >= "A" && $char <= "Z" || $char == "_":$char >= "a" && $char <= "z" || $char >= "A" && $char <= "Z" || $char >= "0" && $char <= "9" || $char == "_";
+}
+erazor.Parser.prototype.acceptIdentifier = function(template) {
+	var first = true;
+	var self = this;
+	return this.accept(template,function(chr) {
+		var status = self.isIdentifier(chr,first);
+		first = false;
+		return status;
+	},false);
+}
+erazor.Parser.prototype.acceptBracket = function(template,bracket) {
+	return this.parseScriptPart(template,bracket,bracket == "("?")":"]");
+}
+erazor.Parser.prototype.parseBlock = function(template) {
+	return this.context == erazor._Parser.ParseContext.code?this.parseCodeBlock(template):this.parseLiteral(template);
+}
+erazor.Parser.prototype.parseConditional = function(template) {
+	var str = this.parseScriptPart(template,"","{");
+	return { block : erazor.TBlock.codeBlock(str.substr(1)), length : str.length};
+}
+erazor.Parser.prototype.peek = function(template,offset) {
+	if(offset == null) offset = 0;
+	return template.length > offset?template.charAt(offset):null;
+}
+erazor.Parser.prototype.parseVariable = function(template) {
+	var output = "";
+	var $char = null;
+	var part = null;
+	template = template.substr(1);
+	do {
+		part = this.acceptIdentifier(template);
+		template = template.substr(part.length);
+		output += part;
+		$char = this.peek(template);
+		while($char == "(" || $char == "[") {
+			part = this.acceptBracket(template,$char);
 			template = template.substr(part.length);
 			output += part;
 			$char = this.peek(template);
-			while($char == "(" || $char == "[") {
-				part = this.acceptBracket(template,$char);
-				template = template.substr(part.length);
-				output += part;
-				$char = this.peek(template);
-			}
-			if($char == "." && this.isIdentifier(this.peek(template,1))) {
-				template = template.substr(1);
-				output += ".";
-			} else break;
-		} while($char != null);
-		return { block : erazor.TBlock.printBlock(output), length : output.length + 1};
-	}
-	,parseVariableChar: function($char) {
-		return this.variableChar.match($char)?erazor._Parser.ParseResult.keepGoing:erazor._Parser.ParseResult.doneSkipCurrent;
-	}
-	,parseCodeBlock: function(template) {
-		if(this.bracketStack.length > 0 && this.peek(template) == "}") {
-			if(this.inConditionalMatch.match(template)) {
-				var str = this.parseScriptPart(template,"","{");
-				return { block : erazor.TBlock.codeBlock(str), length : str.length};
-			}
-			if((function($this) {
-				var $r;
-				switch( ($this.bracketStack.pop())[1] ) {
-				case 1:
-					$r = --$this.conditionalStack < 0;
-					break;
-				default:
-					$r = true;
-				}
-				return $r;
-			}(this))) throw erazor.Parser.bracketMismatch;
-			return { block : erazor.TBlock.codeBlock("}"), length : 1};
 		}
-		if(this.condMatch.match(template)) {
-			this.bracketStack.push(erazor._Parser.ParseContext.code);
-			++this.conditionalStack;
-			return this.parseConditional(template);
-		}
-		if(this.peek(template) == "@" && this.isIdentifier(this.peek(template,1))) return this.parseVariable(template);
-		var startBrace = this.peek(template,1);
-		var endBrace = startBrace == "{"?"}":")";
-		var str = this.parseScriptPart(template.substr(1),startBrace,endBrace);
-		var noBraces = StringTools.trim(str.substr(1,str.length - 2));
-		if(startBrace == "{") return { block : erazor.TBlock.codeBlock(noBraces), length : str.length + 1}; else return { block : erazor.TBlock.printBlock(noBraces), length : str.length + 1};
-	}
-	,parseString: function(str,modifier,throwAtEnd) {
-		var insideSingleQuote = false;
-		var insideDoubleQuote = false;
-		var i = -1;
-		while(++i < str.length) {
-			var $char = str.charAt(i);
-			if(!insideDoubleQuote && !insideSingleQuote) {
-				switch( (modifier($char))[1] ) {
-				case 1:
-					return str.substr(0,i + 1);
-				case 2:
-					return str.substr(0,i);
-				case 0:
-					break;
-				}
-				if($char == "\"") insideDoubleQuote = true; else if($char == "'") insideSingleQuote = true;
-			} else if(insideDoubleQuote && $char == "\"" && str.charAt(i - 1) != "\\") insideDoubleQuote = false; else if(insideSingleQuote && $char == "'" && str.charAt(i - 1) != "\\") insideSingleQuote = false;
-		}
-		if(throwAtEnd) throw "Failed to find a closing delimiter: " + str.substr(0,100);
-		return str;
-	}
-	,parseLiteral: function(template) {
-		var len = template.length;
-		var i = -1;
-		while(++i < len) {
-			var $char = template.charAt(i);
-			switch($char) {
-			case erazor.Parser.at:
-				if(len > i + 1 && template.charAt(i + 1) != erazor.Parser.at) return { block : erazor.TBlock.literal(this.escapeLiteral(template.substr(0,i))), length : i};
-				++i;
-				break;
-			case "}":
-				if(this.bracketStack.length > 0) {
-					switch( (this.bracketStack[this.bracketStack.length - 1])[1] ) {
-					case 1:
-						return { block : erazor.TBlock.literal(this.escapeLiteral(template.substr(0,i))), length : i};
-					case 0:
-						this.bracketStack.pop();
-						break;
-					}
-				} else throw erazor.Parser.bracketMismatch;
-				break;
-			case "{":
-				this.bracketStack.push(erazor._Parser.ParseContext.literal);
-				break;
-			}
-		}
-		return { block : erazor.TBlock.literal(this.escapeLiteral(template)), length : len};
-	}
-	,escapeLiteral: function(input) {
-		return StringTools.replace(input,erazor.Parser.at + erazor.Parser.at,erazor.Parser.at);
-	}
-	,parse: function(template) {
-		var output = new Array();
-		this.bracketStack = [];
-		this.conditionalStack = 0;
-		while(template != "") {
-			this.context = this.parseContext(template);
-			var block = this.parseBlock(template);
-			if(block.block != null) output.push(block.block);
-			template = template.substr(block.length);
-		}
-		if(this.bracketStack.length != 0) throw erazor.Parser.bracketMismatch;
-		return output;
-	}
-	,__class__: erazor.Parser
+		if($char == "." && this.isIdentifier(this.peek(template,1))) {
+			template = template.substr(1);
+			output += ".";
+		} else break;
+	} while($char != null);
+	return { block : erazor.TBlock.printBlock(output), length : output.length + 1};
 }
-haxe.io.Bytes = $hxClasses["haxe.io.Bytes"] = function(length,b) {
+erazor.Parser.prototype.parseVariableChar = function($char) {
+	return this.variableChar.match($char)?erazor._Parser.ParseResult.keepGoing:erazor._Parser.ParseResult.doneSkipCurrent;
+}
+erazor.Parser.prototype.parseCodeBlock = function(template) {
+	if(this.bracketStack.length > 0 && this.peek(template) == "}") {
+		if(this.inConditionalMatch.match(template)) {
+			var str = this.parseScriptPart(template,"","{");
+			return { block : erazor.TBlock.codeBlock(str), length : str.length};
+		}
+		if((function($this) {
+			var $r;
+			switch( ($this.bracketStack.pop())[1] ) {
+			case 1:
+				$r = --$this.conditionalStack < 0;
+				break;
+			default:
+				$r = true;
+			}
+			return $r;
+		}(this))) throw erazor.Parser.bracketMismatch;
+		return { block : erazor.TBlock.codeBlock("}"), length : 1};
+	}
+	if(this.condMatch.match(template)) {
+		this.bracketStack.push(erazor._Parser.ParseContext.code);
+		++this.conditionalStack;
+		return this.parseConditional(template);
+	}
+	if(this.peek(template) == "@" && this.isIdentifier(this.peek(template,1))) return this.parseVariable(template);
+	var startBrace = this.peek(template,1);
+	var endBrace = startBrace == "{"?"}":")";
+	var str = this.parseScriptPart(template.substr(1),startBrace,endBrace);
+	var noBraces = StringTools.trim(str.substr(1,str.length - 2));
+	if(startBrace == "{") return { block : erazor.TBlock.codeBlock(noBraces), length : str.length + 1}; else return { block : erazor.TBlock.printBlock(noBraces), length : str.length + 1};
+}
+erazor.Parser.prototype.parseString = function(str,modifier,throwAtEnd) {
+	var insideSingleQuote = false;
+	var insideDoubleQuote = false;
+	var i = -1;
+	while(++i < str.length) {
+		var $char = str.charAt(i);
+		if(!insideDoubleQuote && !insideSingleQuote) {
+			switch( (modifier($char))[1] ) {
+			case 1:
+				return str.substr(0,i + 1);
+			case 2:
+				return str.substr(0,i);
+			case 0:
+				break;
+			}
+			if($char == "\"") insideDoubleQuote = true; else if($char == "'") insideSingleQuote = true;
+		} else if(insideDoubleQuote && $char == "\"" && str.charAt(i - 1) != "\\") insideDoubleQuote = false; else if(insideSingleQuote && $char == "'" && str.charAt(i - 1) != "\\") insideSingleQuote = false;
+	}
+	if(throwAtEnd) throw "Failed to find a closing delimiter: " + str.substr(0,100);
+	return str;
+}
+erazor.Parser.prototype.parseLiteral = function(template) {
+	var len = template.length;
+	var i = -1;
+	while(++i < len) {
+		var $char = template.charAt(i);
+		switch($char) {
+		case erazor.Parser.at:
+			if(len > i + 1 && template.charAt(i + 1) != erazor.Parser.at) return { block : erazor.TBlock.literal(this.escapeLiteral(template.substr(0,i))), length : i};
+			++i;
+			break;
+		case "}":
+			if(this.bracketStack.length > 0) {
+				switch( (this.bracketStack[this.bracketStack.length - 1])[1] ) {
+				case 1:
+					return { block : erazor.TBlock.literal(this.escapeLiteral(template.substr(0,i))), length : i};
+				case 0:
+					this.bracketStack.pop();
+					break;
+				}
+			} else throw erazor.Parser.bracketMismatch;
+			break;
+		case "{":
+			this.bracketStack.push(erazor._Parser.ParseContext.literal);
+			break;
+		}
+	}
+	return { block : erazor.TBlock.literal(this.escapeLiteral(template)), length : len};
+}
+erazor.Parser.prototype.escapeLiteral = function(input) {
+	return StringTools.replace(input,erazor.Parser.at + erazor.Parser.at,erazor.Parser.at);
+}
+erazor.Parser.prototype.parse = function(template) {
+	var output = new Array();
+	this.bracketStack = [];
+	this.conditionalStack = 0;
+	while(template != "") {
+		this.context = this.parseContext(template);
+		var block = this.parseBlock(template);
+		if(block.block != null) output.push(block.block);
+		template = template.substr(block.length);
+	}
+	if(this.bracketStack.length != 0) throw erazor.Parser.bracketMismatch;
+	return output;
+}
+erazor.Parser.prototype.__class__ = erazor.Parser;
+haxe.io.Bytes = function(length,b) {
+	if( length === $_ ) return;
 	this.length = length;
 	this.b = b;
-};
+}
 haxe.io.Bytes.__name__ = ["haxe","io","Bytes"];
 haxe.io.Bytes.alloc = function(length) {
 	var a = new Array();
@@ -5651,98 +6138,151 @@ haxe.io.Bytes.ofString = function(s) {
 haxe.io.Bytes.ofData = function(b) {
 	return new haxe.io.Bytes(b.length,b);
 }
-haxe.io.Bytes.prototype = {
-	length: null
-	,b: null
-	,get: function(pos) {
-		return this.b[pos];
-	}
-	,set: function(pos,v) {
-		this.b[pos] = v & 255;
-	}
-	,blit: function(pos,src,srcpos,len) {
-		if(pos < 0 || srcpos < 0 || len < 0 || pos + len > this.length || srcpos + len > src.length) throw haxe.io.Error.OutsideBounds;
-		var b1 = this.b;
-		var b2 = src.b;
-		if(b1 == b2 && pos > srcpos) {
-			var i = len;
-			while(i > 0) {
-				i--;
-				b1[i + pos] = b2[i + srcpos];
-			}
-			return;
-		}
-		var _g = 0;
-		while(_g < len) {
-			var i = _g++;
+haxe.io.Bytes.prototype.length = null;
+haxe.io.Bytes.prototype.b = null;
+haxe.io.Bytes.prototype.get = function(pos) {
+	return this.b[pos];
+}
+haxe.io.Bytes.prototype.set = function(pos,v) {
+	this.b[pos] = v & 255;
+}
+haxe.io.Bytes.prototype.blit = function(pos,src,srcpos,len) {
+	if(pos < 0 || srcpos < 0 || len < 0 || pos + len > this.length || srcpos + len > src.length) throw haxe.io.Error.OutsideBounds;
+	var b1 = this.b;
+	var b2 = src.b;
+	if(b1 == b2 && pos > srcpos) {
+		var i = len;
+		while(i > 0) {
+			i--;
 			b1[i + pos] = b2[i + srcpos];
 		}
+		return;
 	}
-	,sub: function(pos,len) {
-		if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
-		return new haxe.io.Bytes(len,this.b.slice(pos,pos + len));
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		b1[i + pos] = b2[i + srcpos];
 	}
-	,compare: function(other) {
-		var b1 = this.b;
-		var b2 = other.b;
-		var len = this.length < other.length?this.length:other.length;
-		var _g = 0;
-		while(_g < len) {
-			var i = _g++;
-			if(b1[i] != b2[i]) return b1[i] - b2[i];
-		}
-		return this.length - other.length;
-	}
-	,readString: function(pos,len) {
-		if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
-		var s = "";
-		var b = this.b;
-		var fcc = String.fromCharCode;
-		var i = pos;
-		var max = pos + len;
-		while(i < max) {
-			var c = b[i++];
-			if(c < 128) {
-				if(c == 0) break;
-				s += fcc(c);
-			} else if(c < 224) s += fcc((c & 63) << 6 | b[i++] & 127); else if(c < 240) {
-				var c2 = b[i++];
-				s += fcc((c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127);
-			} else {
-				var c2 = b[i++];
-				var c3 = b[i++];
-				s += fcc((c & 15) << 18 | (c2 & 127) << 12 | c3 << 6 & 127 | b[i++] & 127);
-			}
-		}
-		return s;
-	}
-	,toString: function() {
-		return this.readString(0,this.length);
-	}
-	,toHex: function() {
-		var s = new StringBuf();
-		var chars = [];
-		var str = "0123456789abcdef";
-		var _g1 = 0, _g = str.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			chars.push(str.charCodeAt(i));
-		}
-		var _g1 = 0, _g = this.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var c = this.b[i];
-			s.b[s.b.length] = String.fromCharCode(chars[c >> 4]);
-			s.b[s.b.length] = String.fromCharCode(chars[c & 15]);
-		}
-		return s.b.join("");
-	}
-	,getData: function() {
-		return this.b;
-	}
-	,__class__: haxe.io.Bytes
 }
-haxe.Int32 = $hxClasses["haxe.Int32"] = function() { }
+haxe.io.Bytes.prototype.sub = function(pos,len) {
+	if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
+	return new haxe.io.Bytes(len,this.b.slice(pos,pos + len));
+}
+haxe.io.Bytes.prototype.compare = function(other) {
+	var b1 = this.b;
+	var b2 = other.b;
+	var len = this.length < other.length?this.length:other.length;
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		if(b1[i] != b2[i]) return b1[i] - b2[i];
+	}
+	return this.length - other.length;
+}
+haxe.io.Bytes.prototype.readString = function(pos,len) {
+	if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
+	var s = "";
+	var b = this.b;
+	var fcc = String.fromCharCode;
+	var i = pos;
+	var max = pos + len;
+	while(i < max) {
+		var c = b[i++];
+		if(c < 128) {
+			if(c == 0) break;
+			s += fcc(c);
+		} else if(c < 224) s += fcc((c & 63) << 6 | b[i++] & 127); else if(c < 240) {
+			var c2 = b[i++];
+			s += fcc((c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127);
+		} else {
+			var c2 = b[i++];
+			var c3 = b[i++];
+			s += fcc((c & 15) << 18 | (c2 & 127) << 12 | c3 << 6 & 127 | b[i++] & 127);
+		}
+	}
+	return s;
+}
+haxe.io.Bytes.prototype.toString = function() {
+	return this.readString(0,this.length);
+}
+haxe.io.Bytes.prototype.toHex = function() {
+	var s = new StringBuf();
+	var chars = [];
+	var str = "0123456789abcdef";
+	var _g1 = 0, _g = str.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		chars.push(str.charCodeAt(i));
+	}
+	var _g1 = 0, _g = this.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		var c = this.b[i];
+		s.b[s.b.length] = String.fromCharCode(chars[c >> 4]);
+		s.b[s.b.length] = String.fromCharCode(chars[c & 15]);
+	}
+	return s.b.join("");
+}
+haxe.io.Bytes.prototype.getData = function() {
+	return this.b;
+}
+haxe.io.Bytes.prototype.__class__ = haxe.io.Bytes;
+client.ui.basic.Table = function(type,list) {
+	if( type === $_ ) return;
+	domtools.AbstractCustomElement.call(this,"table");
+	this.fields = new Hash();
+	this.type = type;
+	this.createTable();
+	domtools.QueryElementManipulation.addClass(this,"table");
+	domtools.QueryElementManipulation.addClass(this,"table-striped");
+	if(list != null) this.populateTable(list);
+}
+client.ui.basic.Table.__name__ = ["client","ui","basic","Table"];
+client.ui.basic.Table.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.basic.Table.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.basic.Table.prototype.type = null;
+client.ui.basic.Table.prototype.fields = null;
+client.ui.basic.Table.prototype.thead = null;
+client.ui.basic.Table.prototype.tbody = null;
+client.ui.basic.Table.prototype.createTable = function() {
+	this.thead = document.createElement("thead");
+	this.tbody = document.createElement("tbody");
+	domtools.QueryDOMManipulation.append(this,this.thead);
+	domtools.QueryDOMManipulation.append(this,this.tbody);
+	var _g = 0, _g1 = Type.getInstanceFields(this.type);
+	while(_g < _g1.length) {
+		var field = _g1[_g];
+		++_g;
+		var th = document.createElement("th");
+		{
+			th.textContent = field;
+			th;
+		}
+		domtools.DOMManipulation.append(this.thead,th);
+		this.fields.set(field,"Field: " + field);
+	}
+}
+client.ui.basic.Table.prototype.populateTable = function(list) {
+	var $it0 = list.iterator();
+	while( $it0.hasNext() ) {
+		var object = $it0.next();
+		var tr = document.createElement("tr");
+		domtools.DOMManipulation.append(this.tbody,tr);
+		var $it1 = this.fields.keys();
+		while( $it1.hasNext() ) {
+			var field = $it1.next();
+			var td = document.createElement("td");
+			var value = Reflect.field(object,field);
+			{
+				td.textContent = value;
+				td;
+			}
+			domtools.DOMManipulation.append(tr,td);
+		}
+	}
+}
+client.ui.basic.Table.prototype.__class__ = client.ui.basic.Table;
+haxe.Int32 = function() { }
 haxe.Int32.__name__ = ["haxe","Int32"];
 haxe.Int32.make = function(a,b) {
 	return a << 16 | b;
@@ -5812,10 +6352,8 @@ haxe.Int32.ucompare = function(a,b) {
 	if(a < 0) return b < 0?~b - ~a:1;
 	return b < 0?-1:a - b;
 }
-haxe.Int32.prototype = {
-	__class__: haxe.Int32
-}
-js.Lib = $hxClasses["js.Lib"] = function() { }
+haxe.Int32.prototype.__class__ = haxe.Int32;
+js.Lib = function() { }
 js.Lib.__name__ = ["js","Lib"];
 js.Lib.isIE = null;
 js.Lib.isOpera = null;
@@ -5830,10 +6368,8 @@ js.Lib.eval = function(code) {
 js.Lib.setErrorHandler = function(f) {
 	js.Lib.onerror = f;
 }
-js.Lib.prototype = {
-	__class__: js.Lib
-}
-var StringTools = $hxClasses["StringTools"] = function() { }
+js.Lib.prototype.__class__ = js.Lib;
+StringTools = function() { }
 StringTools.__name__ = ["StringTools"];
 StringTools.urlEncode = function(s) {
 	return encodeURIComponent(s);
@@ -5919,11 +6455,9 @@ StringTools.fastCodeAt = function(s,index) {
 StringTools.isEOF = function(c) {
 	return c != c;
 }
-StringTools.prototype = {
-	__class__: StringTools
-}
+StringTools.prototype.__class__ = StringTools;
 if(!hscript._Interp) hscript._Interp = {}
-hscript._Interp.Stop = $hxClasses["hscript._Interp.Stop"] = { __ename__ : ["hscript","_Interp","Stop"], __constructs__ : ["SBreak","SContinue","SReturn"] }
+hscript._Interp.Stop = { __ename__ : ["hscript","_Interp","Stop"], __constructs__ : ["SBreak","SContinue","SReturn"] }
 hscript._Interp.Stop.SBreak = ["SBreak",0];
 hscript._Interp.Stop.SBreak.toString = $estr;
 hscript._Interp.Stop.SBreak.__enum__ = hscript._Interp.Stop;
@@ -5931,6 +6465,7 @@ hscript._Interp.Stop.SContinue = ["SContinue",1];
 hscript._Interp.Stop.SContinue.toString = $estr;
 hscript._Interp.Stop.SContinue.__enum__ = hscript._Interp.Stop;
 hscript._Interp.Stop.SReturn = function(v) { var $x = ["SReturn",2,v]; $x.__enum__ = hscript._Interp.Stop; $x.toString = $estr; return $x; }
+$_ = {}
 js.Boot.__res = {}
 js.Boot.__init();
 {
@@ -5980,6 +6515,15 @@ js["XMLHttpRequest"] = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject
 	Math.isNaN = function(i) {
 		return isNaN(i);
 	};
+}
+{
+	Xml.Element = "element";
+	Xml.PCData = "pcdata";
+	Xml.CData = "cdata";
+	Xml.Comment = "comment";
+	Xml.DocType = "doctype";
+	Xml.Prolog = "prolog";
+	Xml.Document = "document";
 }
 {
 	/*!
@@ -6085,18 +6629,32 @@ haxe.Serializer.USE_CACHE = false;
 haxe.Serializer.USE_ENUM_INDEX = false;
 haxe.Serializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 AppConfig.projectDir = "/home/jason/VoseProjects/";
-domtools.ElementManipulation.NodeTypeElement = 1;
-domtools.ElementManipulation.NodeTypeAttribute = 2;
-domtools.ElementManipulation.NodeTypeText = 3;
 hscript.Parser.p1 = 0;
 hscript.Parser.readPos = 0;
 hscript.Parser.tokenMin = 0;
 hscript.Parser.tokenMax = 0;
 client.Client.conn = haxe.remoting.HttpAsyncConnection.urlConnect("http://localhost:1337");
 app.project.ProjectController.projectAPI = new app.project.ProjectAPIProxy(client.Client.conn);
+Xml.enode = new EReg("^<([a-zA-Z0-9:_-]+)","");
+Xml.ecdata = new EReg("^<!\\[CDATA\\[","i");
+Xml.edoctype = new EReg("^<!DOCTYPE ","i");
+Xml.eend = new EReg("^</([a-zA-Z0-9:_-]+)>","");
+Xml.epcdata = new EReg("^[^<]+","");
+Xml.ecomment = new EReg("^<!--","");
+Xml.eprolog = new EReg("^<\\?[^\\?]+\\?>","");
+Xml.eattribute = new EReg("^\\s*([a-zA-Z0-9:_-]+)\\s*=\\s*([\"'])([^\\2]*?)\\2","");
+Xml.eclose = new EReg("^[ \r\n\t]*(>|(/>))","");
+Xml.ecdata_end = new EReg("\\]\\]>","");
+Xml.edoctype_elt = new EReg("[\\[|\\]>]","");
+Xml.ecomment_end = new EReg("-->","");
+domtools.ElementManipulation.NodeTypeElement = 1;
+domtools.ElementManipulation.NodeTypeAttribute = 2;
+domtools.ElementManipulation.NodeTypeText = 3;
+autoform.AutoForm.formIDIncrement = 0;
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"11\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 erazor.Parser.at = "@";
 erazor.Parser.bracketMismatch = "Bracket mismatch! Inside template, non-paired brackets, '{' or '}', should be replaced by @{'{'} and @{'}'}.";
 js.Lib.onerror = null;

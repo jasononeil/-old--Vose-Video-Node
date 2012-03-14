@@ -7,6 +7,7 @@
 -lib xirsys_stdjs
 -lib domtools
 -lib transition9
+-cp /home/jason/workspace/autoform/
 -cp lib/haxe_remoting/src/
 -cp src/
 

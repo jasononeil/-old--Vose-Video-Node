@@ -1,19 +1,19 @@
 package app.project.model;
 
 
-class Project
+class Project implements haxe.rtti.Infos
 {
 	public var id:String;
 	public var title:String;
 	public var lecturer:String;
 	public var notes:Array<String>;
 
-	private var oldID:String;
-
 	public function new()
 	{
 		
 	}
+
+	#if server
 
 	public function save()
 	{
@@ -35,12 +35,14 @@ class Project
 	public static function get(id:String)
 	{
 		var o = new Project();
-		o.id = o.oldID = id;
+		o.id = id;
 		o.title = "The unit titled " + id;
 		o.lecturer = "Jason";
 		o.notes = new Array();
 		return o;
 	}
-	#end
+	#end // nodejs
+
+	#end // server
 }
 

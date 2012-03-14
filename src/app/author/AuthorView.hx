@@ -1,7 +1,6 @@
 package app.author;
 import app.author.AuthorController;
-using domtools.ElementManipulation;
-using domtools.Traversing;
+using domtools.Tools;
 
 class AuthorView extends domtools.AbstractCustomElement
 {

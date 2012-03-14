@@ -2,7 +2,7 @@ package app.author;
 
 import app.author.AuthorView;
 import domtools.Query;
-using domtools.DOMManipulation;
+using domtools.Tools;
 
 class AuthorController
 {

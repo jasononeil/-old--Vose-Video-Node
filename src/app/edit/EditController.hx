@@ -2,7 +2,7 @@ package app.edit;
 
 import app.edit.EditView;
 import domtools.Query;
-using domtools.DOMManipulation;
+using domtools.Tools;
 
 class EditController
 {

@@ -2,9 +2,9 @@ package app.project;
 import app.project.ProjectController;
 import app.project.model.Project;
 import erazor.Template;
-using domtools.ElementManipulation;
-using domtools.DOMManipulation;
-using domtools.Traversing;
+import client.ui.basic.Table;
+import autoform.AutoForm;
+using domtools.Tools;
 
 class ProjectView extends domtools.AbstractCustomElement
 {
@@ -18,40 +18,30 @@ class ProjectView extends domtools.AbstractCustomElement
 
 		this.addClass("controller").addClass("project");
 		
-		this.setInnerHTML("<h1>Project Controller</h1><ul></ul>");
+		this.setInnerHTML("<h1>Project Controller</h1>");
+
+		this.renderForm();
 	}
 
-	public function addProject(p:Project)
+	public function listProjects(list:Iterable<Project>)
 	{
-		var projectLine = new ProjectItem(p);
-		//trace (projectLine.innerHTML());
-		this.find("ul").append(projectLine);
+		var table = new Table<Project>(Project, list);
+		this.append(table);
 	}
 
-}
-
-import client.ui.basic.Link;
-private class ProjectItem extends domtools.AbstractCustomElement
-{
-	public function new (p:Project)
+	public function renderForm(?o:Project)
 	{
-		super ("li");
+		// Generate a form using autoform...
+		var form = new AutoForm<Project>(Project);
+		this.append(form);
 
-		// Create the link to the unit
-		var linkInnerHTML = "<span class='unitCode'></span>: <span class='unitTitle'></span> (<span class='unitLecturer'></span>)";
-		var unitLink = new Link(linkInnerHTML, "#", "Open Project");
-		unitLink.find("span.unitCode").setText(p.id);
-		unitLink.find("span.unitTitle").setText(p.title);
-		unitLink.find("span.unitLecturer").setText(p.lecturer);
-		unitLink.addClass("unitLink");
-
-		// edit and delete links
-		var editLink = new Link("Edit","#");
-		var archiveLink = new Link("Archive","#");
-
-		// Add them all
-		this.append(unitLink).append(editLink).append(archiveLink);
-
+		// if we have an object, set it as the default values
+		if (o != null) { populateForm(o); }
 	}
+
+	public function populateForm(o:Project)
+	{
 		
+	}
+
 }

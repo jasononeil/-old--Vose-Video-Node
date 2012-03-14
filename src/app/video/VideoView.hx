@@ -1,8 +1,7 @@
 package app.video;
 
 import app.video.VideoController;
-using domtools.ElementManipulation;
-using domtools.Traversing;
+using domtools.Tools;
 
 class VideoView extends domtools.AbstractCustomElement
 {

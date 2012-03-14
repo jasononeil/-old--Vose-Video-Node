@@ -1,5 +1,5 @@
 package client.ui.basic;
-using domtools.ElementManipulation;
+using domtools.Tools;
 
 class Link extends domtools.AbstractCustomElement
 {

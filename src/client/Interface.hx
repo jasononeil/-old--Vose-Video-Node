@@ -15,10 +15,7 @@ import domtools.Query;
 
 import client.ui.menu.Menu;
 import client.ui.menu.NavBar;
-using domtools.ElementManipulation;
-using domtools.EventManagement;
-using domtools.Traversing;
-using domtools.Style;
+using domtools.Tools;
 using StringTools;
 
 class Interface
@@ -59,32 +56,35 @@ class Interface
 		Query.document.body.appendChild(nav.getNode());
 		
 		// currently call via the "click" handler, later use SWFAddress.
-		new Query(".menu li").click(activateMenuItem);
+		new Query(".menu li").click(function (e:Event)
+		{
+			// Get the ID of the menu item that was activated.
+			// Later we'll try use SWFAddress
+			var menuItem:Node = cast e.currentTarget;
+			var id = menuItem.firstChild.attr("href").replace("#","");
+			showController(id);
+		});
+
+		
 	}
 
-	private static function activateMenuItem(e:Event)
-	{
-		// Get the ID of the menu item that was activated.
-		// Later we'll try use SWFAddress
-		var menuItem:Node = cast e.currentTarget;
-		var id = menuItem.firstChild.attr("href").replace("#","");
 
+	public function showController(id:String)
+	{
 		if (currentControllerShowing != id)
 		{
-
 			new Query(".controller").setCSS("display","none");
-			trace (id);
 			new Query(".controller." + id).setCSS("display","block");
 			
-			switch (id)
-			{
-				case "copy":
-				case "edit":
-				case "slides":
-				case "dvd":
-				default:
-					// do nothing
-			}
+			// switch (id)
+			// {
+			// 	case "copy":
+			// 	case "edit":
+			// 	case "slides":
+			// 	case "dvd":
+			// 	default:
+			// 		// do nothing
+			// }
 		}
 		
 		currentControllerShowing = id;

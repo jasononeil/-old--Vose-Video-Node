@@ -1,9 +1,7 @@
 package client.ui.menu;
 import client.ui.menu.MenuItem;
 import domtools.Query;
-using domtools.ElementManipulation;
-using domtools.DOMManipulation;
-using domtools.EventManagement;
+using domtools.Tools;
 
 class Menu extends domtools.AbstractCustomElement
 {

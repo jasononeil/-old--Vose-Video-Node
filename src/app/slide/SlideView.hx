@@ -1,7 +1,6 @@
 package app.slide;
 import app.slide.SlideController;
-using domtools.ElementManipulation;
-using domtools.Traversing;
+using domtools.Tools;
 
 class SlideView extends domtools.AbstractCustomElement
 {
