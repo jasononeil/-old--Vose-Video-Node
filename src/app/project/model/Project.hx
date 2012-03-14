@@ -3,10 +3,31 @@ package app.project.model;
 
 class Project implements haxe.rtti.Infos
 {
-	public var id:String;
-	public var title:String;
-	public var lecturer:String;
-	public var notes:Array<String>;
+	@autoform({
+		required: true,
+		title: "Unit Code",
+		display: "text",
+		placeholder: "eg. PC301"
+	}) public var id:String;
+
+	@autoform({
+		required: true,
+		title: "Unit Title",
+		display: "text",
+		placeholder: "eg. Ministry Formation"
+	}) public var title:String;
+
+	@autoform({
+		required: true,
+		title: "Lecturer Name",
+		placeholder: "eg. Brian Harris"
+	}) public var lecturer:String;
+
+	@autoform({
+		required: false,
+		title: "Notes for this unit",
+		display: "textarea"
+	}) public var notes:Array<String>;
 
 	public function new()
 	{
