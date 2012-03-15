@@ -14,7 +14,8 @@ class Project implements haxe.rtti.Infos
 		required: true,
 		title: "Unit Title",
 		display: "text",
-		placeholder: "eg. Ministry Formation"
+		placeholder: "eg. Ministry Formation",
+		description: "The full title, not including the code"
 	}) public var title:String;
 
 	@autoform({
@@ -26,10 +27,12 @@ class Project implements haxe.rtti.Infos
 	@autoform({
 		required: false,
 		title: "Notes for this unit",
-		display: "textarea"
+		display: "textarea",
+		description: "You can enter any notes related to this project.",
+		placeholder: "eg. This is the VET level version of the unit recorded in 2009."
 	}) public var notes:Array<String>;
 
-	public function new()
+	public function new(a:String, b:Int):Void
 	{
 		
 	}

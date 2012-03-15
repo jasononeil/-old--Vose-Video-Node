@@ -417,10 +417,10 @@ autoform.ui.TextField = function(field) {
 	if( field === $_ ) return;
 	autoform.AbstractField.call(this,"div");
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
-	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><input />");
-	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"input"),"type","text"),"id",field.fullID);
+	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><input /><span />");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"input"),"type","text"),"id",field.fullID),"placeholder",field.placeholder);
 	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
-	if(field.description != "") domtools.QueryDOMManipulation.append(domtools.QueryTraversing.find(this,"label"),domtools.ElementManipulation.setText(document.createElement("p"),field.description));
+	if(field.description != "") domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"span"),field.description),"help-inline");
 }
 autoform.ui.TextField.__name__ = ["autoform","ui","TextField"];
 autoform.ui.TextField.__super__ = autoform.AbstractField;
@@ -2408,8 +2408,16 @@ autoform.AbstractRenderer.guessDisplay = function(field) {
 		case "Array<Bool>":
 			$r = "checkbox";
 			break;
+		case "function":
+			$r = null;
+			break;
 		default:
-			$r = "text";
+			$r = (function($this) {
+				var $r;
+				haxe.Log.trace("Is this a function: " + field.type,{ fileName : "AbstractRenderer.hx", lineNumber : 56, className : "autoform.AbstractRenderer", methodName : "guessDisplay"});
+				$r = "text";
+				return $r;
+			}($this));
 		}
 		return $r;
 	}(this));
@@ -2428,6 +2436,7 @@ autoform.FieldInfo = function(field,rtti,meta,formID_in) {
 	this.required = false;
 	this.description = "";
 	this.help = "";
+	this.placeholder = "";
 	this.validDescription = "";
 	this.validatorString = "";
 	this.validator = null;
@@ -2438,18 +2447,22 @@ autoform.FieldInfo = function(field,rtti,meta,formID_in) {
 	this.id = field.getNodeName();
 	this.title = this.id;
 	this.fullID = this.formID + "-" + this.id;
+	haxe.Log.trace(field,{ fileName : "FieldInfo.hx", lineNumber : 60, className : "autoform.FieldInfo", methodName : "new"});
 	if(field.firstChild() != null) {
 		var firstChild = field;
-		var pathsFound = 0;
-		do {
-			firstChild = firstChild.firstChild();
-			var path = firstChild.get("path");
-			this.type = pathsFound == 0?path:this.type + "<" + path;
-			pathsFound++;
-		} while(firstChild.firstChild() != null);
-		while(pathsFound > 1) {
-			this.type = this.type + ">";
-			pathsFound--;
+		var isMethod = firstChild.exists("set") && firstChild.get("set") == "method";
+		if(isMethod) this.type = "function"; else {
+			var pathsFound = 0;
+			do {
+				firstChild = firstChild.firstChild();
+				var path = firstChild.get("path");
+				this.type = pathsFound == 0?path:this.type + "<" + path;
+				pathsFound++;
+			} while(firstChild.firstChild() != null);
+			while(pathsFound > 1) {
+				this.type = this.type + ">";
+				pathsFound--;
+			}
 		}
 	}
 	if(Reflect.hasField(meta,this.id)) {
@@ -2460,6 +2473,7 @@ autoform.FieldInfo = function(field,rtti,meta,formID_in) {
 			if(Reflect.hasField(autoform,"required")) this.required = Reflect.field(autoform,"required");
 			if(Reflect.hasField(autoform,"description")) this.description = Reflect.field(autoform,"description");
 			if(Reflect.hasField(autoform,"help")) this.help = Reflect.field(autoform,"help");
+			if(Reflect.hasField(autoform,"placeholder")) this.placeholder = Reflect.field(autoform,"placeholder");
 			if(Reflect.hasField(autoform,"validatorString")) this.validatorString = Reflect.field(autoform,"validatorString");
 			this.validator = this.createValidatorFunction(this.validatorString);
 			if(Reflect.hasField(autoform,"display")) this.display = Reflect.field(autoform,"display");
@@ -2474,6 +2488,7 @@ autoform.FieldInfo.prototype.type = null;
 autoform.FieldInfo.prototype.required = null;
 autoform.FieldInfo.prototype.description = null;
 autoform.FieldInfo.prototype.help = null;
+autoform.FieldInfo.prototype.placeholder = null;
 autoform.FieldInfo.prototype.validDescription = null;
 autoform.FieldInfo.prototype.validatorString = null;
 autoform.FieldInfo.prototype.validator = null;
@@ -4976,10 +4991,10 @@ autoform.ui.TextArea = function(field) {
 	if( field === $_ ) return;
 	autoform.AbstractField.call(this,"div");
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
-	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><textarea />");
-	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"textarea"),"id",field.fullID),".input");
+	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><textarea></textarea><span />");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"textarea"),"id",field.fullID),".input"),"placeholder",field.placeholder);
 	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
-	if(field.description != "") domtools.QueryDOMManipulation.append(domtools.QueryTraversing.find(this,"label"),domtools.ElementManipulation.setText(document.createElement("p"),field.description));
+	if(field.description != "") domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"span"),field.description),"help-inline");
 }
 autoform.ui.TextArea.__name__ = ["autoform","ui","TextArea"];
 autoform.ui.TextArea.__super__ = autoform.AbstractField;
@@ -5200,20 +5215,15 @@ autoform.AutoForm = function(c,formID) {
 		autoform.AutoForm.formIDIncrement = autoform.AutoForm.formIDIncrement + 1;
 		formID = "af-" + autoform.AutoForm.formIDIncrement;
 	}
-	haxe.Log.trace(formID,{ fileName : "AutoForm.hx", lineNumber : 28, className : "autoform.AutoForm", methodName : "new"});
 	this.fields = new Array();
 	this.classval = c;
 	var rttiString = c.__rtti;
 	var rtti = Xml.parse(rttiString).firstElement();
 	this.meta = haxe.rtti.Meta.getFields(c);
-	haxe.Log.trace(rtti.toString(),{ fileName : "AutoForm.hx", lineNumber : 37, className : "autoform.AutoForm", methodName : "new"});
 	var fieldsXml = rtti.elements();
 	while( fieldsXml.hasNext() ) {
 		var field = fieldsXml.next();
-		if(field.getNodeName() != "implements") {
-			haxe.Log.trace(field,{ fileName : "AutoForm.hx", lineNumber : 45, className : "autoform.AutoForm", methodName : "new"});
-			this.fields.push(new autoform.FieldInfo(field,rtti,this.meta,formID));
-		} else haxe.Log.trace("gotcha",{ fileName : "AutoForm.hx", lineNumber : 49, className : "autoform.AutoForm", methodName : "new"});
+		if(field.getNodeName() != "implements") this.fields.push(new autoform.FieldInfo(field,rtti,this.meta,formID));
 	}
 	var renderer = new autoform.renderer.DefaultRenderer(this);
 	renderer.run(this.fields);
@@ -5810,7 +5820,7 @@ app.edit.EditController.__name__ = ["app","edit","EditController"];
 app.edit.EditController.prototype.view = null;
 app.edit.EditController.prototype.__class__ = app.edit.EditController;
 if(!app.project.model) app.project.model = {}
-app.project.model.Project = function(p) {
+app.project.model.Project = function(a,b) {
 }
 app.project.model.Project.__name__ = ["app","project","model","Project"];
 app.project.model.Project.prototype.id = null;
@@ -5850,10 +5860,17 @@ autoform.renderer.DefaultRenderer.prototype.run = function(fields) {
 		var thisClass = String;
 		var element;
 		var display = autoform.AbstractRenderer.guessDisplay(field);
-		var classOfFieldUI = this.displays.exists(display)?this.displays.get(display):this.displays.get("text");
-		element = Type.createInstance(classOfFieldUI,[field]);
-		domtools.QueryDOMManipulation.appendTo(element,null,this.form);
+		if(display != null) {
+			var classOfFieldUI = this.displays.exists(display)?this.displays.get(display):this.displays.get("text");
+			element = Type.createInstance(classOfFieldUI,[field]);
+			domtools.QueryDOMManipulation.appendTo(element,null,this.form);
+		}
 	}
+	var buttonGroup = domtools.ElementManipulation.addClass(document.createElement("div"),"form-actions");
+	var submit = new autoform.ui.Button("Save",true);
+	var cancel = new autoform.ui.Button("Cancel",null,autoform.ui.ButtonType.Default);
+	domtools.DOMManipulation.append(domtools.DOMManipulation.append(buttonGroup,null,submit),null,cancel);
+	domtools.DOMManipulation.appendTo(buttonGroup,null,this.form);
 }
 autoform.renderer.DefaultRenderer.prototype.__class__ = autoform.renderer.DefaultRenderer;
 haxe.io.BytesOutput = function(p) {
@@ -6353,6 +6370,63 @@ haxe.Int32.ucompare = function(a,b) {
 	return b < 0?-1:a - b;
 }
 haxe.Int32.prototype.__class__ = haxe.Int32;
+autoform.ui.Button = function(text,isSubmit,type) {
+	if( text === $_ ) return;
+	if(isSubmit == null) isSubmit = false;
+	if(text == null) text = "Button";
+	domtools.AbstractCustomElement.call(this,"button");
+	domtools.QueryElementManipulation.addClass(this,"btn");
+	domtools.QueryElementManipulation.setText(this,text);
+	if(isSubmit) {
+		domtools.QueryElementManipulation.setAttr(this,"type","submit");
+		if(type == null) type = autoform.ui.ButtonType.Primary;
+		haxe.Log.trace("Type: " + type,{ fileName : "Button.hx", lineNumber : 21, className : "autoform.ui.Button", methodName : "new"});
+	}
+	if(type != null) this.setType(type);
+}
+autoform.ui.Button.__name__ = ["autoform","ui","Button"];
+autoform.ui.Button.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) autoform.ui.Button.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+autoform.ui.Button.prototype.type = null;
+autoform.ui.Button.prototype.setType = function(t) {
+	domtools.QueryElementManipulation.removeClass(this,this.getClassForType(this.type));
+	domtools.QueryElementManipulation.addClass(this,this.getClassForType(t));
+	return t;
+}
+autoform.ui.Button.prototype.getClassForType = function(inType) {
+	var cls = "";
+	if(inType == autoform.ui.ButtonType.Default) cls = "";
+	if(inType == autoform.ui.ButtonType.Primary) cls = "btn-primary";
+	if(inType == autoform.ui.ButtonType.Info) cls = "btn-info";
+	if(inType == autoform.ui.ButtonType.Success) cls = "btn-success";
+	if(inType == autoform.ui.ButtonType.Warning) cls = "btn-warning";
+	if(inType == autoform.ui.ButtonType.Danger) cls = "btn-danger";
+	if(inType == autoform.ui.ButtonType.Inverse) cls = "btn-inverse";
+	return cls;
+}
+autoform.ui.Button.prototype.__class__ = autoform.ui.Button;
+autoform.ui.ButtonType = { __ename__ : ["autoform","ui","ButtonType"], __constructs__ : ["Default","Primary","Info","Success","Warning","Danger","Inverse"] }
+autoform.ui.ButtonType.Default = ["Default",0];
+autoform.ui.ButtonType.Default.toString = $estr;
+autoform.ui.ButtonType.Default.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Primary = ["Primary",1];
+autoform.ui.ButtonType.Primary.toString = $estr;
+autoform.ui.ButtonType.Primary.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Info = ["Info",2];
+autoform.ui.ButtonType.Info.toString = $estr;
+autoform.ui.ButtonType.Info.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Success = ["Success",3];
+autoform.ui.ButtonType.Success.toString = $estr;
+autoform.ui.ButtonType.Success.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Warning = ["Warning",4];
+autoform.ui.ButtonType.Warning.toString = $estr;
+autoform.ui.ButtonType.Warning.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Danger = ["Danger",5];
+autoform.ui.ButtonType.Danger.toString = $estr;
+autoform.ui.ButtonType.Danger.__enum__ = autoform.ui.ButtonType;
+autoform.ui.ButtonType.Inverse = ["Inverse",6];
+autoform.ui.ButtonType.Inverse.toString = $estr;
+autoform.ui.ButtonType.Inverse.__enum__ = autoform.ui.ButtonType;
 js.Lib = function() { }
 js.Lib.__name__ = ["js","Lib"];
 js.Lib.isIE = null;
@@ -6654,8 +6728,8 @@ autoform.AutoForm.formIDIncrement = 0;
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
-app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea"}]}}};
-app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"29\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
+app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"a:b\">\n\t<c path=\"String\"/>\n\t<c path=\"Int\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
 erazor.Parser.at = "@";
 erazor.Parser.bracketMismatch = "Bracket mismatch! Inside template, non-paired brackets, '{' or '}', should be replaced by @{'{'} and @{'}'}.";
 js.Lib.onerror = null;
