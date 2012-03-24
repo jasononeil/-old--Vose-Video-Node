@@ -293,6 +293,10 @@ app.edit.EditAPI = function(p) {
 }
 app.edit.EditAPI.__name__ = ["app","edit","EditAPI"];
 app.edit.EditAPI.prototype.__class__ = app.edit.EditAPI;
+if(!haxe.rtti) haxe.rtti = {}
+haxe.rtti.Infos = function() { }
+haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
+haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 if(!app.project) app.project = {}
 if(!app.project.model) app.project.model = {}
 app.project.model.Project = function(p) {
@@ -303,6 +307,7 @@ app.project.model.Project.prototype.title = null;
 app.project.model.Project.prototype.lecturer = null;
 app.project.model.Project.prototype.notes = null;
 app.project.model.Project.prototype.__class__ = app.project.model.Project;
+app.project.model.Project.__interfaces__ = [haxe.rtti.Infos];
 if(!haxe.io) haxe.io = {}
 haxe.io.Bytes = function(length,b) {
 	if( length === $_ ) return;
@@ -2058,6 +2063,8 @@ js.NodeC.FILE_WRITE = "w";
 js.NodeC.FILE_WRITE_APPEND = "a+";
 js.NodeC.FILE_READWRITE = "a";
 js.NodeC.FILE_READWRITE_APPEND = "a+";
+app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;

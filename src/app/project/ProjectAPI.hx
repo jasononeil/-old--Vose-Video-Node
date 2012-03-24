@@ -1,7 +1,7 @@
 package app.project;
 
 /** 
-* List projects, view details, create & edit projects, archive projects
+* List projects, view details, create and edit projects, archive projects
 * List videos inside project
 * View progress details across all videos
 */

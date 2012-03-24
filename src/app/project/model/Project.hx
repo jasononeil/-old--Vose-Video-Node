@@ -32,10 +32,22 @@ class Project implements haxe.rtti.Infos
 		placeholder: "eg. This is the VET level version of the unit recorded in 2009."
 	}) public var notes:Array<String>;
 
-	public function new(a:String, b:Int):Void
+	public function new():Void
 	{
 		
 	}
+
+	#if client 
+
+	public function save()
+	{
+		trace (id);
+		trace (title);
+		trace (lecturer);
+		trace (notes);
+	}
+
+	#end // client
 
 	#if server
 
@@ -44,7 +56,6 @@ class Project implements haxe.rtti.Infos
 		
 	}
 
-	#if nodejs
 	public static function getAll(path:String)
 	{
 		var folderList = js.Node.fs.readdirSync(path);
@@ -65,7 +76,6 @@ class Project implements haxe.rtti.Infos
 		o.notes = new Array();
 		return o;
 	}
-	#end // nodejs
 
 	#end // server
 }
