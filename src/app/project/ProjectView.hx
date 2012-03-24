@@ -9,6 +9,7 @@ using domtools.Tools;
 class ProjectView extends domtools.AbstractCustomElement
 {
 	public var controller:ProjectController;
+	public var form:AutoForm<Project>;
 
 	public function new(c:ProjectController) 
 	{
@@ -19,8 +20,6 @@ class ProjectView extends domtools.AbstractCustomElement
 		this.addClass("controller").addClass("project");
 		
 		this.setInnerHTML("<h1>Project Controller</h1>");
-
-		this.renderForm();
 	}
 
 	public function listProjects(list:Iterable<Project>)
@@ -29,19 +28,10 @@ class ProjectView extends domtools.AbstractCustomElement
 		this.append(table);
 	}
 
-	public function renderForm(?o:Project)
+	public function renderForm()
 	{
 		// Generate a form using autoform...
-		var form = new AutoForm<Project>(Project);
+		form = new AutoForm(Project);
 		this.append(form);
-
-		// if we have an object, set it as the default values
-		if (o != null) { populateForm(o); }
 	}
-
-	public function populateForm(o:Project)
-	{
-		
-	}
-
 }

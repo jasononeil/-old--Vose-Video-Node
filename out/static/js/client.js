@@ -693,22 +693,19 @@ app.project.ProjectView = function(c) {
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"project");
 	domtools.QueryElementManipulation.setInnerHTML(this,"<h1>Project Controller</h1>");
-	this.renderForm();
 }
 app.project.ProjectView.__name__ = ["app","project","ProjectView"];
 app.project.ProjectView.__super__ = domtools.AbstractCustomElement;
 for(var k in domtools.AbstractCustomElement.prototype ) app.project.ProjectView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
 app.project.ProjectView.prototype.controller = null;
+app.project.ProjectView.prototype.form = null;
 app.project.ProjectView.prototype.listProjects = function(list) {
 	var table = new client.ui.basic.Table(app.project.model.Project,list);
 	domtools.QueryDOMManipulation.append(this,null,table);
 }
-app.project.ProjectView.prototype.renderForm = function(o) {
-	var form = new autoform.AutoForm(app.project.model.Project);
-	domtools.QueryDOMManipulation.append(this,null,form);
-	if(o != null) this.populateForm(o);
-}
-app.project.ProjectView.prototype.populateForm = function(o) {
+app.project.ProjectView.prototype.renderForm = function() {
+	this.form = new autoform.AutoForm(app.project.model.Project);
+	domtools.QueryDOMManipulation.append(this,null,this.form);
 }
 app.project.ProjectView.prototype.__class__ = app.project.ProjectView;
 AppConfig = function() { }
@@ -2597,7 +2594,14 @@ client.Client.initialiseAPI = function() {
 client.Client.prototype.__class__ = client.Client;
 app.project.ProjectController = function(p) {
 	if( p === $_ ) return;
+	var me = this;
 	this.view = new app.project.ProjectView(this);
+	this.view.renderForm();
+	domtools.QueryEventManagement.on(this.view.form,"submit",function(e) {
+		e.preventDefault();
+		var newProject = me.view.form.readForm();
+		newProject.insert();
+	});
 	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
 	this.listProjects();
 }
@@ -5246,7 +5250,6 @@ erazor.TBlock.codeBlock = function(s) { var $x = ["codeBlock",1,s]; $x.__enum__ 
 erazor.TBlock.printBlock = function(s) { var $x = ["printBlock",2,s]; $x.__enum__ = erazor.TBlock; $x.toString = $estr; return $x; }
 autoform.AutoForm = function(c,formID) {
 	if( c === $_ ) return;
-	var me = this;
 	domtools.AbstractCustomElement.call(this,"form");
 	if(formID == null) {
 		autoform.AutoForm.formIDIncrement = autoform.AutoForm.formIDIncrement + 1;
@@ -5265,11 +5268,6 @@ autoform.AutoForm = function(c,formID) {
 	}
 	var renderer = new autoform.renderer.DefaultRenderer(this);
 	renderer.run(this.fieldsInfo);
-	domtools.QueryEventManagement.on(this,"submit",function(e) {
-		e.preventDefault();
-		var newObject = me.readForm();
-		haxe.Log.trace(newObject,{ fileName : "AutoForm.hx", lineNumber : 58, className : "autoform.AutoForm", methodName : "new"});
-	});
 }
 autoform.AutoForm.__name__ = ["autoform","AutoForm"];
 autoform.AutoForm.__super__ = domtools.AbstractCustomElement;
@@ -5886,6 +5884,11 @@ app.project.model.Project.prototype.id = null;
 app.project.model.Project.prototype.title = null;
 app.project.model.Project.prototype.lecturer = null;
 app.project.model.Project.prototype.notes = null;
+app.project.model.Project.prototype.insert = function() {
+	app.project.ProjectController.projectAPI.addProject(this,function(success) {
+		haxe.Log.trace("Done",{ fileName : "Project.hx", lineNumber : 44, className : "app.project.model.Project", methodName : "insert"});
+	});
+}
 app.project.model.Project.prototype.__class__ = app.project.model.Project;
 app.project.model.Project.__interfaces__ = [haxe.rtti.Infos];
 haxe.io.Error = { __ename__ : ["haxe","io","Error"], __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"] }
@@ -6330,13 +6333,16 @@ client.ui.basic.Table.prototype.createTable = function() {
 	while(_g < _g1.length) {
 		var field = _g1[_g];
 		++_g;
-		var th = document.createElement("th");
-		{
-			th.textContent = field;
-			th;
+		haxe.Log.trace("I should check metadata here",{ fileName : "Table.hx", lineNumber : 41, className : "client.ui.basic.Table", methodName : "createTable"});
+		if(field != "insert") {
+			var th = document.createElement("th");
+			{
+				th.textContent = field;
+				th;
+			}
+			domtools.DOMManipulation.append(this.thead,th);
+			this.fields.set(field,"Field: " + field);
 		}
-		domtools.DOMManipulation.append(this.thead,th);
-		this.fields.set(field,"Field: " + field);
 	}
 }
 client.ui.basic.Table.prototype.populateTable = function(list) {
@@ -6789,7 +6795,7 @@ haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
 app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
-app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<insert public=\"1\" set=\"method\" line=\"41\"><f a=\"\"><e path=\"Void\"/></f></insert>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 erazor.Parser.at = "@";
 erazor.Parser.bracketMismatch = "Bracket mismatch! Inside template, non-paired brackets, '{' or '}', should be replaced by @{'{'} and @{'}'}.";
 js.Lib.onerror = null;

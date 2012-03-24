@@ -5,9 +5,6 @@ app.copy.CopyAPI = function(p) {
 }
 app.copy.CopyAPI.__name__ = ["app","copy","CopyAPI"];
 app.copy.CopyAPI.prototype.__class__ = app.copy.CopyAPI;
-AppConfig = function() { }
-AppConfig.__name__ = ["AppConfig"];
-AppConfig.prototype.__class__ = AppConfig;
 if(typeof js=='undefined') js = {}
 js.NodeC = function() { }
 js.NodeC.__name__ = ["js","NodeC"];
@@ -51,6 +48,9 @@ js.Node.newSocket = function(options) {
 	return new js.Node.net.Socket(options);
 }
 js.Node.prototype.__class__ = js.Node;
+AppConfig = function() { }
+AppConfig.__name__ = ["AppConfig"];
+AppConfig.prototype.__class__ = AppConfig;
 if(!app.author) app.author = {}
 app.author.AuthorAPI = function(p) {
 }
@@ -1411,40 +1411,6 @@ List.prototype.map = function(f) {
 	return b;
 }
 List.prototype.__class__ = List;
-app.project.ProjectAPI = function(p) {
-}
-app.project.ProjectAPI.__name__ = ["app","project","ProjectAPI"];
-app.project.ProjectAPI.prototype.listProjects = function(cb) {
-	var projects = new Array();
-	var folders = js.Node.fs.readdirSync(AppConfig.projectDir);
-	var _g = 0;
-	while(_g < folders.length) {
-		var folder = folders[_g];
-		++_g;
-		if(server.api.FileSystem.existsSync(AppConfig.projectDir + "/" + folder + "/project.xml")) {
-			var p = new app.project.model.Project();
-			p.id = folder;
-			p.title = folder + "unit";
-			projects.push(p);
-		}
-	}
-	cb(projects);
-}
-app.project.ProjectAPI.prototype.addProject = function(p,cb) {
-	cb(true);
-}
-app.project.ProjectAPI.prototype.updateProject = function(currentProjectName,newProjectDetails,cb) {
-	cb(true);
-}
-app.project.ProjectAPI.prototype.archiveProject = function(projectName,cb) {
-	cb(true);
-}
-app.project.ProjectAPI.prototype.listVideos = function(projectName,cb) {
-	throw "this should be part of the model, using #if js & #if nodejs";
-	var videos = new Array();
-	cb(videos);
-}
-app.project.ProjectAPI.prototype.__class__ = app.project.ProjectAPI;
 ValueType = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
 ValueType.TNull.toString = $estr;
@@ -1469,6 +1435,47 @@ ValueType.TEnum = function(e) { var $x = ["TEnum",7,e]; $x.__enum__ = ValueType;
 ValueType.TUnknown = ["TUnknown",8];
 ValueType.TUnknown.toString = $estr;
 ValueType.TUnknown.__enum__ = ValueType;
+app.project.ProjectAPI = function(p) {
+}
+app.project.ProjectAPI.__name__ = ["app","project","ProjectAPI"];
+app.project.ProjectAPI.prototype.listProjects = function(cb) {
+	var projects = new Array();
+	var folders = js.Node.fs.readdirSync(AppConfig.projectDir);
+	var _g = 0;
+	while(_g < folders.length) {
+		var folder = folders[_g];
+		++_g;
+		if(server.api.FileSystem.existsSync(AppConfig.projectDir + "/" + folder + "/project.xml")) {
+			var p = new app.project.model.Project();
+			p.id = folder;
+			p.title = folder + "unit";
+			projects.push(p);
+		}
+	}
+	cb(projects);
+}
+app.project.ProjectAPI.prototype.addProject = function(p,cb) {
+	var projectDir = AppConfig.projectDir + p.id;
+	js.Node.fs.mkdirSync(projectDir,755);
+	haxe.Log.trace("Just created: " + projectDir,{ fileName : "ProjectAPI.hx", lineNumber : 47, className : "app.project.ProjectAPI", methodName : "addProject"});
+	haxe.Log.trace(p.id,{ fileName : "ProjectAPI.hx", lineNumber : 48, className : "app.project.ProjectAPI", methodName : "addProject"});
+	haxe.Log.trace(p.title,{ fileName : "ProjectAPI.hx", lineNumber : 49, className : "app.project.ProjectAPI", methodName : "addProject"});
+	haxe.Log.trace(p.lecturer,{ fileName : "ProjectAPI.hx", lineNumber : 50, className : "app.project.ProjectAPI", methodName : "addProject"});
+	haxe.Log.trace(p.notes,{ fileName : "ProjectAPI.hx", lineNumber : 51, className : "app.project.ProjectAPI", methodName : "addProject"});
+	cb(true);
+}
+app.project.ProjectAPI.prototype.updateProject = function(currentProjectName,newProjectDetails,cb) {
+	cb(true);
+}
+app.project.ProjectAPI.prototype.archiveProject = function(projectName,cb) {
+	cb(true);
+}
+app.project.ProjectAPI.prototype.listVideos = function(projectName,cb) {
+	throw "this should be part of the model, using #if js & #if nodejs";
+	var videos = new Array();
+	cb(videos);
+}
+app.project.ProjectAPI.prototype.__class__ = app.project.ProjectAPI;
 js.Boot = function() { }
 js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
@@ -2023,7 +2030,6 @@ js.Boot.__init();
 		return isNaN(i);
 	};
 }
-AppConfig.projectDir = "/home/jason/VoseProjects/";
 js.NodeC.UTF8 = "utf8";
 js.NodeC.ASCII = "ascii";
 js.NodeC.BINARY = "binary";
@@ -2063,6 +2069,7 @@ js.NodeC.FILE_WRITE = "w";
 js.NodeC.FILE_WRITE_APPEND = "a+";
 js.NodeC.FILE_READWRITE = "a";
 js.NodeC.FILE_READWRITE_APPEND = "a+";
+AppConfig.projectDir = "/home/jason/VoseProjects/";
 app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
 app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 haxe.Unserializer.DEFAULT_RESOLVER = Type;

@@ -37,16 +37,14 @@ class Project implements haxe.rtti.Infos
 		
 	}
 
-	#if client 
-
-	public function save()
+	#if client
+	public function insert()
 	{
-		trace (id);
-		trace (title);
-		trace (lecturer);
-		trace (notes);
+		ProjectController.projectAPI.addProject(this, function (success:Bool) {
+			trace ("Done");
+		});
+		
 	}
-
 	#end // client
 
 	#if server

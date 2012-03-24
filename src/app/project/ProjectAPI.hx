@@ -10,6 +10,7 @@ import app.video.model.Video;
 import js.Node;
 import server.api.FileSystem;
 import server.Server;
+import AppConfig;
 
 class ProjectAPI 
 {
@@ -41,6 +42,13 @@ class ProjectAPI
 
 	@remote public function addProject(p:app.project.model.Project, cb:Bool->Void)
 	{
+		var projectDir = AppConfig.projectDir + p.id;
+		Node.fs.mkdirSync(projectDir, 0755);
+		trace ("Just created: " + projectDir);
+		trace (p.id);
+		trace (p.title);
+		trace (p.lecturer);
+		trace (p.notes);
 		cb(true);
 	}
 

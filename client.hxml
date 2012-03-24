@@ -13,6 +13,9 @@
 -cp lib/haxe_remoting/src/
 -cp src/
 
+# Compile flags
+-D client
+
 # Output
 -main client.Client 
 -js out/static/js/client.js

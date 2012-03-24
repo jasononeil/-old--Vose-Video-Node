@@ -16,6 +16,12 @@ class ProjectController
 	public function new() 
 	{
 		view = new ProjectView(this);
+		view.renderForm();
+		view.form.submit(function (e) { 
+			e.preventDefault();
+			var newProject = view.form.readForm();
+			newProject.insert();
+		});
 		new Query("#controllerarea").append(view);
 		
 		listProjects();

@@ -38,10 +38,14 @@ class Table<T> extends domtools.AbstractCustomElement
 		// Create the header rows
 		for (field in Type.getInstanceFields(type))
 		{
-			var th = Query.create("th");
-			th.setText(field);
-			thead.append(th);
-			fields.set(field, "Field: " + field);
+			trace ("I should check metadata here");
+			if (field != "insert")
+			{
+				var th = Query.create("th");
+				th.setText(field);
+				thead.append(th);
+				fields.set(field, "Field: " + field);
+			}
 		}
 	}
 
