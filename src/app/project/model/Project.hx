@@ -38,13 +38,7 @@ class Project implements haxe.rtti.Infos
 	}
 
 	#if client
-	public function insert()
-	{
-		ProjectController.projectAPI.addProject(this, function (success:Bool) {
-			trace ("Done");
-		});
-		
-	}
+	
 	#end // client
 
 	#if server

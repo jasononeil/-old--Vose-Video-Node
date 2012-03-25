@@ -1438,40 +1438,45 @@ ValueType.TUnknown.__enum__ = ValueType;
 app.project.ProjectAPI = function(p) {
 }
 app.project.ProjectAPI.__name__ = ["app","project","ProjectAPI"];
-app.project.ProjectAPI.prototype.listProjects = function(cb) {
+app.project.ProjectAPI.prototype.list = function(cb) {
 	var projects = new Array();
 	var folders = js.Node.fs.readdirSync(AppConfig.projectDir);
 	var _g = 0;
 	while(_g < folders.length) {
 		var folder = folders[_g];
 		++_g;
-		if(server.api.FileSystem.existsSync(AppConfig.projectDir + "/" + folder + "/project.xml")) {
-			var p = new app.project.model.Project();
-			p.id = folder;
-			p.title = folder + "unit";
+		var filename = AppConfig.projectDir + "/" + folder + "/project.xml";
+		if(server.api.FileSystem.existsSync(filename)) {
+			var p;
+			var fileString = js.Node.fs.readFileSync(filename,"utf8");
+			p = haxe.Unserializer.run(fileString);
 			projects.push(p);
 		}
 	}
 	cb(projects);
 }
-app.project.ProjectAPI.prototype.addProject = function(p,cb) {
+app.project.ProjectAPI.prototype.create = function(p,cb) {
 	var projectDir = AppConfig.projectDir + p.id;
-	js.Node.fs.mkdirSync(projectDir,755);
-	haxe.Log.trace("Just created: " + projectDir,{ fileName : "ProjectAPI.hx", lineNumber : 47, className : "app.project.ProjectAPI", methodName : "addProject"});
-	haxe.Log.trace(p.id,{ fileName : "ProjectAPI.hx", lineNumber : 48, className : "app.project.ProjectAPI", methodName : "addProject"});
-	haxe.Log.trace(p.title,{ fileName : "ProjectAPI.hx", lineNumber : 49, className : "app.project.ProjectAPI", methodName : "addProject"});
-	haxe.Log.trace(p.lecturer,{ fileName : "ProjectAPI.hx", lineNumber : 50, className : "app.project.ProjectAPI", methodName : "addProject"});
-	haxe.Log.trace(p.notes,{ fileName : "ProjectAPI.hx", lineNumber : 51, className : "app.project.ProjectAPI", methodName : "addProject"});
+	js.Node.fs.mkdirSync(projectDir,null);
+	var fileString = haxe.Serializer.run(p);
+	var filename = projectDir + "/project.xml";
+	js.Node.fs.writeFileSync(filename,fileString,"utf8");
+	haxe.Log.trace("Just created: " + projectDir,{ fileName : "ProjectAPI.hx", lineNumber : 54, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(p.id,{ fileName : "ProjectAPI.hx", lineNumber : 55, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(p.title,{ fileName : "ProjectAPI.hx", lineNumber : 56, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(p.lecturer,{ fileName : "ProjectAPI.hx", lineNumber : 57, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(p.notes,{ fileName : "ProjectAPI.hx", lineNumber : 58, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(filename,{ fileName : "ProjectAPI.hx", lineNumber : 59, className : "app.project.ProjectAPI", methodName : "create"});
+	haxe.Log.trace(fileString,{ fileName : "ProjectAPI.hx", lineNumber : 60, className : "app.project.ProjectAPI", methodName : "create"});
 	cb(true);
 }
-app.project.ProjectAPI.prototype.updateProject = function(currentProjectName,newProjectDetails,cb) {
+app.project.ProjectAPI.prototype.update = function(currentProjectName,newProjectDetails,cb) {
 	cb(true);
 }
-app.project.ProjectAPI.prototype.archiveProject = function(projectName,cb) {
+app.project.ProjectAPI.prototype.archive = function(projectName,cb) {
 	cb(true);
 }
-app.project.ProjectAPI.prototype.listVideos = function(projectName,cb) {
-	throw "this should be part of the model, using #if js & #if nodejs";
+app.project.ProjectAPI.prototype.view = function(projectName,cb) {
 	var videos = new Array();
 	cb(videos);
 }
@@ -2078,7 +2083,7 @@ haxe.Unserializer.CODES = null;
 haxe.Serializer.USE_CACHE = false;
 haxe.Serializer.USE_ENUM_INDEX = false;
 haxe.Serializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
-app.project.ProjectAPI.__meta__ = { fields : { listProjects : { remote : null}, addProject : { remote : null}, updateProject : { remote : null}}};
+app.project.ProjectAPI.__meta__ = { fields : { list : { remote : null}, create : { remote : null}, update : { remote : null}}};
 app.project.ProjectAPI.api = new app.project.ProjectAPI();
 haxe.remoting.NodeJsHtmlConnection.querystring = js.Node.require("querystring");
 server.api.Launcher.__meta__ = { fields : { launch : { remote : null}}};

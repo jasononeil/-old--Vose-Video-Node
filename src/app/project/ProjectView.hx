@@ -2,7 +2,7 @@ package app.project;
 import app.project.ProjectController;
 import app.project.model.Project;
 import erazor.Template;
-import client.ui.basic.Table;
+import client.ui.basic.ActionTable;
 import autoform.AutoForm;
 using domtools.Tools;
 
@@ -24,13 +24,15 @@ class ProjectView extends domtools.AbstractCustomElement
 
 	public function listProjects(list:Iterable<Project>)
 	{
-		var table = new Table<Project>(Project, list);
+		this.empty();
+		var table = new ActionTable<Project>(Project, list);
 		this.append(table);
 	}
 
 	public function renderForm()
 	{
 		// Generate a form using autoform...
+		this.empty();
 		form = new AutoForm(Project);
 		this.append(form);
 	}

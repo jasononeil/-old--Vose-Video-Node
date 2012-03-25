@@ -15,27 +15,47 @@ class ProjectController
 
 	public function new() 
 	{
+		// Set up the view
 		view = new ProjectView(this);
+		new Query("#controllerarea").append(view);
+
+		// Default action
+		list();
+	}
+
+	public function list()
+	{
+		projectAPI.list(function (a:Array<Project>) 
+		{
+			view.listProjects(a);
+		});
+	}
+
+	public function read()
+	{
+		
+	}
+
+	public function create()
+	{
 		view.renderForm();
 		view.form.submit(function (e) { 
 			e.preventDefault();
 			var newProject = view.form.readForm();
-			newProject.insert();
+			projectAPI.create(newProject, function(e) {
+				trace ("Added new project!");
+				list();
+			});
 		});
-		new Query("#controllerarea").append(view);
-		
-		listProjects();
 	}
 
-	public function listProjects()
+	public function update()
 	{
-		projectAPI.listProjects(function (a:Array<Project>) 
-		{
-			view.listProjects(a);
-			// for (project in a)
-			// {
-			// 	view.addProject(project);
-			// }
-		});
+		
+	}
+
+	public function archive()
+	{
+		
 	}
 }

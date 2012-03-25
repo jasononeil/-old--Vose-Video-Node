@@ -20,7 +20,7 @@ class ProjectAPI
 	{
 	}
 
-	@remote public function listProjects(cb:Array<app.project.model.Project>->Void)
+	@remote public function list(cb:Array<app.project.model.Project>->Void)
 	{
 		var projects = new Array();
 
@@ -28,11 +28,12 @@ class ProjectAPI
 
 		for (folder in folders)
 		{
-			if (FileSystem.existsSync(AppConfig.projectDir + '/' + folder + "/project.xml"))
+			var filename = AppConfig.projectDir + '/' + folder + "/project.xml";
+			if (FileSystem.existsSync(filename))
 			{
-				var p = new Project();
-				p.id = folder;
-				p.title = folder + "unit";
+				var p:Project;
+				var fileString = Node.fs.readFileSync(filename, "utf8");
+				p = haxe.Unserializer.run(fileString);
 				projects.push(p);
 			}
 		}
@@ -40,32 +41,38 @@ class ProjectAPI
 		cb(projects);
 	}
 
-	@remote public function addProject(p:app.project.model.Project, cb:Bool->Void)
+	@remote public function create(p:app.project.model.Project, cb:Bool->Void)
 	{
 		var projectDir = AppConfig.projectDir + p.id;
-		Node.fs.mkdirSync(projectDir, 0755);
+		Node.fs.mkdirSync(projectDir, null);
+		
+		var fileString = haxe.Serializer.run(p);
+		var filename = projectDir + "/project.xml";
+
+		Node.fs.writeFileSync(filename, fileString, "utf8");
+
 		trace ("Just created: " + projectDir);
 		trace (p.id);
 		trace (p.title);
 		trace (p.lecturer);
 		trace (p.notes);
+		trace (filename);
+		trace (fileString);
 		cb(true);
 	}
 
-	@remote public function updateProject(currentProjectName:String, newProjectDetails:app.project.model.Project, cb:Bool->Void)
+	@remote public function update(currentProjectName:String, newProjectDetails:app.project.model.Project, cb:Bool->Void)
 	{
 		cb(true);
 	}
 
-	public function archiveProject(projectName:String, cb:Bool->Void)
+	public function archive(projectName:String, cb:Bool->Void)
 	{
 		cb(true);
 	}
-
 	
-	public function listVideos(projectName:String, cb:Array<app.video.model.Video>->Void)
+	public function view(projectName:String, cb:Array<app.video.model.Video>->Void)
 	{
-		throw "this should be part of the model, using #if js & #if nodejs";
 		var videos = new Array();
 		cb(videos);
 	}

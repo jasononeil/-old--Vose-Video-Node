@@ -700,10 +700,12 @@ for(var k in domtools.AbstractCustomElement.prototype ) app.project.ProjectView.
 app.project.ProjectView.prototype.controller = null;
 app.project.ProjectView.prototype.form = null;
 app.project.ProjectView.prototype.listProjects = function(list) {
-	var table = new client.ui.basic.Table(app.project.model.Project,list);
+	domtools.QueryDOMManipulation.empty(this);
+	var table = new client.ui.basic.ActionTable(app.project.model.Project,list);
 	domtools.QueryDOMManipulation.append(this,null,table);
 }
 app.project.ProjectView.prototype.renderForm = function() {
+	domtools.QueryDOMManipulation.empty(this);
 	this.form = new autoform.AutoForm(app.project.model.Project);
 	domtools.QueryDOMManipulation.append(this,null,this.form);
 }
@@ -758,6 +760,89 @@ client.ui.menu.NavBar.__super__ = domtools.AbstractCustomElement;
 for(var k in domtools.AbstractCustomElement.prototype ) client.ui.menu.NavBar.prototype[k] = domtools.AbstractCustomElement.prototype[k];
 client.ui.menu.NavBar.prototype.menu = null;
 client.ui.menu.NavBar.prototype.__class__ = client.ui.menu.NavBar;
+if(!client.ui.basic) client.ui.basic = {}
+client.ui.basic.Table = function(type,list) {
+	if( type === $_ ) return;
+	domtools.AbstractCustomElement.call(this,"table");
+	this.fields = new Hash();
+	this.type = type;
+	this.createTable();
+	domtools.QueryElementManipulation.addClass(this,"table");
+	domtools.QueryElementManipulation.addClass(this,"table-striped");
+	if(list != null) this.populateTable(list);
+}
+client.ui.basic.Table.__name__ = ["client","ui","basic","Table"];
+client.ui.basic.Table.__super__ = domtools.AbstractCustomElement;
+for(var k in domtools.AbstractCustomElement.prototype ) client.ui.basic.Table.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+client.ui.basic.Table.prototype.type = null;
+client.ui.basic.Table.prototype.fields = null;
+client.ui.basic.Table.prototype.thead = null;
+client.ui.basic.Table.prototype.tbody = null;
+client.ui.basic.Table.prototype.createTable = function() {
+	this.thead = document.createElement("thead");
+	this.tbody = document.createElement("tbody");
+	domtools.QueryDOMManipulation.append(this,this.thead);
+	domtools.QueryDOMManipulation.append(this,this.tbody);
+	var _g = 0, _g1 = Type.getInstanceFields(this.type);
+	while(_g < _g1.length) {
+		var field = _g1[_g];
+		++_g;
+		haxe.Log.trace("I should check metadata here",{ fileName : "Table.hx", lineNumber : 41, className : "client.ui.basic.Table", methodName : "createTable"});
+		if(field != "insert") {
+			var th = document.createElement("th");
+			{
+				th.textContent = field;
+				th;
+			}
+			domtools.DOMManipulation.append(this.thead,th);
+			this.fields.set(field,"Field: " + field);
+		}
+	}
+}
+client.ui.basic.Table.prototype.populateTable = function(list) {
+	var $it0 = list.iterator();
+	while( $it0.hasNext() ) {
+		var object = $it0.next();
+		var tr = document.createElement("tr");
+		domtools.DOMManipulation.append(this.tbody,tr);
+		var $it1 = this.fields.keys();
+		while( $it1.hasNext() ) {
+			var field = $it1.next();
+			var td = document.createElement("td");
+			var value = Reflect.field(object,field);
+			{
+				td.textContent = value;
+				td;
+			}
+			domtools.DOMManipulation.append(tr,td);
+		}
+	}
+}
+client.ui.basic.Table.prototype.__class__ = client.ui.basic.Table;
+client.ui.basic.ActionTable = function(type,list) {
+	if( type === $_ ) return;
+	client.ui.basic.Table.call(this,type,list);
+}
+client.ui.basic.ActionTable.__name__ = ["client","ui","basic","ActionTable"];
+client.ui.basic.ActionTable.__super__ = client.ui.basic.Table;
+for(var k in client.ui.basic.Table.prototype ) client.ui.basic.ActionTable.prototype[k] = client.ui.basic.Table.prototype[k];
+client.ui.basic.ActionTable.prototype.createTable = function() {
+	client.ui.basic.Table.prototype.createTable.call(this);
+	var th = document.createElement("th");
+	{
+		th.textContent = "Actions";
+		th;
+	}
+	domtools.DOMManipulation.append(this.thead,th);
+}
+client.ui.basic.ActionTable.prototype.populateTable = function(list) {
+	client.ui.basic.Table.prototype.populateTable.call(this,list);
+	var $it0 = domtools.Traversing.find(this.tbody,"tr").collection.iterator();
+	while( $it0.hasNext() ) {
+		var tr = $it0.next();
+	}
+}
+client.ui.basic.ActionTable.prototype.__class__ = client.ui.basic.ActionTable;
 haxe.io.Input = function() { }
 haxe.io.Input.__name__ = ["haxe","io","Input"];
 haxe.io.Input.prototype.bigEndian = null;
@@ -978,14 +1063,14 @@ app.project.ProjectAPIProxy = function(c) {
 }
 app.project.ProjectAPIProxy.__name__ = ["app","project","ProjectAPIProxy"];
 app.project.ProjectAPIProxy.prototype._conn = null;
-app.project.ProjectAPIProxy.prototype.listProjects = function(cb) {
-	this._conn.resolve("listProjects").call([],cb);
+app.project.ProjectAPIProxy.prototype.list = function(cb) {
+	this._conn.resolve("list").call([],cb);
 }
-app.project.ProjectAPIProxy.prototype.addProject = function(p,cb) {
-	this._conn.resolve("addProject").call([p],cb);
+app.project.ProjectAPIProxy.prototype.create = function(p,cb) {
+	this._conn.resolve("create").call([p],cb);
 }
-app.project.ProjectAPIProxy.prototype.updateProject = function(currentProjectName,newProjectDetails,cb) {
-	this._conn.resolve("updateProject").call([currentProjectName,newProjectDetails],cb);
+app.project.ProjectAPIProxy.prototype.update = function(currentProjectName,newProjectDetails,cb) {
+	this._conn.resolve("update").call([currentProjectName,newProjectDetails],cb);
 }
 app.project.ProjectAPIProxy.prototype.__class__ = app.project.ProjectAPIProxy;
 if(typeof hscript=='undefined') hscript = {}
@@ -2594,24 +2679,35 @@ client.Client.initialiseAPI = function() {
 client.Client.prototype.__class__ = client.Client;
 app.project.ProjectController = function(p) {
 	if( p === $_ ) return;
-	var me = this;
 	this.view = new app.project.ProjectView(this);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
+	this.list();
+}
+app.project.ProjectController.__name__ = ["app","project","ProjectController"];
+app.project.ProjectController.prototype.view = null;
+app.project.ProjectController.prototype.list = function() {
+	var me = this;
+	app.project.ProjectController.projectAPI.list(function(a) {
+		me.view.listProjects(a);
+	});
+}
+app.project.ProjectController.prototype.read = function() {
+}
+app.project.ProjectController.prototype.create = function() {
+	var me = this;
 	this.view.renderForm();
 	domtools.QueryEventManagement.on(this.view.form,"submit",function(e) {
 		e.preventDefault();
 		var newProject = me.view.form.readForm();
-		newProject.insert();
+		app.project.ProjectController.projectAPI.create(newProject,function(e1) {
+			haxe.Log.trace("Added new project!",{ fileName : "ProjectController.hx", lineNumber : 46, className : "app.project.ProjectController", methodName : "create"});
+			me.list();
+		});
 	});
-	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-	this.listProjects();
 }
-app.project.ProjectController.__name__ = ["app","project","ProjectController"];
-app.project.ProjectController.prototype.view = null;
-app.project.ProjectController.prototype.listProjects = function() {
-	var me = this;
-	app.project.ProjectController.projectAPI.listProjects(function(a) {
-		me.view.listProjects(a);
-	});
+app.project.ProjectController.prototype.update = function() {
+}
+app.project.ProjectController.prototype.archive = function() {
 }
 app.project.ProjectController.prototype.__class__ = app.project.ProjectController;
 hscript.Interp = function(p) {
@@ -3972,10 +4068,6 @@ IntHash.prototype.toString = function() {
 	return s.b.join("");
 }
 IntHash.prototype.__class__ = IntHash;
-if(!haxe.rtti) haxe.rtti = {}
-haxe.rtti.Infos = function() { }
-haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
-haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 if(!app.video) app.video = {}
 app.video.VideoController = function(p) {
 	if( p === $_ ) return;
@@ -3985,6 +4077,10 @@ app.video.VideoController = function(p) {
 app.video.VideoController.__name__ = ["app","video","VideoController"];
 app.video.VideoController.prototype.view = null;
 app.video.VideoController.prototype.__class__ = app.video.VideoController;
+if(!haxe.rtti) haxe.rtti = {}
+haxe.rtti.Infos = function() { }
+haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
+haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 app.video.VideoView = function(c) {
 	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
@@ -4881,6 +4977,25 @@ CommonJS.setStyle = function(domSelection,cssStyle,value) {
 	}
 }
 CommonJS.prototype.__class__ = CommonJS;
+autoform.ui.TextArea = function(field) {
+	if( field === $_ ) return;
+	autoform.AbstractField.call(this,"div");
+	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
+	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><textarea></textarea><span />");
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"textarea"),"id",field.fullID),".input"),"placeholder",field.placeholder);
+	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
+	if(field.description != "") domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"span"),field.description),"help-inline");
+}
+autoform.ui.TextArea.__name__ = ["autoform","ui","TextArea"];
+autoform.ui.TextArea.__super__ = autoform.AbstractField;
+for(var k in autoform.AbstractField.prototype ) autoform.ui.TextArea.prototype[k] = autoform.AbstractField.prototype[k];
+autoform.ui.TextArea.prototype.get = function() {
+	return domtools.QueryElementManipulation.val(domtools.QueryTraversing.find(this,"textarea"));
+}
+autoform.ui.TextArea.prototype.set = function(o) {
+	domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"textarea"),o);
+}
+autoform.ui.TextArea.prototype.__class__ = autoform.ui.TextArea;
 Lambda = function() { }
 Lambda.__name__ = ["Lambda"];
 Lambda.array = function(it) {
@@ -5021,25 +5136,6 @@ Lambda.concat = function(a,b) {
 	return l;
 }
 Lambda.prototype.__class__ = Lambda;
-autoform.ui.TextArea = function(field) {
-	if( field === $_ ) return;
-	autoform.AbstractField.call(this,"div");
-	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"af-field-container"),field.id);
-	domtools.QueryElementManipulation.setInnerHTML(this,"<label></label><textarea></textarea><span />");
-	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setAttr(domtools.QueryTraversing.find(this,"textarea"),"id",field.fullID),".input"),"placeholder",field.placeholder);
-	domtools.QueryElementManipulation.setAttr(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"label"),field.title),"for",field.fullID);
-	if(field.description != "") domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"span"),field.description),"help-inline");
-}
-autoform.ui.TextArea.__name__ = ["autoform","ui","TextArea"];
-autoform.ui.TextArea.__super__ = autoform.AbstractField;
-for(var k in autoform.AbstractField.prototype ) autoform.ui.TextArea.prototype[k] = autoform.AbstractField.prototype[k];
-autoform.ui.TextArea.prototype.get = function() {
-	return domtools.QueryElementManipulation.val(domtools.QueryTraversing.find(this,"textarea"));
-}
-autoform.ui.TextArea.prototype.set = function(o) {
-	domtools.QueryElementManipulation.setText(domtools.QueryTraversing.find(this,"textarea"),o);
-}
-autoform.ui.TextArea.prototype.__class__ = autoform.ui.TextArea;
 erazor.ScriptBuilder = function(context) {
 	if( context === $_ ) return;
 	this.context = context;
@@ -5487,7 +5583,6 @@ Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
 Std.prototype.__class__ = Std;
-if(!client.ui.basic) client.ui.basic = {}
 client.ui.basic.Link = function(text,href,title) {
 	if( text === $_ ) return;
 	if(href == null) href = "#";
@@ -5884,11 +5979,6 @@ app.project.model.Project.prototype.id = null;
 app.project.model.Project.prototype.title = null;
 app.project.model.Project.prototype.lecturer = null;
 app.project.model.Project.prototype.notes = null;
-app.project.model.Project.prototype.insert = function() {
-	app.project.ProjectController.projectAPI.addProject(this,function(success) {
-		haxe.Log.trace("Done",{ fileName : "Project.hx", lineNumber : 44, className : "app.project.model.Project", methodName : "insert"});
-	});
-}
 app.project.model.Project.prototype.__class__ = app.project.model.Project;
 app.project.model.Project.__interfaces__ = [haxe.rtti.Infos];
 haxe.io.Error = { __ename__ : ["haxe","io","Error"], __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"] }
@@ -6307,64 +6397,6 @@ haxe.io.Bytes.prototype.getData = function() {
 	return this.b;
 }
 haxe.io.Bytes.prototype.__class__ = haxe.io.Bytes;
-client.ui.basic.Table = function(type,list) {
-	if( type === $_ ) return;
-	domtools.AbstractCustomElement.call(this,"table");
-	this.fields = new Hash();
-	this.type = type;
-	this.createTable();
-	domtools.QueryElementManipulation.addClass(this,"table");
-	domtools.QueryElementManipulation.addClass(this,"table-striped");
-	if(list != null) this.populateTable(list);
-}
-client.ui.basic.Table.__name__ = ["client","ui","basic","Table"];
-client.ui.basic.Table.__super__ = domtools.AbstractCustomElement;
-for(var k in domtools.AbstractCustomElement.prototype ) client.ui.basic.Table.prototype[k] = domtools.AbstractCustomElement.prototype[k];
-client.ui.basic.Table.prototype.type = null;
-client.ui.basic.Table.prototype.fields = null;
-client.ui.basic.Table.prototype.thead = null;
-client.ui.basic.Table.prototype.tbody = null;
-client.ui.basic.Table.prototype.createTable = function() {
-	this.thead = document.createElement("thead");
-	this.tbody = document.createElement("tbody");
-	domtools.QueryDOMManipulation.append(this,this.thead);
-	domtools.QueryDOMManipulation.append(this,this.tbody);
-	var _g = 0, _g1 = Type.getInstanceFields(this.type);
-	while(_g < _g1.length) {
-		var field = _g1[_g];
-		++_g;
-		haxe.Log.trace("I should check metadata here",{ fileName : "Table.hx", lineNumber : 41, className : "client.ui.basic.Table", methodName : "createTable"});
-		if(field != "insert") {
-			var th = document.createElement("th");
-			{
-				th.textContent = field;
-				th;
-			}
-			domtools.DOMManipulation.append(this.thead,th);
-			this.fields.set(field,"Field: " + field);
-		}
-	}
-}
-client.ui.basic.Table.prototype.populateTable = function(list) {
-	var $it0 = list.iterator();
-	while( $it0.hasNext() ) {
-		var object = $it0.next();
-		var tr = document.createElement("tr");
-		domtools.DOMManipulation.append(this.tbody,tr);
-		var $it1 = this.fields.keys();
-		while( $it1.hasNext() ) {
-			var field = $it1.next();
-			var td = document.createElement("td");
-			var value = Reflect.field(object,field);
-			{
-				td.textContent = value;
-				td;
-			}
-			domtools.DOMManipulation.append(tr,td);
-		}
-	}
-}
-client.ui.basic.Table.prototype.__class__ = client.ui.basic.Table;
 haxe.Int32 = function() { }
 haxe.Int32.__name__ = ["haxe","Int32"];
 haxe.Int32.make = function(a,b) {
@@ -6795,7 +6827,7 @@ haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
 app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
-app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<insert public=\"1\" set=\"method\" line=\"41\"><f a=\"\"><e path=\"Void\"/></f></insert>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 erazor.Parser.at = "@";
 erazor.Parser.bracketMismatch = "Bracket mismatch! Inside template, non-paired brackets, '{' or '}', should be replaced by @{'{'} and @{'}'}.";
 js.Lib.onerror = null;
