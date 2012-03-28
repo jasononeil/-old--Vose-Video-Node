@@ -61,13 +61,46 @@ class ProjectAPI
 		cb(true);
 	}
 
-	@remote public function update(currentProjectName:String, newProjectDetails:app.project.model.Project, cb:Bool->Void)
+	@remote public function read(id:String, cb:app.project.model.Project->Void)
 	{
+		var filename = AppConfig.projectDir + '/' + id + "/project.xml";
+		var project:Project;
+		if (FileSystem.existsSync(filename))
+		{
+			var fileString = Node.fs.readFileSync(filename, "utf8");
+			project = haxe.Unserializer.run(fileString);
+		}
+		else 
+		{
+			project = null;//new Project();
+		}
+
+		cb(project);
+	}
+
+	@remote public function update(oldName:String, project:app.project.model.Project, cb:Bool->Void)
+	{
+		var oldProjectDir = AppConfig.projectDir + oldName;
+		var newProjectDir = AppConfig.projectDir + project.id;
+
+		// If the name has changed, move the directory
+		if (oldProjectDir != newProjectDir)
+		{
+			Node.fs.renameSync(oldProjectDir, newProjectDir);
+		}
+		
+		var fileString = haxe.Serializer.run(project);
+		var filename = newProjectDir + "/project.xml";
+
+		Node.fs.writeFileSync(filename, fileString, "utf8");
+
+		trace ("Just created: " + newProjectDir);
 		cb(true);
 	}
 
 	public function archive(projectName:String, cb:Bool->Void)
 	{
+		
 		cb(true);
 	}
 	

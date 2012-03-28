@@ -4,6 +4,7 @@ import app.project.model.Project;
 import erazor.Template;
 import client.ui.basic.ActionTable;
 import autoform.AutoForm;
+import autoform.ui.Button;
 using domtools.Tools;
 
 class ProjectView extends domtools.AbstractCustomElement
@@ -25,8 +26,15 @@ class ProjectView extends domtools.AbstractCustomElement
 	public function listProjects(list:Iterable<Project>)
 	{
 		this.empty();
-		var table = new ActionTable<Project>(Project, list);
+		var table = new ActionTable<Project, String>(Project, list);
+		table.addAction("View", testAction, ButtonType.Primary);
+		table.addAction("Edit", controller.update);
 		this.append(table);
+	}
+
+	public function testAction(id:String)
+	{
+		trace (id);
 	}
 
 	public function renderForm()

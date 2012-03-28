@@ -702,7 +702,12 @@ app.project.ProjectView.prototype.form = null;
 app.project.ProjectView.prototype.listProjects = function(list) {
 	domtools.QueryDOMManipulation.empty(this);
 	var table = new client.ui.basic.ActionTable(app.project.model.Project,list);
+	table.addAction("View",$closure(this,"testAction"),autoform.ui.ButtonType.Primary);
+	table.addAction("Edit",$closure(this.controller,"update"));
 	domtools.QueryDOMManipulation.append(this,null,table);
+}
+app.project.ProjectView.prototype.testAction = function(id) {
+	haxe.Log.trace(id,{ fileName : "ProjectView.hx", lineNumber : 37, className : "app.project.ProjectView", methodName : "testAction"});
 }
 app.project.ProjectView.prototype.renderForm = function() {
 	domtools.QueryDOMManipulation.empty(this);
@@ -815,6 +820,8 @@ client.ui.basic.Table.prototype.populateTable = function(list) {
 				td;
 			}
 			domtools.DOMManipulation.append(tr,td);
+			domtools.ElementManipulation.addClass(td,field);
+			if(field == "id") domtools.ElementManipulation.setAttr(tr,"data-id",value);
 		}
 	}
 }
@@ -837,9 +844,27 @@ client.ui.basic.ActionTable.prototype.createTable = function() {
 }
 client.ui.basic.ActionTable.prototype.populateTable = function(list) {
 	client.ui.basic.Table.prototype.populateTable.call(this,list);
+}
+client.ui.basic.ActionTable.prototype.addAction = function(label,action,type) {
 	var $it0 = domtools.Traversing.find(this.tbody,"tr").collection.iterator();
 	while( $it0.hasNext() ) {
 		var tr = $it0.next();
+		var td = domtools.Traversing.find(tr,"td.actions");
+		if(td.collection.length == 0) {
+			td = domtools.ElementManipulation.toQuery(document.createElement("td"));
+			domtools.QueryElementManipulation.addClass(td,"actions");
+			domtools.QueryDOMManipulation.appendTo(td,tr);
+		}
+		var btn = [new autoform.ui.Button(label,null,type)];
+		domtools.QueryEventManagement.on(btn[0],"click",(function(btn) {
+			return function(e) {
+				var td1 = domtools.QueryTraversing.parent(btn[0]);
+				var tr1 = domtools.QueryTraversing.parent(td1);
+				var id = domtools.QueryElementManipulation.attr(tr1,"data-id");
+				action(id);
+			};
+		})(btn));
+		domtools.QueryDOMManipulation.append(td,null,btn[0]);
 	}
 }
 client.ui.basic.ActionTable.prototype.__class__ = client.ui.basic.ActionTable;
@@ -1069,8 +1094,11 @@ app.project.ProjectAPIProxy.prototype.list = function(cb) {
 app.project.ProjectAPIProxy.prototype.create = function(p,cb) {
 	this._conn.resolve("create").call([p],cb);
 }
-app.project.ProjectAPIProxy.prototype.update = function(currentProjectName,newProjectDetails,cb) {
-	this._conn.resolve("update").call([currentProjectName,newProjectDetails],cb);
+app.project.ProjectAPIProxy.prototype.read = function(id,cb) {
+	this._conn.resolve("read").call([id],cb);
+}
+app.project.ProjectAPIProxy.prototype.update = function(oldName,project,cb) {
+	this._conn.resolve("update").call([oldName,project],cb);
 }
 app.project.ProjectAPIProxy.prototype.__class__ = app.project.ProjectAPIProxy;
 if(typeof hscript=='undefined') hscript = {}
@@ -2691,7 +2719,7 @@ app.project.ProjectController.prototype.list = function() {
 		me.view.listProjects(a);
 	});
 }
-app.project.ProjectController.prototype.read = function() {
+app.project.ProjectController.prototype.read = function(id) {
 }
 app.project.ProjectController.prototype.create = function() {
 	var me = this;
@@ -2700,12 +2728,25 @@ app.project.ProjectController.prototype.create = function() {
 		e.preventDefault();
 		var newProject = me.view.form.readForm();
 		app.project.ProjectController.projectAPI.create(newProject,function(e1) {
-			haxe.Log.trace("Added new project!",{ fileName : "ProjectController.hx", lineNumber : 46, className : "app.project.ProjectController", methodName : "create"});
+			haxe.Log.trace("Added new project!",{ fileName : "ProjectController.hx", lineNumber : 47, className : "app.project.ProjectController", methodName : "create"});
 			me.list();
 		});
 	});
 }
-app.project.ProjectController.prototype.update = function() {
+app.project.ProjectController.prototype.update = function(id) {
+	var me = this;
+	var oldID = id;
+	app.project.ProjectController.projectAPI.read(id,function(project) {
+		me.view.renderForm();
+		me.view.form.populateForm(project);
+		domtools.QueryEventManagement.on(me.view.form,"submit",function(e) {
+			e.preventDefault();
+			var updatedProject = me.view.form.readForm();
+			app.project.ProjectController.projectAPI.update(oldID,updatedProject,function(e1) {
+				me.list();
+			});
+		});
+	});
 }
 app.project.ProjectController.prototype.archive = function() {
 }
@@ -4068,30 +4109,123 @@ IntHash.prototype.toString = function() {
 	return s.b.join("");
 }
 IntHash.prototype.__class__ = IntHash;
-if(!app.video) app.video = {}
-app.video.VideoController = function(p) {
-	if( p === $_ ) return;
-	this.view = new app.video.VideoView(this);
-	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
-}
-app.video.VideoController.__name__ = ["app","video","VideoController"];
-app.video.VideoController.prototype.view = null;
-app.video.VideoController.prototype.__class__ = app.video.VideoController;
 if(!haxe.rtti) haxe.rtti = {}
 haxe.rtti.Infos = function() { }
 haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
 haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
+if(!app.video) app.video = {}
+if(!app.video.model) app.video.model = {}
+app.video.model.Video = function(project) {
+	if( project === $_ ) return;
+	if(project != null) {
+		this.projectID = project.id;
+		this.lecturer = project.lecturer;
+	}
+}
+app.video.model.Video.__name__ = ["app","video","model","Video"];
+app.video.model.Video.prototype.projectID = null;
+app.video.model.Video.prototype.name = null;
+app.video.model.Video.prototype.lecturer = null;
+app.video.model.Video.prototype.notes = null;
+app.video.model.Video.prototype.__class__ = app.video.model.Video;
+app.video.model.Video.__interfaces__ = [haxe.rtti.Infos];
+app.video.VideoAPIProxy = function(c) {
+	if( c === $_ ) return;
+	this._conn = c.resolve("app.video.VideoAPIService");
+}
+app.video.VideoAPIProxy.__name__ = ["app","video","VideoAPIProxy"];
+app.video.VideoAPIProxy.prototype._conn = null;
+app.video.VideoAPIProxy.prototype.setCurrentProject = function(id,cb) {
+	this._conn.resolve("setCurrentProject").call([id],cb);
+}
+app.video.VideoAPIProxy.prototype.list = function(cb) {
+	this._conn.resolve("list").call([],cb);
+}
+app.video.VideoAPIProxy.prototype.create = function(v,cb) {
+	this._conn.resolve("create").call([v],cb);
+}
+app.video.VideoAPIProxy.prototype.read = function(videoName,cb) {
+	this._conn.resolve("read").call([videoName],cb);
+}
+app.video.VideoAPIProxy.prototype.update = function(oldName,video,cb) {
+	this._conn.resolve("update").call([oldName,video],cb);
+}
+app.video.VideoAPIProxy.prototype.__class__ = app.video.VideoAPIProxy;
+app.video.VideoController = function(p) {
+	if( p === $_ ) return;
+	this.view = new app.video.VideoView(this);
+	domtools.QueryDOMManipulation.append(new domtools.Query("#controllerarea"),null,this.view);
+	this.create();
+}
+app.video.VideoController.__name__ = ["app","video","VideoController"];
+app.video.VideoController.prototype.view = null;
+app.video.VideoController.prototype.list = function(projectID) {
+	var me = this;
+	app.video.VideoController.videoAPI.setCurrentProject(projectID,null);
+	app.video.VideoController.videoAPI.list(function(a) {
+		me.view.list(a);
+	});
+}
+app.video.VideoController.prototype.read = function(id) {
+}
+app.video.VideoController.prototype.create = function() {
+	var me = this;
+	this.view.renderForm();
+	domtools.QueryEventManagement.on(this.view.form,"submit",function(e) {
+		e.preventDefault();
+		var newVideo = me.view.form.readForm();
+		app.video.VideoController.videoAPI.create(newVideo,function(e1) {
+			haxe.Log.trace("Added new video!",{ fileName : "VideoController.hx", lineNumber : 47, className : "app.video.VideoController", methodName : "create"});
+			me.list();
+		});
+	});
+}
+app.video.VideoController.prototype.update = function(name) {
+	var me = this;
+	app.video.VideoController.videoAPI.read(name,function(video) {
+		var oldProjectID = video.projectID;
+		var oldName = video.name;
+		me.view.renderForm();
+		me.view.form.populateForm(video);
+		domtools.QueryEventManagement.on(me.view.form,"submit",function(e) {
+			e.preventDefault();
+			var updatedVideo = me.view.form.readForm();
+			app.video.VideoController.videoAPI.update(oldName,updatedVideo,function(e1) {
+				me.list();
+			});
+		});
+	});
+}
+app.video.VideoController.prototype.archive = function() {
+}
+app.video.VideoController.prototype.__class__ = app.video.VideoController;
 app.video.VideoView = function(c) {
 	if( c === $_ ) return;
 	domtools.AbstractCustomElement.call(this,"div");
 	this.controller = c;
 	domtools.QueryElementManipulation.addClass(domtools.QueryElementManipulation.addClass(this,"controller"),"video");
-	domtools.QueryElementManipulation.setText(this,"Video Controller");
+	domtools.QueryElementManipulation.setInnerHTML(this,"<h1>Video Controller</h1>");
 }
 app.video.VideoView.__name__ = ["app","video","VideoView"];
 app.video.VideoView.__super__ = domtools.AbstractCustomElement;
 for(var k in domtools.AbstractCustomElement.prototype ) app.video.VideoView.prototype[k] = domtools.AbstractCustomElement.prototype[k];
 app.video.VideoView.prototype.controller = null;
+app.video.VideoView.prototype.form = null;
+app.video.VideoView.prototype.list = function(list) {
+	domtools.QueryDOMManipulation.empty(this);
+	var table = new client.ui.basic.ActionTable(app.video.model.Video,list);
+	table.addAction("View",$closure(this,"testAction"),autoform.ui.ButtonType.Primary);
+	table.addAction("Edit",$closure(this.controller,"update"));
+	domtools.QueryDOMManipulation.append(this,null,table);
+}
+app.video.VideoView.prototype.testAction = function(id) {
+	haxe.Log.trace(id,{ fileName : "VideoView.hx", lineNumber : 37, className : "app.video.VideoView", methodName : "testAction"});
+}
+app.video.VideoView.prototype.renderForm = function() {
+	domtools.QueryDOMManipulation.empty(this);
+	this.form = new autoform.AutoForm(app.video.model.Video);
+	domtools.QueryDOMManipulation.append(this,null,this.form);
+}
 app.video.VideoView.prototype.__class__ = app.video.VideoView;
 domtools.Tools = function(p) {
 }
@@ -4101,6 +4235,9 @@ domtools.ElementManipulation = function() { }
 domtools.ElementManipulation.__name__ = ["domtools","ElementManipulation"];
 domtools.ElementManipulation.isElement = function(node) {
 	return node.nodeType == domtools.ElementManipulation.NodeTypeElement;
+}
+domtools.ElementManipulation.toQuery = function(n) {
+	return new domtools.Query(null,n);
 }
 domtools.ElementManipulation.attr = function(elm,attName) {
 	var ret = "";
@@ -5351,6 +5488,7 @@ autoform.AutoForm = function(c,formID) {
 		autoform.AutoForm.formIDIncrement = autoform.AutoForm.formIDIncrement + 1;
 		formID = "af-" + autoform.AutoForm.formIDIncrement;
 	}
+	this.formID = formID;
 	this.fieldsInfo = new Array();
 	this.fields = new Hash();
 	this.classval = c;
@@ -5368,12 +5506,20 @@ autoform.AutoForm = function(c,formID) {
 autoform.AutoForm.__name__ = ["autoform","AutoForm"];
 autoform.AutoForm.__super__ = domtools.AbstractCustomElement;
 for(var k in domtools.AbstractCustomElement.prototype ) autoform.AutoForm.prototype[k] = domtools.AbstractCustomElement.prototype[k];
+autoform.AutoForm.prototype.formID = null;
 autoform.AutoForm.prototype.classval = null;
 autoform.AutoForm.prototype.rtti = null;
 autoform.AutoForm.prototype.meta = null;
 autoform.AutoForm.prototype.fieldsInfo = null;
 autoform.AutoForm.prototype.fields = null;
 autoform.AutoForm.prototype.populateForm = function(object) {
+	var $it0 = this.fields.keys();
+	while( $it0.hasNext() ) {
+		var fieldName = $it0.next();
+		var field = this.fields.get(fieldName);
+		var value = Reflect.field(object,fieldName);
+		field.set(value);
+	}
 }
 autoform.AutoForm.prototype.readForm = function(originalObject) {
 	var object;
@@ -6819,6 +6965,9 @@ Xml.eclose = new EReg("^[ \r\n\t]*(>|(/>))","");
 Xml.ecdata_end = new EReg("\\]\\]>","");
 Xml.edoctype_elt = new EReg("[\\[|\\]>]","");
 Xml.ecomment_end = new EReg("-->","");
+app.video.model.Video.__meta__ = { fields : { projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}}};
+app.video.model.Video.__rtti = "<class path=\"app.video.model.Video\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<projectID public=\"1\"><c path=\"String\"/></projectID>\n\t<name public=\"1\"><c path=\"String\"/></name>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"String\"/></notes>\n\t<new public=\"1\" set=\"method\" line=\"34\"><f a=\"project\">\n\t<c path=\"app.project.model.Project\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
+app.video.VideoController.videoAPI = new app.video.VideoAPIProxy(client.Client.conn);
 domtools.ElementManipulation.NodeTypeElement = 1;
 domtools.ElementManipulation.NodeTypeAttribute = 2;
 domtools.ElementManipulation.NodeTypeText = 3;

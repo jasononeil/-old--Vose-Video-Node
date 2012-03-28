@@ -64,6 +64,13 @@ class Table<T> extends domtools.AbstractCustomElement
 				var value = Reflect.field(object, field);
 				td.setText(value);
 				tr.append(td);
+
+				// Add classes to make it easier to find data
+				td.addClass(field);
+				if (field == "id")
+				{
+					tr.setAttr("data-id", value);
+				}
 			}
 		}
 	}

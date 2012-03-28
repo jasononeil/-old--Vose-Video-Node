@@ -153,6 +153,10 @@ class Server
 		projectAPI = new ProjectAPI();
 		context.addObject(haxe.remoting.Macros.getRemotingId(app.project.ProjectAPI), projectAPI);
 
+		// Add the video API
+		videoAPI = new VideoAPI();
+		context.addObject(haxe.remoting.Macros.getRemotingId(app.video.VideoAPI), videoAPI);
+
 
 
 	}

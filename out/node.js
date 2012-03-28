@@ -263,12 +263,26 @@ if(!haxe.remoting) haxe.remoting = {}
 haxe.remoting.Macros = function() { }
 haxe.remoting.Macros.__name__ = ["haxe","remoting","Macros"];
 haxe.remoting.Macros.prototype.__class__ = haxe.remoting.Macros;
+if(!haxe.rtti) haxe.rtti = {}
+haxe.rtti.Infos = function() { }
+haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
+haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 if(!app.video) app.video = {}
 if(!app.video.model) app.video.model = {}
-app.video.model.Video = function(p) {
+app.video.model.Video = function(project) {
+	if( project === $_ ) return;
+	if(project != null) {
+		this.projectID = project.id;
+		this.lecturer = project.lecturer;
+	}
 }
 app.video.model.Video.__name__ = ["app","video","model","Video"];
+app.video.model.Video.prototype.projectID = null;
+app.video.model.Video.prototype.name = null;
+app.video.model.Video.prototype.lecturer = null;
+app.video.model.Video.prototype.notes = null;
 app.video.model.Video.prototype.__class__ = app.video.model.Video;
+app.video.model.Video.__interfaces__ = [haxe.rtti.Infos];
 StringBuf = function(p) {
 	if( p === $_ ) return;
 	this.b = new Array();
@@ -293,10 +307,6 @@ app.edit.EditAPI = function(p) {
 }
 app.edit.EditAPI.__name__ = ["app","edit","EditAPI"];
 app.edit.EditAPI.prototype.__class__ = app.edit.EditAPI;
-if(!haxe.rtti) haxe.rtti = {}
-haxe.rtti.Infos = function() { }
-haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
-haxe.rtti.Infos.prototype.__class__ = haxe.rtti.Infos;
 if(!app.project) app.project = {}
 if(!app.project.model) app.project.model = {}
 app.project.model.Project = function(p) {
@@ -1470,7 +1480,23 @@ app.project.ProjectAPI.prototype.create = function(p,cb) {
 	haxe.Log.trace(fileString,{ fileName : "ProjectAPI.hx", lineNumber : 60, className : "app.project.ProjectAPI", methodName : "create"});
 	cb(true);
 }
-app.project.ProjectAPI.prototype.update = function(currentProjectName,newProjectDetails,cb) {
+app.project.ProjectAPI.prototype.read = function(id,cb) {
+	var filename = AppConfig.projectDir + "/" + id + "/project.xml";
+	var project;
+	if(server.api.FileSystem.existsSync(filename)) {
+		var fileString = js.Node.fs.readFileSync(filename,"utf8");
+		project = haxe.Unserializer.run(fileString);
+	} else project = null;
+	cb(project);
+}
+app.project.ProjectAPI.prototype.update = function(oldName,project,cb) {
+	var oldProjectDir = AppConfig.projectDir + oldName;
+	var newProjectDir = AppConfig.projectDir + project.id;
+	if(oldProjectDir != newProjectDir) js.Node.fs.renameSync(oldProjectDir,newProjectDir);
+	var fileString = haxe.Serializer.run(project);
+	var filename = newProjectDir + "/project.xml";
+	js.Node.fs.writeFileSync(filename,fileString,"utf8");
+	haxe.Log.trace("Just created: " + newProjectDir,{ fileName : "ProjectAPI.hx", lineNumber : 97, className : "app.project.ProjectAPI", methodName : "update"});
 	cb(true);
 }
 app.project.ProjectAPI.prototype.archive = function(projectName,cb) {
@@ -1778,8 +1804,81 @@ server.api.Launcher.prototype.launch = function(cmd,args,cb) {
 }
 server.api.Launcher.prototype.__class__ = server.api.Launcher;
 app.video.VideoAPI = function(p) {
+	if( p === $_ ) return;
+	this.currentProjectID = "";
 }
 app.video.VideoAPI.__name__ = ["app","video","VideoAPI"];
+app.video.VideoAPI.prototype.currentProjectID = null;
+app.video.VideoAPI.prototype.setCurrentProject = function(id,cb) {
+	this.currentProjectID = id;
+}
+app.video.VideoAPI.prototype.list = function(cb) {
+	var videos = new Array();
+	var projectFolders;
+	if(this.currentProjectID == "") projectFolders = js.Node.fs.readdirSync(AppConfig.projectDir); else projectFolders = [this.currentProjectID];
+	var _g = 0;
+	while(_g < projectFolders.length) {
+		var folder = projectFolders[_g];
+		++_g;
+		var projectFolder = AppConfig.projectDir + "/" + folder;
+		var filename = projectFolder + "/project.xml";
+		if(server.api.FileSystem.existsSync(filename)) {
+			var vidFolders = js.Node.fs.readdirSync(projectFolder);
+			var _g1 = 0;
+			while(_g1 < vidFolders.length) {
+				var folder1 = vidFolders[_g1];
+				++_g1;
+				var vidFolder = projectFolder + "/" + folder1;
+				var filename1 = vidFolder + "/video.xml";
+				if(server.api.FileSystem.existsSync(filename1)) {
+					var v;
+					var fileString = js.Node.fs.readFileSync(filename1,"utf8");
+					v = haxe.Unserializer.run(fileString);
+					videos.push(v);
+				}
+			}
+		}
+	}
+	cb(videos);
+}
+app.video.VideoAPI.prototype.create = function(v,cb) {
+	var videoDir = AppConfig.projectDir + v.projectID + "/" + v.name;
+	js.Node.fs.mkdirSync(videoDir,null);
+	var fileString = haxe.Serializer.run(v);
+	var filename = videoDir + "/video.xml";
+	js.Node.fs.writeFileSync(filename,fileString,"utf8");
+	haxe.Log.trace("Just created: " + videoDir,{ fileName : "VideoAPI.hx", lineNumber : 85, className : "app.video.VideoAPI", methodName : "create"});
+	cb(true);
+}
+app.video.VideoAPI.prototype.read = function(videoName,cb) {
+	var filename = AppConfig.projectDir + "/" + this.currentProjectID + "/" + videoName + "/video.xml";
+	var video;
+	if(server.api.FileSystem.existsSync(filename)) {
+		var fileString = js.Node.fs.readFileSync(filename,"utf8");
+		video = haxe.Unserializer.run(fileString);
+	} else video = null;
+	cb(video);
+}
+app.video.VideoAPI.prototype.update = function(oldName,video,cb) {
+	var oldVideoDir = AppConfig.projectDir + this.currentProjectID + "/" + oldName;
+	var newVideoDir = AppConfig.projectDir + video.projectID + "/" + video.name;
+	if(oldVideoDir != newVideoDir) {
+		js.Node.fs.renameSync(oldVideoDir,newVideoDir);
+		this.currentProjectID = video.projectID;
+	}
+	var fileString = haxe.Serializer.run(video);
+	var filename = newVideoDir + "/video.xml";
+	js.Node.fs.writeFileSync(filename,fileString,"utf8");
+	haxe.Log.trace("Just created: " + newVideoDir,{ fileName : "VideoAPI.hx", lineNumber : 123, className : "app.video.VideoAPI", methodName : "update"});
+	cb(true);
+}
+app.video.VideoAPI.prototype.archive = function(videoName,cb) {
+	cb(true);
+}
+app.video.VideoAPI.prototype.view = function(cb) {
+	var videos = new Array();
+	cb(videos);
+}
 app.video.VideoAPI.prototype.__class__ = app.video.VideoAPI;
 server.api.Scheduler = function(p) {
 }
@@ -1926,6 +2025,8 @@ server.Server.prototype.setupAPIContext = function() {
 	this.context.addObject("server.api.SchedulerService",this.schedulerAPI);
 	this.projectAPI = new app.project.ProjectAPI();
 	this.context.addObject("app.project.ProjectAPIService",this.projectAPI);
+	this.videoAPI = new app.video.VideoAPI();
+	this.context.addObject("app.video.VideoAPIService",this.videoAPI);
 }
 server.Server.prototype.__class__ = server.Server;
 $_ = {}
@@ -2075,6 +2176,8 @@ js.NodeC.FILE_WRITE_APPEND = "a+";
 js.NodeC.FILE_READWRITE = "a";
 js.NodeC.FILE_READWRITE_APPEND = "a+";
 AppConfig.projectDir = "/home/jason/VoseProjects/";
+app.video.model.Video.__meta__ = { fields : { projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}}};
+app.video.model.Video.__rtti = "<class path=\"app.video.model.Video\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<projectID public=\"1\"><c path=\"String\"/></projectID>\n\t<name public=\"1\"><c path=\"String\"/></name>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"String\"/></notes>\n\t<new public=\"1\" set=\"method\" line=\"34\"><f a=\"project\">\n\t<c path=\"app.project.model.Project\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
 app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
 app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
@@ -2083,10 +2186,12 @@ haxe.Unserializer.CODES = null;
 haxe.Serializer.USE_CACHE = false;
 haxe.Serializer.USE_ENUM_INDEX = false;
 haxe.Serializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
-app.project.ProjectAPI.__meta__ = { fields : { list : { remote : null}, create : { remote : null}, update : { remote : null}}};
+app.project.ProjectAPI.__meta__ = { fields : { list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
 app.project.ProjectAPI.api = new app.project.ProjectAPI();
 haxe.remoting.NodeJsHtmlConnection.querystring = js.Node.require("querystring");
 server.api.Launcher.__meta__ = { fields : { launch : { remote : null}}};
+app.video.VideoAPI.__meta__ = { fields : { setCurrentProject : { remote : null}, list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
+app.video.VideoAPI.api = new app.video.VideoAPI();
 server.api.Scheduler.__meta__ = { fields : { getTheFoo : { remote : null}}};
 server.api.Notifications.__meta__ = { fields : { getTheFoo : { remote : null}}};
 server.Server.inst = null;

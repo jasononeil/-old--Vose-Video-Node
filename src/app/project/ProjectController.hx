@@ -31,9 +31,10 @@ class ProjectController
 		});
 	}
 
-	public function read()
+	public function read(id:String)
 	{
-		
+		// Display a grid of progress, showing where each
+		// video in the project is up to...
 	}
 
 	public function create()
@@ -49,9 +50,33 @@ class ProjectController
 		});
 	}
 
-	public function update()
+	public function update(id:String)
 	{
-		
+		// save the old ID so we know which project to update
+		var oldID = id;
+
+		// Read the current project
+		projectAPI.read(id, function (project) {
+
+			// Create a form
+			view.renderForm();
+			view.form.populateForm(project);
+
+			// On Submit, save the form
+			view.form.submit(function (e) {
+
+				e.preventDefault();
+				var updatedProject = view.form.readForm();
+				projectAPI.update(oldID, updatedProject, function(e) {
+
+					// Once we've saved, reload the list
+					list();
+
+				});
+
+			});
+		});
+
 	}
 
 	public function archive()
