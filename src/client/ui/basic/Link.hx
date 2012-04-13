@@ -1,11 +1,11 @@
 package client.ui.basic;
-using domtools.Tools;
+using DOMTools;
 
-class Link extends domtools.AbstractCustomElement
+class Link extends domtools.Widget
 {
 	public function new(?text:String = "Link", ?href:String = "#", ?title:String = null)
 	{
-		super("a");
+		super("<a></a>");
 
 		// set the text and link.  Note "text" can also be html.
 		this.setAttr("href", href);

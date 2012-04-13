@@ -1,8 +1,8 @@
 package client.ui.menu;
 import domtools.Query;
-using domtools.Tools;
+using DOMTools;
 
-class MenuItem extends domtools.AbstractCustomElement
+class MenuItem extends domtools.Widget
 {
 	private var a:Query;
 	public var id(default,null):String;
@@ -10,7 +10,7 @@ class MenuItem extends domtools.AbstractCustomElement
 
 	public function new(id:String, text:String)
 	{
-		super("li");
+		super("<li></li>");
 
 		// create the "<a href>"
 		this.append(Query.create("a"));

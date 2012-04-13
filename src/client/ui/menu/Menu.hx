@@ -1,15 +1,15 @@
 package client.ui.menu;
 import client.ui.menu.MenuItem;
 import domtools.Query;
-using domtools.Tools;
+using DOMTools;
 
-class Menu extends domtools.AbstractCustomElement
+class Menu extends domtools.Widget
 {
 	public var items:Hash<MenuItem>;
 
 	public function new()
 	{
-		super("ul");
+		super("<ul></ul>");
 		this.addClass("menu");
 
 		items = new Hash();

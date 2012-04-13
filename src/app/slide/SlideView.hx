@@ -1,14 +1,14 @@
 package app.slide;
 import app.slide.SlideController;
-using domtools.Tools;
+using DOMTools;
 
-class SlideView extends domtools.AbstractCustomElement
+class SlideView extends domtools.Widget
 {
 	public var controller:SlideController;
 
 	public function new(c:SlideController) 
 	{
-		super ("div");
+		super ("<div></div>");
 
 		controller = c;
 

@@ -1,14 +1,14 @@
 package app.copy;
 import app.copy.CopyController;
-using domtools.Tools;
+using DOMTools;
 
-class CopyView extends domtools.AbstractCustomElement
+class CopyView extends domtools.Widget
 {
 	public var controller:CopyController;
 
 	public function new(c:CopyController) 
 	{
-		super ("div");
+		super ("<div></div>");
 
 		controller = c;
 

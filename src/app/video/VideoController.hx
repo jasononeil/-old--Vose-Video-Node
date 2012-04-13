@@ -4,7 +4,7 @@ import client.Client;
 import app.video.VideoView;
 import app.video.model.Video;
 import domtools.Query;
-using domtools.Tools;
+using DOMTools;
 
 class VideoController
 {

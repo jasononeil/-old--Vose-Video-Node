@@ -6,7 +6,7 @@ import domtools.Query;
 import AppConfig;
 import js.JQuery;
 import app.project.model.Project;
-using domtools.Tools;
+using DOMTools;
 
 class ProjectController
 {

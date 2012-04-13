@@ -1,14 +1,14 @@
 package app.author;
 import app.author.AuthorController;
-using domtools.Tools;
+using DOMTools;
 
-class AuthorView extends domtools.AbstractCustomElement
+class AuthorView extends domtools.Widget
 {
 	public var controller:AuthorController;
 
 	public function new(c:AuthorController) 
 	{
-		super ("div");
+		super ("<div></div>");
 
 		controller = c;
 

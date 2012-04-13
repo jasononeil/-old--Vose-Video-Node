@@ -1,8 +1,8 @@
 package client.ui.basic;
-using domtools.Tools;
+using DOMTools;
 import domtools.Query;
 
-class Table<T> extends domtools.AbstractCustomElement
+class Table<T> extends domtools.Widget
 {
 	public var type:Class<T>;
 	public var fields:Hash<String>;
@@ -11,7 +11,7 @@ class Table<T> extends domtools.AbstractCustomElement
 
 	public function new(type:Class<T>, ?list:Iterable<T>)
 	{
-		super("table");
+		super("<table></table>");
 
 		fields = new Hash();
 		this.type = type;

@@ -1,14 +1,14 @@
 package app.edit;
 import app.edit.EditController;
-using domtools.Tools;
+using DOMTools;
 
-class EditView extends domtools.AbstractCustomElement
+class EditView extends domtools.Widget
 {
 	public var controller:EditController;
 
 	public function new(c:EditController) 
 	{
-		super ("div");
+		super ("<div></div>");
 
 		controller = c;
 

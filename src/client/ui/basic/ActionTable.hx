@@ -1,6 +1,6 @@
 package client.ui.basic;
 
-using domtools.Tools;
+using DOMTools;
 import client.ui.basic.Table;
 import domtools.Query;
 import autoform.ui.Button;

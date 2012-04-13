@@ -5,16 +5,16 @@ import erazor.Template;
 import client.ui.basic.ActionTable;
 import autoform.AutoForm;
 import autoform.ui.Button;
-using domtools.Tools;
+using DOMTools;
 
-class ProjectView extends domtools.AbstractCustomElement
+class ProjectView extends domtools.Widget
 {
 	public var controller:ProjectController;
 	public var form:AutoForm<Project>;
 
 	public function new(c:ProjectController) 
 	{
-		super ("div");
+		super ("<div></div>");
 
 		controller = c;
 

@@ -15,7 +15,7 @@ import domtools.Query;
 
 import client.ui.menu.Menu;
 import client.ui.menu.NavBar;
-using domtools.Tools;
+using DOMTools;
 using StringTools;
 
 class Interface
