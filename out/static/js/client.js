@@ -1918,7 +1918,6 @@ autoform.FieldInfo = $hxClasses["autoform.FieldInfo"] = function(field,rtti,meta
 	this.id = field.getNodeName();
 	this.title = this.id;
 	this.fullID = this.formID + "-" + this.id;
-	haxe.Log.trace(field,{ fileName : "FieldInfo.hx", lineNumber : 60, className : "autoform.FieldInfo", methodName : "new"});
 	if(field.firstChild() != null) {
 		var firstChild = field;
 		var isMethod = firstChild.exists("set") && firstChild.get("set") == "method";
@@ -1936,19 +1935,28 @@ autoform.FieldInfo = $hxClasses["autoform.FieldInfo"] = function(field,rtti,meta
 			}
 		}
 	}
-	if(Reflect.hasField(meta,this.id)) {
-		var fieldMeta = Reflect.field(meta,this.id);
-		if(Reflect.hasField(fieldMeta,"autoform")) {
+	var fieldMeta = Reflect.field(meta,this.id);
+	if(fieldMeta != null) {
+		if(Reflect.field(fieldMeta,"autoform") != null) {
+			haxe.Log.trace("in here!",{ fileName : "FieldInfo.hx", lineNumber : 96, className : "autoform.FieldInfo", methodName : "new"});
 			var autoform = fieldMeta.autoform[0];
-			if(Reflect.hasField(autoform,"title")) this.title = Reflect.field(autoform,"title");
-			if(Reflect.hasField(autoform,"required")) this.required = Reflect.field(autoform,"required");
-			if(Reflect.hasField(autoform,"description")) this.description = Reflect.field(autoform,"description");
-			if(Reflect.hasField(autoform,"help")) this.help = Reflect.field(autoform,"help");
-			if(Reflect.hasField(autoform,"placeholder")) this.placeholder = Reflect.field(autoform,"placeholder");
-			if(Reflect.hasField(autoform,"validatorString")) this.validatorString = Reflect.field(autoform,"validatorString");
+			this.title = Reflect.field(autoform,"title");
+			if(this.title == null) this.title = "";
+			this.required = Reflect.field(autoform,"required");
+			if(this.required == null) this.required = false;
+			this.description = Reflect.field(autoform,"description");
+			if(this.description == null) this.description = "";
+			this.help = Reflect.field(autoform,"help");
+			if(this.help == this.help) this.title = "";
+			this.placeholder = Reflect.field(autoform,"placeholder");
+			if(this.placeholder == this.placeholder) this.title = "";
+			this.validatorString = Reflect.field(autoform,"validatorString");
+			if(this.validatorString == null) this.validatorString = "";
 			this.validator = this.createValidatorFunction(this.validatorString);
-			if(Reflect.hasField(autoform,"display")) this.display = Reflect.field(autoform,"display");
-			if(Reflect.hasField(autoform,"displayOptions")) this.displayOptions = Reflect.field(autoform,"displayOptions");
+			this.display = Reflect.field(autoform,"display");
+			if(this.display == null) this.display = "";
+			this.displayOptions = Reflect.field(autoform,"displayOptions");
+			if(this.displayOptions == null) this.displayOptions = "";
 		}
 	}
 };
@@ -1991,6 +1999,7 @@ autoform.renderer.DefaultRenderer.prototype = $extend(autoform.AbstractRenderer.
 		while(_g < fieldsInfo.length) {
 			var field = fieldsInfo[_g];
 			++_g;
+			haxe.Log.trace(field,{ fileName : "DefaultRenderer.hx", lineNumber : 27, className : "autoform.renderer.DefaultRenderer", methodName : "run"});
 			var thisClass = String;
 			var element;
 			var display = autoform.AbstractRenderer.guessDisplay(field);
