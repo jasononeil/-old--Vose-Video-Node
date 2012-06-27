@@ -1,19 +1,20 @@
 package app.author;
 import app.author.AuthorController;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class AuthorView extends domtools.Widget
+class AuthorView extends Widget
 {
 	public var controller:AuthorController;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:AuthorController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 
 		this.addClass("controller").addClass("author");
-		this.setText("Author Controller");
 	}
 
 }

@@ -8,21 +8,22 @@ import app.copy.CopyController;
 import app.edit.EditController;
 import app.slide.SlideController;
 import app.author.AuthorController;
+import pushstate.PushState;
 
 
-
-import domtools.Query;
+import dtx.DOMCollection;
 
 import client.ui.menu.Menu;
 import client.ui.menu.NavBar;
-using DOMTools;
+import Detox;
+using Detox;
 using StringTools;
 
 class Interface
 {
 	public var title(getTitle, setTitle):String;
 
-	static var currentControllerShowing:String;
+	static var currentlyShowing:String;
 
 	public static var templateFile:String;
 
@@ -40,41 +41,42 @@ class Interface
 
 	private function drawMenu()
 	{
-
 		var nav = new NavBar("Vose Video");
 		var menu = nav.menu;
 
 		// add menu items
-		menu.addMenuItem("project", "Project");
-		menu.addMenuItem("video", "Video");
-		menu.addMenuItem("copy", "Copy Clips");
-		menu.addMenuItem("edit", "Edit Video");
-		menu.addMenuItem("slide", "Create Slides");
-		menu.addMenuItem("author", "Author DVD");
+		menu.addMenuItem("projects/", "List Projects");
+		menu.addMenuItem("projects/new/", "New Project");
+		menu.addMenuItem("projects/63/", "View");
+		menu.addMenuItem("projects/63/edit/", "Edit");
+		menu.addMenuItem("projects/63/archive/", "Archive");
+		// menu.addMenuItem("video", "Video");
+		// menu.addMenuItem("copy", "Copy Clips");
+		// menu.addMenuItem("edit", "Edit Video");
+		// menu.addMenuItem("slide", "Create Slides");
+		// menu.addMenuItem("author", "Author DVD");
 
 
-		Query.document.body.appendChild(nav.getNode());
+		Detox.document.body.appendChild(nav.getNode());
 		
 		// currently call via the "click" handler, later use SWFAddress.
-		new Query(".menu li").click(function (e:Event)
+		new DOMCollection(".menu li").click(function (e)
 		{
 			// Get the ID of the menu item that was activated.
 			// Later we'll try use SWFAddress
-			var menuItem:Node = cast e.currentTarget;
-			var id = menuItem.firstChild.attr("href").replace("#","");
-			showController(id);
+			var menuItem:DOMNode = cast e.currentTarget;
+			// var id = menuItem.firstChild.attr("href").replace("#","");
+			// showController(id);
 		});
-
-		
 	}
 
 
 	public function showController(id:String)
 	{
-		if (currentControllerShowing != id)
+		if (currentlyShowing != id)
 		{
-			new Query(".controller").setCSS("display","none");
-			new Query(".controller." + id).setCSS("display","block");
+			new DOMCollection(".controller").setCSS("display","none");
+			new DOMCollection(".controller." + id).setCSS("display","block");
 			
 			// switch (id)
 			// {
@@ -87,7 +89,7 @@ class Interface
 			// }
 		}
 		
-		currentControllerShowing = id;
+		currentlyShowing = id;
 	}
 
 	//

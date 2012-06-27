@@ -5,22 +5,22 @@ import erazor.Template;
 import client.ui.basic.ActionTable;
 import autoform.AutoForm;
 import autoform.ui.Button;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class ProjectView extends domtools.Widget
+class ProjectView extends Widget
 {
 	public var controller:ProjectController;
 	public var form:AutoForm<Project>;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:ProjectController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 
 		this.addClass("controller").addClass("project");
-		
-		this.setInnerHTML("<h1>Project Controller</h1>");
 	}
 
 	public function listProjects(list:Iterable<Project>)

@@ -1,7 +1,7 @@
 package client.ui.basic;
-using DOMTools;
+using Detox;
 
-class Link extends domtools.Widget
+class Link extends dtx.Widget
 {
 	public function new(?text:String = "Link", ?href:String = "#", ?title:String = null)
 	{

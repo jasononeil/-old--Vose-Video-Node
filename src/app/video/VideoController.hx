@@ -3,8 +3,8 @@ package app.video;
 import client.Client;
 import app.video.VideoView;
 import app.video.model.Video;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
 class VideoController
 {
@@ -15,11 +15,11 @@ class VideoController
 	public function new() 
 	{
 		view = new VideoView(this);
-		new Query("#controllerarea").append(view);
 
 		create();
 	}
 
+	@route("videos")
 	public function list(?projectID:String)
 	{
 		videoAPI.setCurrentProject(projectID, null);
@@ -29,6 +29,7 @@ class VideoController
 		});
 	}
 
+	@route("videos/{}/")
 	public function read(id:String)
 	{
 		// An overview of the current video
@@ -37,6 +38,7 @@ class VideoController
 		// Video info (video name, pic, lecturer, etc)
 	}
 
+	@route("videos/new/")
 	public function create()
 	{
 		view.renderForm();
@@ -50,6 +52,7 @@ class VideoController
 		});
 	}
 
+	@route("videos/edit/{}/")
 	public function update(name:String)
 	{
 		// Read the current project
@@ -80,7 +83,8 @@ class VideoController
 
 	}
 
-	public function archive()
+	@route("videos/archive/{}/")
+	public function archive(id)
 	{
 		
 	}

@@ -5,16 +5,18 @@ import erazor.Template;
 import client.ui.basic.ActionTable;
 import autoform.AutoForm;
 import autoform.ui.Button;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class VideoView extends domtools.Widget
+class VideoView extends Widget
 {
 	public var controller:VideoController;
 	public var form:AutoForm<Video>;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:VideoController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 

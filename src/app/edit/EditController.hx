@@ -1,8 +1,8 @@
 package app.edit;
 
 import app.edit.EditView;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
 class EditController
 {
@@ -11,7 +11,6 @@ class EditController
 	public function new() 
 	{
 		view = new EditView(this);
-		new Query("#controllerarea").append(view);
 	}
 
 }

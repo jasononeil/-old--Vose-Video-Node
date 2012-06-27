@@ -1,10 +1,10 @@
 package client.ui.menu;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
-class MenuItem extends domtools.Widget
+class MenuItem extends dtx.Widget
 {
-	private var a:Query;
+	private var a:DOMCollection;
 	public var id(default,null):String;
 	public var text(default,null):String;
 
@@ -13,7 +13,7 @@ class MenuItem extends domtools.Widget
 		super("<li></li>");
 
 		// create the "<a href>"
-		this.append(Query.create("a"));
+		this.append("a".create());
 		a = this.firstChildren();
 
 		this.setID(id).setText(text);
@@ -23,7 +23,8 @@ class MenuItem extends domtools.Widget
 	{
 		this.id = id;
 		this.addClass("menulink-" + id);
-		a.setAttr("href","#" + id);
+		a.setAttr("rel","pushstate");
+		a.setAttr("href","/" + id);
 		return this;
 	}
 

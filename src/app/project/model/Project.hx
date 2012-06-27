@@ -25,6 +25,18 @@ class Project implements haxe.rtti.Infos
 	}) public var lecturer:String;
 
 	@autoform({
+		required: true,
+		title: "Year",
+		placeholder: "eg. 2012"
+	}) public var year:Int;
+
+	@autoform({
+		required: true,
+		title: "Semester",
+		placeholder: "eg. 1 or 2"
+	}) public var semester:Int;
+
+	@autoform({
 		required: false,
 		title: "Notes for this unit",
 		display: "textarea",

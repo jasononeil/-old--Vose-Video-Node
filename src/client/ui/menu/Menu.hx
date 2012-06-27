@@ -1,9 +1,9 @@
 package client.ui.menu;
 import client.ui.menu.MenuItem;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
-class Menu extends domtools.Widget
+class Menu extends dtx.Widget
 {
 	public var items:Hash<MenuItem>;
 

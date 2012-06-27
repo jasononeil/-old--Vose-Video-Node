@@ -1,8 +1,8 @@
 package app.author;
 
 import app.author.AuthorView;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
 class AuthorController
 {
@@ -11,7 +11,6 @@ class AuthorController
 	public function new() 
 	{
 		view = new AuthorView(this);
-		new Query("#controllerarea").append(view);
 	}
 
 }

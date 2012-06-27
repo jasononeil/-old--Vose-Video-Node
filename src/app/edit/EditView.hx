@@ -1,19 +1,20 @@
 package app.edit;
 import app.edit.EditController;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class EditView extends domtools.Widget
+class EditView extends Widget
 {
 	public var controller:EditController;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:EditController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 
 		this.addClass("controller").addClass("edit");
-		this.setText("Edit Controller");
 	}
 
 }

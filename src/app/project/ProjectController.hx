@@ -2,11 +2,12 @@ package app.project;
 
 import client.Client;
 import app.project.ProjectView;
-import domtools.Query;
+import dtx.DOMCollection;
 import AppConfig;
 import js.JQuery;
 import app.project.model.Project;
-using DOMTools;
+import autoform.AutoForm;
+using Detox;
 
 class ProjectController
 {
@@ -17,30 +18,37 @@ class ProjectController
 	{
 		// Set up the view
 		view = new ProjectView(this);
-		new Query("#controllerarea").append(view);
 
 		// Default action
-		list();
+		//list();
 	}
 
+	@route("projects/")
 	public function list()
 	{
-		projectAPI.list(function (a:Array<Project>) 
-		{
-			view.listProjects(a);
-		});
+		trace ("list");
+		Client.showView(view);
+		// projectAPI.list(function (a:Array<Project>) 
+		// {
+		// 	view.listProjects(a);
+		// });
 	}
 
+	@route("projects/[]/")
 	public function read(id:String)
 	{
 		// Display a grid of progress, showing where each
 		// video in the project is up to...
+		trace ("read " + id);
 	}
 
+	@route("projects/new/")
 	public function create()
 	{
-		view.renderForm();
-		view.form.submit(function (e) { 
+		trace ("create");
+		var form = new AutoForm(Project);
+		Client.showView(form);
+		form.submit(function (e) { 
 			e.preventDefault();
 			var newProject = view.form.readForm();
 			projectAPI.create(newProject, function(e) {
@@ -50,37 +58,40 @@ class ProjectController
 		});
 	}
 
+	@route("projects/{}/edit/")
 	public function update(id:String)
 	{
-		// save the old ID so we know which project to update
-		var oldID = id;
+		trace ("update " + id);
+		// // save the old ID so we know which project to update
+		// var oldID = id;
 
-		// Read the current project
-		projectAPI.read(id, function (project) {
+		// // Read the current project
+		// projectAPI.read(id, function (project) {
 
-			// Create a form
-			view.renderForm();
-			view.form.populateForm(project);
+		// 	// Create a form
+		// 	view.renderForm();
+		// 	view.form.populateForm(project);
 
-			// On Submit, save the form
-			view.form.submit(function (e) {
+		// 	// On Submit, save the form
+		// 	view.form.submit(function (e) {
 
-				e.preventDefault();
-				var updatedProject = view.form.readForm();
-				projectAPI.update(oldID, updatedProject, function(e) {
+		// 		e.preventDefault();
+		// 		var updatedProject = view.form.readForm();
+		// 		projectAPI.update(oldID, updatedProject, function(e) {
 
-					// Once we've saved, reload the list
-					list();
+		// 			// Once we've saved, reload the list
+		// 			list();
 
-				});
+		// 		});
 
-			});
-		});
+		// 	});
+		// });
 
 	}
 
-	public function archive()
+	@route("projects/{}/archive/")
+	public function archive(id:String)
 	{
-		
+		trace ("archive " + id);
 	}
 }

@@ -1,13 +1,14 @@
 package client.ui.basic;
-using DOMTools;
-import domtools.Query;
+using Detox;
+import dtx.DOMCollection;
+import dtx.DOMNode;
 
-class Table<T> extends domtools.Widget
+class Table<T> extends dtx.Widget
 {
 	public var type:Class<T>;
 	public var fields:Hash<String>;
-	var thead:Node;
-	var tbody:Node;
+	var thead:DOMNode;
+	var tbody:DOMNode;
 
 	public function new(type:Class<T>, ?list:Iterable<T>)
 	{
@@ -30,8 +31,8 @@ class Table<T> extends domtools.Widget
 	public function createTable()
 	{
 		// set up the thead and tbody
-		thead = Query.create("thead");
-		tbody = Query.create("tbody");
+		thead = "thead".create();
+		tbody = "tbody".create();
 		this.append(thead);
 		this.append(tbody);
 
@@ -41,7 +42,7 @@ class Table<T> extends domtools.Widget
 			trace ("I should check metadata here");
 			if (field != "insert")
 			{
-				var th = Query.create("th");
+				var th = "th".create();
 				th.setText(field);
 				thead.append(th);
 				fields.set(field, "Field: " + field);
@@ -54,13 +55,13 @@ class Table<T> extends domtools.Widget
 		for (object in list)
 		{
 			// create a new row per object
-			var tr = Query.create("tr");
+			var tr = "tr".create();
 			tbody.append(tr);
 
 			for (field in fields.keys())
 			{
 				// create a new cell per field of the object
-				var td = Query.create("td");
+				var td = "td".create();
 				var value = Reflect.field(object, field);
 				td.setText(value);
 				tr.append(td);

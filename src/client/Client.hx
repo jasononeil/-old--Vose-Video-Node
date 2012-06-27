@@ -7,7 +7,10 @@ import app.copy.CopyController;
 import app.edit.EditController;
 import app.slide.SlideController;
 import app.author.AuthorController;
-
+import pushstate.PushState;
+import client.Routing;
+import Detox;
+using Detox;
 
 class Client
 {
@@ -16,7 +19,9 @@ class Client
 	static var notifications;
 	static var scheduler;
 
+	static var routing:Routing;
 	static var ui;
+
 	static var projectController;
 	static var videoController;
 	static var copyController;
@@ -34,6 +39,32 @@ class Client
 
 		// Load the remoting API
 		initialiseAPI();
+
+		Client.routing = new Routing();
+
+		// Set up the PushState API
+		PushState.init();
+		PushState.onStateChange.bind(function (path:StateData) {
+			Client.routing.route(path.url);
+		});
+	}
+
+	public static function showView(v:DOMCollection)
+	{
+		// Hide previous views
+		var vc = "#view-container".find();
+		vc.empty();
+
+		// Append the current view (may already be there)
+		vc.append(v);
+
+		// Show the current view
+		//nothing for now? Once I add a show() method I'll use that...
+	}
+
+	public static function goto(path:String)
+	{
+		PushState.push(path);
 	}
 
 	public static function ready(e)
@@ -45,7 +76,9 @@ class Client
 		Client.editController = new EditController();
 		Client.slideController = new SlideController();
 		Client.authorController = new AuthorController();
-		Client.ui.showController("project");
+		//Client.ui.showController("project");
+
+		routing.addRoutesFromMetaData(Client.projectController);
 	}
 
 	/** Launch the remoting API.  Keep them as statics of the client.  So you call Client.launcher.launch(...) */

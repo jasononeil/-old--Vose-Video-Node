@@ -1,14 +1,16 @@
 package app.slide;
 import app.slide.SlideController;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class SlideView extends domtools.Widget
+class SlideView extends Widget
 {
 	public var controller:SlideController;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:SlideController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 

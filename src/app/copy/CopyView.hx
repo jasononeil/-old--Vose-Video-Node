@@ -1,19 +1,20 @@
 package app.copy;
 import app.copy.CopyController;
-using DOMTools;
+import dtx.Widget;
+using Detox;
 
-class CopyView extends domtools.Widget
+class CopyView extends Widget
 {
 	public var controller:CopyController;
+	static var tpl = Widget.loadTemplate();
 
 	public function new(c:CopyController) 
 	{
-		super ("<div></div>");
+		super (tpl);
 
 		controller = c;
 
 		this.addClass("controller").addClass("copy");
-		this.setText("Copy Controller");
 	}
 
 }

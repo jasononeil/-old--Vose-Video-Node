@@ -1,8 +1,8 @@
 package client.ui.basic;
 
-using DOMTools;
+using Detox;
 import client.ui.basic.Table;
-import domtools.Query;
+import dtx.DOMCollection;
 import autoform.ui.Button;
 import autoform.ui.Button.ButtonType;
 
@@ -17,7 +17,7 @@ class ActionTable<T, TypeOfId> extends Table<T>
 	{
 		super.createTable();
 
-		var th = Query.create("th");
+		var th = "th".create();
 		th.setText("Actions");
 		thead.append(th);
 
@@ -37,7 +37,7 @@ class ActionTable<T, TypeOfId> extends Table<T>
 			var td = tr.find("td.actions");
 			if (td.length == 0)
 			{
-				td = Query.create("td").toQuery();
+				td = "td".create().toDOMCollection();
 				td.addClass("actions");
 				td.appendTo(tr);
 			}

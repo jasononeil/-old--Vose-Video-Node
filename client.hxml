@@ -5,10 +5,11 @@
 # Classpath and Libraries
 -lib erazor
 -lib xirsys_stdjs
--lib domtools
+-lib detox
 -lib transition9
--lib bindable
+#-lib bindable
 -lib hsl-pico-1
+-lib pushstate
 -cp /home/jason/workspace/autoform/
 -cp lib/haxe_remoting/src/
 -cp src/

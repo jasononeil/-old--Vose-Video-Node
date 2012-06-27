@@ -1,11 +1,11 @@
 package client.ui.menu;
 
-using DOMTools;
-import domtools.Query;
+using Detox;
+import dtx.DOMCollection;
 import client.ui.menu.Menu;
 import client.ui.basic.Link;
 
-class NavBar extends domtools.Widget 
+class NavBar extends dtx.Widget 
 {
 	public var menu:Menu;
 
@@ -17,8 +17,8 @@ class NavBar extends domtools.Widget
 		this.addClass("navbar-fixed-top");
 
 		// Set up the bits needed by twitter bootstrap
-		var navbarInner = Query.create("div").addClass("navbar-inner");
-		var container = Query.create("div").addClass("container");
+		var navbarInner = "div".create().addClass("navbar-inner");
+		var container = "div".create().addClass("container");
 		
 		// add a brand if need be
 		if (brand != "")
@@ -28,7 +28,7 @@ class NavBar extends domtools.Widget
 			container.append(link);
 		}
 
-		// Create a menuDOMTools
+		// Create a menuDetox
 		menu = new Menu();
 		menu.addClass("nav");
 		

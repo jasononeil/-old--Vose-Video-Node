@@ -1,17 +1,16 @@
 package app.slide;
 
 import app.slide.SlideView;
-import domtools.Query;
-using DOMTools;
+import dtx.DOMCollection;
+using Detox;
 
 class SlideController
 {
 	public var view:SlideView;
-
+	
 	public function new() 
 	{
 		view = new SlideView(this);
-		new Query("#controllerarea").append(view);
 	}
 
 }
