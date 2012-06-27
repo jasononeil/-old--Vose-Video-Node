@@ -883,6 +883,8 @@ app.project.model.Project.prototype = {
 	id: null
 	,title: null
 	,lecturer: null
+	,year: null
+	,semester: null
 	,notes: null
 	,__class__: app.project.model.Project
 }
@@ -1005,6 +1007,47 @@ haxe.Log.clear = function() {
 }
 haxe.Log.prototype = {
 	__class__: haxe.Log
+}
+haxe.Resource = $hxClasses["haxe.Resource"] = function() { }
+haxe.Resource.__name__ = ["haxe","Resource"];
+haxe.Resource.content = null;
+haxe.Resource.listNames = function() {
+	var names = new Array();
+	var _g = 0, _g1 = haxe.Resource.content;
+	while(_g < _g1.length) {
+		var x = _g1[_g];
+		++_g;
+		names.push(x.name);
+	}
+	return names;
+}
+haxe.Resource.getString = function(name) {
+	var _g = 0, _g1 = haxe.Resource.content;
+	while(_g < _g1.length) {
+		var x = _g1[_g];
+		++_g;
+		if(x.name == name) {
+			if(x.str != null) return x.str;
+			var b = haxe.Unserializer.run(x.data);
+			return b.toString();
+		}
+	}
+	return null;
+}
+haxe.Resource.getBytes = function(name) {
+	var _g = 0, _g1 = haxe.Resource.content;
+	while(_g < _g1.length) {
+		var x = _g1[_g];
+		++_g;
+		if(x.name == name) {
+			if(x.str != null) return haxe.io.Bytes.ofString(x.str);
+			return haxe.Unserializer.run(x.data);
+		}
+	}
+	return null;
+}
+haxe.Resource.prototype = {
+	__class__: haxe.Resource
 }
 haxe.Serializer = $hxClasses["haxe.Serializer"] = function() {
 	this.buf = new StringBuf();
@@ -2018,9 +2061,12 @@ server.Server.prototype = {
 		};
 		var connect = js.Node.require("connect");
 		haxe.Log.trace(js.Node.__dirname,{ fileName : "Server.hx", lineNumber : 104, className : "server.Server", methodName : "createServer"});
-		var server = connect.createServer(connect.errorHandler({ showStack : true, showMessage : true, dumpExceptions : true}),connect.logger(),remotingMiddleWare,(Reflect.field(connect,"static"))(js.Node.__dirname + "/static/",{ redirect : true}));
+		var server = connect.createServer(connect.errorHandler({ showStack : true, showMessage : true, dumpExceptions : true}),connect.logger(),remotingMiddleWare,(Reflect.field(connect,"static"))(js.Node.__dirname + "/static/",{ redirect : true}),function(req,res) {
+			res.writeHead(200,null,{ 'Content-Type' : "text/plain"});
+			res.end(haxe.Resource.getString("index"));
+		});
 		server.listen(this.port,this.address);
-		haxe.Log.trace("Listening on " + this.address + ": " + this.port,{ fileName : "Server.hx", lineNumber : 124, className : "server.Server", methodName : "createServer"});
+		haxe.Log.trace("Listening on " + this.address + ": " + this.port,{ fileName : "Server.hx", lineNumber : 130, className : "server.Server", methodName : "createServer"});
 	}
 	,setupAPIContext: function() {
 		this.context = new haxe.remoting.Context();
@@ -2165,6 +2211,7 @@ js.Boot.__init();
 	var Enum = { };
 	var Void = $hxClasses["Void"] = { __ename__ : ["Void"]};
 }
+haxe.Resource.content = [{ name : "index", data : "s2070:PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgU3RyaWN0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXN0cmljdC5kdGQiPgo8aHRtbD4KCTxoZWFkPgoJICAgIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KCSAgICA8dGl0bGU%TG9hZGluZy4uLjwvdGl0bGU%CgkgICAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgoJICAgIDxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSIiPgoJICAgIDxtZXRhIG5hbWU9ImF1dGhvciIgY29udGVudD0iIj4KCgkgICAgPCEtLSBMZSBzdHlsZXMgLS0%CgoJICAgIDxsaW5rIGhyZWY9Ii9jc3MvYm9vdHN0cmFwL2Jvb3RzdHJhcC5jc3MiIHJlbD0ic3R5bGVzaGVldCI%CgkgICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0L2xlc3MiIHR5cGU9InRleHQvY3NzIiBocmVmPSIvY3NzL3N0eWxlLmxlc3MiPgoJICAgIDxsaW5rIGhyZWY9Ii9jc3MvYm9vdHN0cmFwL2Jvb3RzdHJhcC1yZXNwb25zaXZlLmNzcyIgcmVsPSJzdHlsZXNoZWV0Ij4KCSAgICA8bGluayBocmVmPSIvY3NzL2Jvb3RzdHJhcC9ib290c3RyYXAtcmVzcG9uc2l2ZS5jc3MiIHJlbD0ic3R5bGVzaGVldCI%CgoKCSAgICA8IS0tIExlIEhUTUw1IHNoaW0sIGZvciBJRTYtOCBzdXBwb3J0IG9mIEhUTUw1IGVsZW1lbnRzIC0tPgoJICAgIDwhLS1baWYgbHQgSUUgOV0%CgkgICAgICA8c2NyaXB0IHNyYz0iaHR0cDovL2h0bWw1c2hpbS5nb29nbGVjb2RlLmNvbS9zdm4vdHJ1bmsvaHRtbDUuanMiPjwvc2NyaXB0PgoJICAgIDwhW2VuZGlmXS0tPgoKCSAgICA8IS0tIExlIGZhdiBhbmQgdG91Y2ggaWNvbnMgLS0%CgkgICAgPCEtLTxsaW5rIHJlbD0ic2hvcnRjdXQgaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9mYXZpY29uLmljbyI%CgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9hcHBsZS10b3VjaC1pY29uLnBuZyI%CgkgICAgPGxpbmsgcmVsPSJhcHBsZS10b3VjaC1pY29uIiBzaXplcz0iNzJ4NzIiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi03Mng3Mi5wbmciPgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgc2l6ZXM9IjExNHgxMTQiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi0xMTR4MTE0LnBuZyI%LS0%CgkJCgkJPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiIHNyYz0iL2pzL2NsaWVudC5qcyI%IDwvc2NyaXB0PgkKCQk8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCIgc3JjPSIvanMvbGVzcy5qcyI%IDwvc2NyaXB0PgkKCTwvaGVhZD4KCTxib2R5PgoJCSAgICA8ZGl2IGNsYXNzPSJjb250YWluZXItZmx1aWQiPgoJCQkgICAgPGRpdiBjbGFzcz0icm93LWZsdWlkIj4KCQkJCSAgICA8ZGl2IGlkPSJ2aWV3LWNvbnRhaW5lciIgY2xhc3M9InNwYW4xMiI%CgkJCQkgICAgCQoJCQkJICAgIDwvZGl2PgoJCQkgICAgPC9kaXY%CgkJICAgIDwvZGl2PgoJPC9ib2R5Pgo8L2h0bWw%Cg"}];
 {
 	js.Node.__filename = __filename;
 	js.Node.__dirname = __dirname;
@@ -2202,8 +2249,8 @@ js.Boot.__init();
 AppConfig.projectDir = "/home/jason/VoseProjects/";
 app.project.ProjectAPI.__meta__ = { fields : { list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
 app.project.ProjectAPI.api = new app.project.ProjectAPI();
-app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
-app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"35\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
+app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, year : { autoform : [{ required : true, title : "Year", placeholder : "eg. 2012"}]}, semester : { autoform : [{ required : true, title : "Semester", placeholder : "eg. 1 or 2"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<year public=\"1\"><c path=\"Int\"/></year>\n\t<semester public=\"1\"><c path=\"Int\"/></semester>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"47\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
 app.video.VideoAPI.__meta__ = { fields : { setCurrentProject : { remote : null}, list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
 app.video.VideoAPI.api = new app.video.VideoAPI();
 app.video.model.Video.__meta__ = { fields : { projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}}};

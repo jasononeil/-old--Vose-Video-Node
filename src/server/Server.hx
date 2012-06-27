@@ -116,7 +116,13 @@ class Server
 			// There's an error in the nodejs_externs typedef where it looks for connect.Static not connect.static.
 			// I might ask the mailing list if there's a clean way to make "Static" a function that points to "static"
 			//connect.Static(Node.__dirname + "/public/", {redirect:true})
-			Reflect.field(connect, "static")(Node.__dirname + "/static/", {redirect:true})
+			Reflect.field(connect, "static")(Node.__dirname + "/static/", {redirect:true}),
+
+			// Default redirect to index.html
+			function (req :NodeHttpServerReq, res :NodeHttpServerResp) { 
+				res.writeHead(200, {'Content-Type': 'text/plain'}); 
+				res.end(haxe.Resource.getString("index"));
+			}
 		);
 
 		// tell the server to listen to this port on this IP address

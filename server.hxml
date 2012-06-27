@@ -10,6 +10,9 @@
 -cp src/
 -D nodejs
 
+# Static resources
+-resource out/static/index.html@index
+
 # Output
 -main server.Server
 -js out/node.js

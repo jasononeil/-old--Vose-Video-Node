@@ -1514,6 +1514,7 @@ client.Client.notifications = null;
 client.Client.scheduler = null;
 client.Client.routing = null;
 client.Client.ui = null;
+client.Client.currentPath = null;
 client.Client.projectController = null;
 client.Client.videoController = null;
 client.Client.copyController = null;
@@ -1527,7 +1528,7 @@ client.Client.main = function() {
 	client.Client.routing = new client.Routing();
 	pushstate.PushState.init();
 	pushstate.PushState.onStateChange.bind(function(path) {
-		haxe.Log.trace(path.url,{ fileName : "Client.hx", lineNumber : 49, className : "client.Client", methodName : "main"});
+		client.Client.currentPath = path.url;
 		client.Client.routing.route(path.url);
 	});
 }
@@ -1548,10 +1549,11 @@ client.Client.ready = function(e) {
 	client.Client.slideController = new app.slide.SlideController();
 	client.Client.authorController = new app.author.AuthorController();
 	client.Client.routing.addRoutesFromMetaData(client.Client.projectController);
+	client.Client.routing.route(client.Client.currentPath);
 }
 client.Client.initialiseAPI = function() {
 	client.Client.conn.setErrorHandler(function(err) {
-		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 94, className : "client.Client", methodName : "initialiseAPI"});
+		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 93, className : "client.Client", methodName : "initialiseAPI"});
 	});
 	client.Client.notifications = new server.api.NotificationsProxy(client.Client.conn);
 	client.Client.scheduler = new server.api.SchedulerProxy(client.Client.conn);

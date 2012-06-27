@@ -21,6 +21,7 @@ class Client
 
 	static var routing:Routing;
 	static var ui;
+	static var currentPath:String;
 
 	static var projectController;
 	static var videoController;
@@ -45,6 +46,7 @@ class Client
 		// Set up the PushState API
 		PushState.init();
 		PushState.onStateChange.bind(function (path:StateData) {
+			currentPath = path.url;
 			Client.routing.route(path.url);
 		});
 	}
@@ -79,6 +81,8 @@ class Client
 		//Client.ui.showController("project");
 
 		routing.addRoutesFromMetaData(Client.projectController);
+
+		Client.routing.route(currentPath);
 	}
 
 	/** Launch the remoting API.  Keep them as statics of the client.  So you call Client.launcher.launch(...) */
