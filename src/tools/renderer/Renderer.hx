@@ -20,7 +20,7 @@ class Renderer
 
         for (part in parts)
         {
-            neko.Lib.println(Std.format("renderExcerpt.sh '$filename' '03 Exports/${part.segment}.vob' ${part.startPoint} ${part.endPoint}"));
+            neko.Lib.println(Std.format("./renderExcerpt.sh '$filename' '03 Exports/${part.segment}.vob' ${part.startPoint} ${part.endPoint}"));
         }
     }
 
