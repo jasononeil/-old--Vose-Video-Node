@@ -1,0 +1,1258 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mlt title="Anonymous Submission" version="0.8.0" root="/home/vose" LC_NUMERIC="C">
+ <profile width="1440" display_aspect_den="9" colorspace="709" frame_rate_den="1" description="HDV 1440x1080i 25 fps" height="1080" display_aspect_num="16" frame_rate_num="25" progressive="0" sample_aspect_num="4" sample_aspect_den="3"/>
+ <producer in="0" out="244714" id="black">
+  <property name="mlt_type">producer</property>
+  <property name="length">244715</property>
+  <property name="eof">pause</property>
+  <property name="resource">black</property>
+  <property name="aspect_ratio">0</property>
+  <property name="mlt_service">colour</property>
+ </producer>
+ <playlist id="black_track">
+  <entry in="0" out="185702" producer="black"/>
+ </playlist>
+ <producer in="0" out="56014" id="6_5">
+  <property name="mlt_type">producer</property>
+  <property name="length">56015</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist0">
+  <blank length="129773"/>
+  <entry in="133" out="244" producer="6_5"/>
+  <entry in="245" out="18184" producer="6_5"/>
+  <entry in="18185" out="56014" producer="6_5"/>
+ </playlist>
+ <producer in="0" out="49" id="1">
+  <property name="mlt_type">producer</property>
+  <property name="length">15000</property>
+  <property name="eof">pause</property>
+  <property name="resource">0x000000ff</property>
+  <property name="aspect_ratio">0.000000</property>
+  <property name="mlt_service">colour</property>
+  <property name="meta.volume">1.000000</property>
+ </producer>
+ <producer in="0" out="56024" id="2_4">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00036.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="8265" id="3_4">
+  <property name="mlt_type">producer</property>
+  <property name="length">8266</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00037.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.993953</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56024" id="4_4">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00038.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="9273" id="5_4">
+  <property name="mlt_type">producer</property>
+  <property name="length">9274</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00039.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.994610</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56012" id="6_4">
+  <property name="mlt_type">producer</property>
+  <property name="length">56016</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999107</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist1">
+  <entry in="0" out="49" producer="1"/>
+  <blank length="4687"/>
+  <entry in="4737" out="4755" producer="1"/>
+  <entry in="4706" out="4974" producer="2_4">
+   <filter in="4706" out="4741" id="fadein">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadein</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">0</property>
+    <property name="end">1</property>
+   </filter>
+  </entry>
+  <blank length="3324"/>
+  <entry in="8299" out="10348" producer="2_4"/>
+  <blank length="9852"/>
+  <entry in="20201" out="46763" producer="2_4"/>
+  <blank length="11077"/>
+  <entry in="1816" out="8083" producer="3_4">
+   <filter in="8025" out="8083" id="fadeout">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadeout</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">1</property>
+    <property name="end">0</property>
+   </filter>
+  </entry>
+  <entry in="0" out="49" producer="1"/>
+  <blank length="3992"/>
+  <entry in="0" out="49" producer="1"/>
+  <entry in="3910" out="6788" producer="4_4">
+   <filter in="3910" out="3919" id="filter0">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadein</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">0</property>
+    <property name="end">1</property>
+    <property name="kdenlive_info"/>
+   </filter>
+  </entry>
+  <blank length="9403"/>
+  <entry in="16192" out="21717" producer="4_4"/>
+  <blank length="1383"/>
+  <entry in="23101" out="25554" producer="4_4"/>
+  <blank length="4546"/>
+  <entry in="30101" out="30750" producer="4_4"/>
+  <blank length="942"/>
+  <entry in="31693" out="32198" producer="4_4"/>
+  <blank length="2432"/>
+  <entry in="34631" out="36007" producer="4_4"/>
+  <blank length="2681"/>
+  <entry in="38689" out="40498" producer="4_4"/>
+  <blank length="2486"/>
+  <entry in="42985" out="45981" producer="4_4"/>
+  <blank length="4763"/>
+  <entry in="50745" out="54871" producer="4_4"/>
+  <blank length="7065"/>
+  <entry in="5912" out="9156" producer="5_4">
+   <filter in="9138" out="9156" id="filter1">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadeout</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">1</property>
+    <property name="end">0</property>
+   </filter>
+  </entry>
+  <entry in="0" out="20" producer="1"/>
+  <blank length="213"/>
+  <entry in="34" out="49" producer="1"/>
+  <entry in="133" out="244" producer="6_4">
+   <filter in="133" out="148" id="filter2">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadein</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">0</property>
+    <property name="end">1</property>
+   </filter>
+  </entry>
+  <blank length="17940"/>
+  <entry in="18185" out="19999" producer="6_4"/>
+  <blank length="873"/>
+  <entry in="20873" out="23343" producer="6_4"/>
+  <blank length="5308"/>
+  <entry in="28652" out="29125" producer="6_4"/>
+  <blank length="779"/>
+  <entry in="29905" out="30517" producer="6_4"/>
+  <blank length="5760"/>
+  <entry in="36278" out="44169" producer="6_4"/>
+  <blank length="11843"/>
+  <entry in="0" out="49" producer="1"/>
+ </playlist>
+ <producer in="0" out="56015" id="6_3">
+  <property name="mlt_type">producer</property>
+  <property name="length">56016</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist2">
+  <entry in="0" out="49" producer="1"/>
+  <blank length="129835"/>
+  <entry in="245" out="18184" producer="6_3">
+   <filter in="245" out="18184" id="pan_zoom">
+    <property name="track">0</property>
+    <property name="background">colour:0x00000000</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">affine</property>
+    <property name="kdenlive_id">pan_zoom</property>
+    <property name="tag">affine</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="transition.geometry">-816.667/-211.111:2880x2160:100</property>
+    <property name="transition.distort">0</property>
+   </filter>
+  </entry>
+  <blank length="37828"/>
+  <entry in="0" out="49" producer="1"/>
+ </playlist>
+ <producer in="0" out="56024" id="4_2">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00038.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56012" id="6_2">
+  <property name="mlt_type">producer</property>
+  <property name="length">56016</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999107</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist3">
+  <entry in="0" out="49" producer="1"/>
+  <blank length="71080"/>
+  <entry in="6789" out="16191" producer="4_2"/>
+  <blank length="14559"/>
+  <entry in="30751" out="31692" producer="4_2"/>
+  <blank length="53606"/>
+  <entry in="20000" out="20872" producer="6_2"/>
+  <blank length="10242"/>
+  <entry in="31115" out="31973" producer="6_2"/>
+  <blank length="15935"/>
+  <entry in="0" out="64" producer="1"/>
+  <blank length="8039"/>
+  <entry in="0" out="49" producer="1"/>
+  <filter out="185703" id="filter3">
+   <property name="track">0</property>
+   <property name="background">colour:black</property>
+   <property name="mlt_type">filter</property>
+   <property name="mlt_service">affine</property>
+   <property name="kdenlive_id">pan_zoom</property>
+   <property name="tag">affine</property>
+   <property name="kdenlive_ix">1</property>
+   <property name="transition.geometry">-389,-53:1604x1691:100</property>
+  </filter>
+ </playlist>
+ <producer in="0" out="56024" id="2_1">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00036.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+  <property name="meta.volume">1.000000</property>
+ </producer>
+ <producer in="0" out="8265" id="3_1">
+  <property name="mlt_type">producer</property>
+  <property name="length">8266</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00037.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.993953</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56024" id="4_1">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00038.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="9273" id="5_1">
+  <property name="mlt_type">producer</property>
+  <property name="length">9274</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00039.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.994610</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56012" id="6_1">
+  <property name="mlt_type">producer</property>
+  <property name="length">56016</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999107</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist4">
+  <entry in="0" out="49" producer="1"/>
+  <blank length="4975"/>
+  <entry in="4975" out="8298" producer="2_1"/>
+  <blank length="2050"/>
+  <entry in="10349" out="20200" producer="2_1"/>
+  <blank length="26563"/>
+  <entry in="46764" out="56024" producer="2_1"/>
+  <entry in="0" out="1815" producer="3_1"/>
+  <blank length="28168"/>
+  <entry in="21718" out="23100" producer="4_1"/>
+  <blank length="2454"/>
+  <entry in="25555" out="30100" producer="4_1"/>
+  <blank length="2098"/>
+  <entry in="32199" out="34630" producer="4_1"/>
+  <blank length="1377"/>
+  <entry in="36008" out="38688" producer="4_1"/>
+  <blank length="1810"/>
+  <entry in="40499" out="42984" producer="4_1"/>
+  <blank length="2997"/>
+  <entry in="45982" out="50744" producer="4_1"/>
+  <blank length="4127"/>
+  <entry in="54872" out="56024" producer="4_1"/>
+  <entry in="0" out="5911" producer="5_1"/>
+  <blank length="26706"/>
+  <entry in="23344" out="28651" producer="6_1"/>
+  <blank length="474"/>
+  <entry in="29126" out="29904" producer="6_1"/>
+  <blank length="613"/>
+  <entry in="30518" out="31114" producer="6_1"/>
+  <blank length="859"/>
+  <entry in="31974" out="36277" producer="6_1"/>
+  <blank length="7892"/>
+  <entry in="44170" out="47973" producer="6_1">
+   <filter in="47947" out="47973" id="filter4">
+    <property name="track">0</property>
+    <property name="window">75</property>
+    <property name="max_gain">20dB</property>
+    <property name="mlt_type">filter</property>
+    <property name="mlt_service">volume</property>
+    <property name="kdenlive_id">fadeout</property>
+    <property name="tag">volume</property>
+    <property name="kdenlive_ix">1</property>
+    <property name="gain">1</property>
+    <property name="end">0</property>
+   </filter>
+  </entry>
+  <entry in="0" out="49" producer="1"/>
+  <blank length="7989"/>
+  <entry in="0" out="49" producer="1"/>
+  <filter out="185703" id="filter5">
+   <property name="track">0</property>
+   <property name="background">colour:black</property>
+   <property name="mlt_type">filter</property>
+   <property name="mlt_service">affine</property>
+   <property name="kdenlive_id">pan_zoom</property>
+   <property name="tag">affine</property>
+   <property name="kdenlive_ix">1</property>
+   <property name="transition.geometry">-256,-506:1928x1891:100</property>
+  </filter>
+ </playlist>
+ <producer in="0" out="8265" id="3_0">
+  <property name="mlt_type">producer</property>
+  <property name="length">8266</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00037.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.993953</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56024" id="4_0">
+  <property name="mlt_type">producer</property>
+  <property name="length">56025</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00038.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999108</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="9273" id="5_0">
+  <property name="mlt_type">producer</property>
+  <property name="length">9274</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00039.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">1</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.994610</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <producer in="0" out="56012" id="6_0">
+  <property name="mlt_type">producer</property>
+  <property name="length">56016</property>
+  <property name="eof">pause</property>
+  <property name="resource">/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS</property>
+  <property name="meta.media.nb_streams">2</property>
+  <property name="meta.media.0.stream.type">video</property>
+  <property name="meta.media.0.stream.frame_rate">50.000000</property>
+  <property name="meta.media.0.stream.sample_aspect_ratio">0.000000</property>
+  <property name="meta.media.0.codec.width">1440</property>
+  <property name="meta.media.0.codec.height">1080</property>
+  <property name="meta.media.0.codec.frame_rate">50.000000</property>
+  <property name="meta.media.0.codec.pix_fmt">yuv420p</property>
+  <property name="meta.media.0.codec.sample_aspect_ratio">1.333333</property>
+  <property name="meta.media.0.codec.colorspace">709</property>
+  <property name="meta.media.0.codec.name">h264</property>
+  <property name="meta.media.0.codec.long_name">H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10</property>
+  <property name="meta.media.0.codec.bit_rate">0</property>
+  <property name="meta.media.1.stream.type">audio</property>
+  <property name="meta.media.1.codec.sample_fmt">s16</property>
+  <property name="meta.media.1.codec.sample_rate">48000</property>
+  <property name="meta.media.1.codec.channels">2</property>
+  <property name="meta.media.1.codec.name">ac3</property>
+  <property name="meta.media.1.codec.long_name">ATSC A/52A (AC-3)</property>
+  <property name="meta.media.1.codec.bit_rate">256000</property>
+  <property name="seekable">0</property>
+  <property name="meta.media.sample_aspect_num">4</property>
+  <property name="meta.media.sample_aspect_den">3</property>
+  <property name="aspect_ratio">1.333333</property>
+  <property name="audio_index">1</property>
+  <property name="video_index">0</property>
+  <property name="mlt_service">avformat</property>
+  <property name="meta.attr.0.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.1.stream.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.major_brand.markup">isom</property>
+  <property name="meta.attr.minor_version.markup">512</property>
+  <property name="meta.attr.compatible_brands.markup">isomiso2avc1mp41</property>
+  <property name="meta.attr.creation_time.markup">1970-01-01 00:00:00</property>
+  <property name="meta.attr.encoder.markup">Lavf52.64.2</property>
+  <property name="meta.media.frame_rate_num">50</property>
+  <property name="meta.media.frame_rate_den">1</property>
+  <property name="source_fps">24.999107</property>
+  <property name="meta.media.colorspace">709</property>
+  <property name="meta.media.width">1440</property>
+  <property name="meta.media.height">1080</property>
+  <property name="meta.media.top_field_first">1</property>
+  <property name="meta.media.progressive">0</property>
+ </producer>
+ <playlist id="playlist5">
+  <entry in="0" out="4736" producer="1"/>
+  <blank length="59472"/>
+  <entry in="8134" out="8265" producer="3_0"/>
+  <entry in="0" out="3859" producer="4_0"/>
+  <blank length="61343"/>
+  <entry in="9178" out="9273" producer="5_0"/>
+  <entry in="0" out="116" producer="6_0"/>
+  <blank length="47904"/>
+  <entry in="48024" out="56014" producer="6_0"/>
+  <blank length="1"/>
+  <entry in="4077" out="4126" producer="1"/>
+ </playlist>
+ <tractor title="Anonymous Submission" global_feed="1" in="0" out="185702" id="maintractor">
+  <property name="meta.volume">1</property>
+  <track producer="black_track"/>
+  <track hide="both" producer="playlist0"/>
+  <track producer="playlist1"/>
+  <track producer="playlist2"/>
+  <track producer="playlist3"/>
+  <track producer="playlist4"/>
+  <track producer="playlist5"/>
+  <transition in="177549" out="177613" id="transition5">
+   <property name="a_track">4</property>
+   <property name="b_track">5</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="reverse">1</property>
+  </transition>
+  <transition id="transition0">
+   <property name="a_track">2</property>
+   <property name="b_track">3</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">mix</property>
+   <property name="always_active">1</property>
+   <property name="combine">1</property>
+   <property name="internal_added">237</property>
+  </transition>
+  <transition id="transition1">
+   <property name="a_track">2</property>
+   <property name="b_track">4</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">mix</property>
+   <property name="always_active">1</property>
+   <property name="combine">1</property>
+   <property name="internal_added">237</property>
+  </transition>
+  <transition id="transition2">
+   <property name="a_track">2</property>
+   <property name="b_track">5</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">mix</property>
+   <property name="always_active">1</property>
+   <property name="combine">1</property>
+   <property name="internal_added">237</property>
+  </transition>
+  <transition id="transition3">
+   <property name="a_track">2</property>
+   <property name="b_track">6</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">mix</property>
+   <property name="always_active">1</property>
+   <property name="combine">1</property>
+   <property name="internal_added">237</property>
+  </transition>
+  <transition in="4756" out="4820" id="transition4">
+   <property name="a_track">1</property>
+   <property name="b_track">2</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="force_track">0</property>
+   <property name="reverse">0</property>
+  </transition>
+  <transition in="68251" out="68315" id="transition6">
+   <property name="a_track">0</property>
+   <property name="b_track">2</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="reverse">0</property>
+   <property name="force_track">1</property>
+  </transition>
+  <transition in="129773" out="129837" id="transition7">
+   <property name="a_track">0</property>
+   <property name="b_track">2</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="reverse">0</property>
+   <property name="force_track">1</property>
+  </transition>
+  <transition in="50" out="114" id="transition8">
+   <property name="a_track">0</property>
+   <property name="b_track">2</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="reverse">0</property>
+   <property name="force_track">1</property>
+  </transition>
+  <transition in="64094" out="64158" id="transition9">
+   <property name="a_track">0</property>
+   <property name="b_track">2</property>
+   <property name="factory">loader</property>
+   <property name="mlt_type">transition</property>
+   <property name="mlt_service">luma</property>
+   <property name="automatic">1</property>
+   <property name="kdenlive_id">dissolve</property>
+   <property name="reverse">1</property>
+   <property name="force_track">1</property>
+  </transition>
+ </tractor>
+ <kdenlivedoc profile="hdv_1080_50i" kdenliveversion="0.9.2" version="0.88" projectfolder="/home/vose/kdenlive">
+  <customeffects/>
+  <documentproperties documentid="1343786764523" renderdestination="dvd" renderrescalewidth="320" proxyextension="ts" generateproxy="0" proxyimageminsize="2000" rendertctype="0" verticalzoom="1" renderprofile="PAL 16:9 VOB" renderrescaleheight="240" zonein="4737" renderrescale="0" renderscanning="0" renderurl="/media/VoseDrive/OT101v/Week 01/03 Exports/Part01.vob" rendertwopass="0" renderplay="0" position="64145" proxyminsize="1000" renderstartguide="-1" zoom="13" renderratio="0" rendercategory="DVD" zoneout="64209" renderzone="1" renderendguide="-1" renderexportaudio="0" proxyparams="-f mpegts -acodec libmp3lame -ac 2 -ab 92k -ar 48000 -vcodec mpeg2video -g 5 -deinterlace -s 480x270 -b 150k" enableproxy="0" generateimageproxy="0" renderguide="0" rendertcoverlay="0"/>
+  <documentmetadata/>
+  <documentnotes>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:8pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;br />&lt;/p>&lt;/body>&lt;/html></documentnotes>
+  <profileinfo width="1440" display_aspect_den="9" frame_rate_den="1" description="HDV 1440x1080i 25 fps" height="1080" frame_rate_num="25" display_aspect_num="16" progressive="0" sample_aspect_num="4" sample_aspect_den="3"/>
+  <tracksinfo>
+   <trackinfo blind="1" mute="1" locked="0" trackname="Video 6"/>
+   <trackinfo blind="0" mute="0" locked="0" trackname="Default"/>
+   <trackinfo blind="0" mute="0" locked="0" trackname="Projector"/>
+   <trackinfo blind="0" mute="0" locked="0" trackname="Whiteboard"/>
+   <trackinfo blind="0" mute="0" locked="0" trackname="Close Up"/>
+   <trackinfo blind="0" mute="0" locked="0" trackname="Break / Discussion"/>
+  </tracksinfo>
+  <kdenlive_producer audio_max="0" channels="0" duration="50" default_audio="0" video_max="0" frame_size="1440x1080" frequency="0" in="0" aspect_ratio="0.000000" mlt_service="colour" out="49" type="4" colour="0x000000ff" id="1" name="Black" default_video="0"/>
+  <kdenlive_producer audio_max="1" id="2" pix_fmt="yuv420p" default_video="0" fps="25" name="00036.MTS" colorspace="709" videocodec="H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10" resource="/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00036.MTS" default_audio="1" audiocodec="ATSC A/52A (AC-3)" duration="56025" file_hash="56e92e0440de30e9ee0b3b2028b0c91c" aspect_ratio="1.333333" channels="2" frequency="48000" video_max="0" type="3" frame_size="1440x1080" file_size="2043617280"/>
+  <kdenlive_producer audio_max="1" id="3" pix_fmt="yuv420p" default_video="0" fps="25" name="00037.MTS" colorspace="709" videocodec="H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10" resource="/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00037.MTS" default_audio="1" audiocodec="ATSC A/52A (AC-3)" duration="8266" file_hash="bc7e5a98229ac6d193d1d9161abe07ee" aspect_ratio="1.333333" channels="2" frequency="48000" video_max="0" type="3" frame_size="1440x1080" file_size="303243264"/>
+  <kdenlive_producer audio_max="1" id="4" pix_fmt="yuv420p" default_video="0" fps="25" name="00038.MTS" colorspace="709" videocodec="H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10" resource="/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00038.MTS" default_audio="1" audiocodec="ATSC A/52A (AC-3)" duration="56025" file_hash="83be97a028a9cb5113370bd7eecd4374" aspect_ratio="1.333333" channels="2" frequency="48000" video_max="0" type="3" frame_size="1440x1080" file_size="2043629568"/>
+  <kdenlive_producer audio_max="1" id="5" pix_fmt="yuv420p" default_video="0" fps="25" name="00039.MTS" colorspace="709" videocodec="H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10" resource="/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00039.MTS" default_audio="1" audiocodec="ATSC A/52A (AC-3)" duration="9274" file_hash="14a3d10ba34cf8c3f8e25cfa3d0bd380" aspect_ratio="1.333333" channels="2" frequency="48000" video_max="0" type="3" frame_size="1440x1080" file_size="340168704"/>
+  <kdenlive_producer audio_max="1" id="6" pix_fmt="yuv420p" default_video="0" fps="25" name="00040.MTS" colorspace="709" videocodec="H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10" resource="/media/VoseDrive/OT101v/Week 01/00 Raw Footage/00040.MTS" default_audio="1" audiocodec="ATSC A/52A (AC-3)" duration="56016" file_hash="5eab824b78686c7f7ec46600479ed1b2" aspect_ratio="1.333333" channels="2" frequency="48000" video_max="0" type="3" frame_size="1440x1080" file_size="2043807744"/>
+  <markers/>
+  <groups/>
+ </kdenlivedoc>
+</mlt>
