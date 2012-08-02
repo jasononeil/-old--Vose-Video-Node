@@ -20,7 +20,7 @@ class Renderer
 
         for (part in parts)
         {
-            neko.Lib.println(Std.format("~/Scripts/kdenlive/renderExcerpt.sh '$filename' '03 Exports/${part.segment}.vob' ${part.startPoint} ${part.endPoint}"));
+            neko.Lib.println(Std.format("renderExcerpt.sh '$filename' '03 Exports/${part.segment}.vob' ${part.startPoint} ${part.endPoint}"));
         }
     }
 
@@ -63,7 +63,7 @@ class Renderer
         var currentFrame = 0; // Should this be 1?  Will have to test
         var currentSegment = 1;
 
-        for (child in playlist)
+        for (child in playlist.children())
         {
             switch (child.tagName())
             {
