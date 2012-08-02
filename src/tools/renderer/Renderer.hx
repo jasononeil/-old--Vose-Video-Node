@@ -4,7 +4,10 @@ class Renderer
 {
     static function main()
     {
-        new Renderer("sample.kdenlive");
+        var args = neko.Sys.args();
+        if (args.length < 1) throw "Please pass filename of kdenlive project as first argument";
+        var filename = args.shift();
+        new Renderer(filename);
     }
 
     var xml:dtx.DOMCollection;
