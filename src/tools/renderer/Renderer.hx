@@ -28,7 +28,6 @@ class Renderer
         // This is the data that isn't important to rendering, but is to the project - tracknames, project imports etc.
         // Search for child <tracksinfo> (should only be one of them)
         var trackInfoList = xml.find('kdenlivedoc tracksinfo');
-        trace (trackInfoList);
 
         // Get list of children <trackinfo> (should be about 6 of them in our template)
         // These correspond to the tracks in our kdenlive project.  The first element is the bottom track,
@@ -38,7 +37,7 @@ class Renderer
         {
             // Get the one who has the attribute trackname="$name"
             // Get it's index.  (First child=0, second child=1, third=2 etc)
-            if (trackinfo.attr('trackname') == name) { trace (index); break; }
+            if (trackinfo.attr('trackname') == name) break;
             index++;
         }
 
