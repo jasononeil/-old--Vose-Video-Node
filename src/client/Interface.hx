@@ -46,15 +46,11 @@ class Interface
 
 		// add menu items
 		menu.addMenuItem("projects/", "List Projects");
-		menu.addMenuItem("projects/new/", "New Project");
-		menu.addMenuItem("projects/63/", "View");
-		menu.addMenuItem("projects/63/edit/", "Edit");
-		menu.addMenuItem("projects/63/archive/", "Archive");
-		// menu.addMenuItem("video", "Video");
-		// menu.addMenuItem("copy", "Copy Clips");
-		// menu.addMenuItem("edit", "Edit Video");
-		// menu.addMenuItem("slide", "Create Slides");
-		// menu.addMenuItem("author", "Author DVD");
+		menu.addMenuItem("video", "Video");
+		menu.addMenuItem("copy", "Copy Clips");
+		menu.addMenuItem("edit", "Edit Video");
+		menu.addMenuItem("slide", "Create Slides");
+		menu.addMenuItem("author", "Author DVD");
 
 
 		Detox.document.body.appendChild(nav.getNode());

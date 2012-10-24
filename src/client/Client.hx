@@ -73,7 +73,7 @@ class Client
 	{
 		Client.ui = new Interface();
 		Client.projectController = new ProjectController();
-		Client.videoController = new VideoController();
+		// Client.videoController = new VideoController();
 		Client.copyController = new CopyController();
 		Client.editController = new EditController();
 		Client.slideController = new SlideController();
