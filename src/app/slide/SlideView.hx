@@ -1,16 +1,15 @@
 package app.slide;
 import app.slide.SlideController;
-import dtx.Widget;
+import dtx.widget.Widget;
 using Detox;
 
 class SlideView extends Widget
 {
 	public var controller:SlideController;
-	static var tpl = Widget.loadTemplate();
 
 	public function new(c:SlideController) 
 	{
-		super (tpl);
+		super ();
 
 		controller = c;
 

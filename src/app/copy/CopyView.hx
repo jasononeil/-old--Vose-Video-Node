@@ -1,16 +1,15 @@
 package app.copy;
 import app.copy.CopyController;
-import dtx.Widget;
+import dtx.widget.Widget;
 using Detox;
 
 class CopyView extends Widget
 {
 	public var controller:CopyController;
-	static var tpl = Widget.loadTemplate();
 
 	public function new(c:CopyController) 
 	{
-		super (tpl);
+		super ();
 
 		controller = c;
 

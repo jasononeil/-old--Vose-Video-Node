@@ -1,6 +1,7 @@
 package app.project;
 
 import client.Client;
+import app.project.ProjectListView;
 import app.project.ProjectView;
 import dtx.DOMCollection;
 import AppConfig;
@@ -12,13 +13,9 @@ using Detox;
 class ProjectController
 {
 	public static var projectAPI = haxe.remoting.Macros.buildAndInstantiateRemoteProxyClass(app.project.ProjectAPI, Client.conn);
-	public var view:ProjectView;
 
 	public function new() 
 	{
-		// Set up the view
-		view = new ProjectView(this);
-
 		// Default action
 		//list();
 	}
@@ -26,7 +23,8 @@ class ProjectController
 	@route("projects/")
 	public function list()
 	{
-		trace ("list");
+		// Set up the view
+		var view = new ProjectListView(this);
 		Client.showView(view);
 		// projectAPI.list(function (a:Array<Project>) 
 		// {
@@ -34,23 +32,24 @@ class ProjectController
 		// });
 	}
 
-	@route("projects/[]/")
+	@route("projects/{}/")
 	public function read(id:String)
 	{
 		// Display a grid of progress, showing where each
 		// video in the project is up to...
-		trace ("read " + id);
+
+		var view = new ProjectView(this);
+		Client.showView(view);
 	}
 
 	@route("projects/new/")
 	public function create()
 	{
-		trace ("create");
 		var form = new AutoForm(Project);
 		Client.showView(form);
 		form.submit(function (e) { 
 			e.preventDefault();
-			var newProject = view.form.readForm();
+			var newProject = form.readForm();
 			projectAPI.create(newProject, function(e) {
 				trace ("Added new project!");
 				list();
