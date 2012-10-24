@@ -1,11 +1,12 @@
 package client.ui.basic;
 using Detox;
 
-class Link extends dtx.Widget
+@template("<a></a>")
+class Link extends dtx.widget.Widget
 {
 	public function new(?text:String = "Link", ?href:String = "#", ?title:String = null)
 	{
-		super("<a></a>");
+		super();
 
 		// set the text and link.  Note "text" can also be html.
 		this.setAttr("href", href);

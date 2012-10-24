@@ -6,6 +6,7 @@ import dtx.DOMCollection;
 import autoform.ui.Button;
 import autoform.ui.Button.ButtonType;
 
+@template("")
 class ActionTable<T, TypeOfId> extends Table<T>
 {
 	override public function new(type:Class<T>, ?list:Iterable<T>)

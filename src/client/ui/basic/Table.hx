@@ -3,7 +3,8 @@ using Detox;
 import dtx.DOMCollection;
 import dtx.DOMNode;
 
-class Table<T> extends dtx.Widget
+@template("<table></table>")
+class Table<T> extends dtx.widget.Widget
 {
 	public var type:Class<T>;
 	public var fields:Hash<String>;
@@ -12,7 +13,7 @@ class Table<T> extends dtx.Widget
 
 	public function new(type:Class<T>, ?list:Iterable<T>)
 	{
-		super("<table></table>");
+		super();
 
 		fields = new Hash();
 		this.type = type;

@@ -3,13 +3,14 @@ import client.ui.menu.MenuItem;
 import dtx.DOMCollection;
 using Detox;
 
-class Menu extends dtx.Widget
+@template("<ul></ul>")
+class Menu extends dtx.widget.Widget
 {
 	public var items:Hash<MenuItem>;
 
 	public function new()
 	{
-		super("<ul></ul>");
+		super();
 		this.addClass("menu");
 
 		items = new Hash();

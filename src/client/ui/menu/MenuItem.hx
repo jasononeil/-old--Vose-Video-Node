@@ -2,7 +2,8 @@ package client.ui.menu;
 import dtx.DOMCollection;
 using Detox;
 
-class MenuItem extends dtx.Widget
+@template("<li></li>")
+class MenuItem extends dtx.widget.Widget
 {
 	private var a:DOMCollection;
 	public var id(default,null):String;
@@ -10,7 +11,7 @@ class MenuItem extends dtx.Widget
 
 	public function new(id:String, text:String)
 	{
-		super("<li></li>");
+		super();
 
 		// create the "<a href>"
 		this.append("a".create());

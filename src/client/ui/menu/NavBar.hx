@@ -5,14 +5,15 @@ import dtx.DOMCollection;
 import client.ui.menu.Menu;
 import client.ui.basic.Link;
 
-class NavBar extends dtx.Widget 
+@template("<div></div>")
+class NavBar extends dtx.widget.Widget 
 {
 	public var menu:Menu;
 
 	public function new(?brand:String = "", ?fixed:Bool = true)
 	{
 		// Set up the main navbar div
-		super("<div></div>");
+		super();
 		this.addClass("navbar");
 		this.addClass("navbar-fixed-top");
 
