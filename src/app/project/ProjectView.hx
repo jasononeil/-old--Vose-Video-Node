@@ -19,6 +19,6 @@ class ProjectView extends Widget
 
 		controller = c;
 
-		this.addClass("controller").addClass("project");
+		this.addClass("controller project");
 	}
 }

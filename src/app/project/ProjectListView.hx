@@ -19,7 +19,7 @@ class ProjectListView extends Widget
 
 		controller = c;
 
-		this.addClass("controller").addClass("project");
+		this.addClass("controller project");
 	}
 
 	public function listProjects(list:Iterable<Project>)

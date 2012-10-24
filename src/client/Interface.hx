@@ -45,6 +45,7 @@ class Interface
 		var menu = nav.menu;
 
 		// add menu items
+		menu.addMenuItem("playground/", "Playground");
 		menu.addMenuItem("projects/", "List Projects");
 		menu.addMenuItem("videos/", "Video");
 		menu.addMenuItem("copy", "Copy Clips");

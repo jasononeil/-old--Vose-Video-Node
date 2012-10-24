@@ -7,6 +7,7 @@ import app.copy.CopyController;
 import app.edit.EditController;
 import app.slide.SlideController;
 import app.author.AuthorController;
+import app.playground.PlayGroundController;
 import pushstate.PushState;
 import client.Routing;
 import Detox;
@@ -29,6 +30,7 @@ class Client
 	static var editController;
 	static var slideController;
 	static var authorController;
+	static var playGroundCountroller;
 
 	public static function main() 
 	{
@@ -78,8 +80,10 @@ class Client
 		Client.editController = new EditController();
 		Client.slideController = new SlideController();
 		Client.authorController = new AuthorController();
+		Client.playGroundCountroller = new PlayGroundController();
 		//Client.ui.showController("project");
 
+		routing.addRoutesFromMetaData(Client.playGroundCountroller);
 		routing.addRoutesFromMetaData(Client.projectController);
 		routing.addRoutesFromMetaData(Client.videoController);
 

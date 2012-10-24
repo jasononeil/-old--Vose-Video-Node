@@ -1387,6 +1387,31 @@ app.edit.EditView.prototype = $extend(dtx.widget.Widget.prototype,{
 	,controller: null
 	,__class__: app.edit.EditView
 });
+if(!app.playground) app.playground = {}
+app.playground.PlayGroundController = $hxClasses["app.playground.PlayGroundController"] = function() {
+};
+app.playground.PlayGroundController.__name__ = ["app","playground","PlayGroundController"];
+app.playground.PlayGroundController.prototype = {
+	playground: function() {
+		var view = new app.playground.PlayGroundView(this);
+		client.Client.showView(view);
+	}
+	,__class__: app.playground.PlayGroundController
+}
+app.playground.PlayGroundView = $hxClasses["app.playground.PlayGroundView"] = function(c) {
+	dtx.widget.Widget.call(this);
+	this.controller = c;
+	dtx.collection.ElementManipulation.addClass(this,"controller project");
+};
+app.playground.PlayGroundView.__name__ = ["app","playground","PlayGroundView"];
+app.playground.PlayGroundView.__super__ = dtx.widget.Widget;
+app.playground.PlayGroundView.prototype = $extend(dtx.widget.Widget.prototype,{
+	get_template: function() {
+		return "<div><div class=\"row-fluid\"><div class=\"span8\"><h1 class=\"\">Playground</h1><p>Hoping to launch online content to go with it.</p></div><div class=\"span4\"><h3>Videos for PC301</h3><p>                To the left is a list of all the videos so far for this project.  You can create a new one (copying files, entering info etc) by clicking the \"New Video\" button. </p><p>                The table shows how far each video has progressed.</p><ul><li>Green: Completed, working</li><li>Blue: Current stage - continue from here</li><li>Grey: not available yet, finish other things first</li></ul></div></div></div>";
+	}
+	,controller: null
+	,__class__: app.playground.PlayGroundView
+});
 if(!app.project) app.project = {}
 app.project.ProjectAPIProxy = $hxClasses["app.project.ProjectAPIProxy"] = function(c) {
 	this._conn = c.resolve("app.project.ProjectAPIService");
@@ -1481,6 +1506,7 @@ client.Client.copyController = null;
 client.Client.editController = null;
 client.Client.slideController = null;
 client.Client.authorController = null;
+client.Client.playGroundCountroller = null;
 client.Client.main = function() {
 	haxe.Log.trace = haxe.Firebug.trace;
 	js.Lib.window.onload = client.Client.ready;
@@ -1508,13 +1534,15 @@ client.Client.ready = function(e) {
 	client.Client.editController = new app.edit.EditController();
 	client.Client.slideController = new app.slide.SlideController();
 	client.Client.authorController = new app.author.AuthorController();
+	client.Client.playGroundCountroller = new app.playground.PlayGroundController();
+	client.Client.routing.addRoutesFromMetaData(client.Client.playGroundCountroller);
 	client.Client.routing.addRoutesFromMetaData(client.Client.projectController);
 	client.Client.routing.addRoutesFromMetaData(client.Client.videoController);
 	client.Client.routing.route(client.Client.currentPath);
 }
 client.Client.initialiseAPI = function() {
 	client.Client.conn.setErrorHandler(function(err) {
-		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 94, className : "client.Client", methodName : "initialiseAPI"});
+		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 98, className : "client.Client", methodName : "initialiseAPI"});
 	});
 	client.Client.notifications = new server.api.NotificationsProxy(client.Client.conn);
 	client.Client.scheduler = new server.api.SchedulerProxy(client.Client.conn);
@@ -1555,7 +1583,7 @@ app.project.ProjectController.prototype = {
 app.project.ProjectListView = $hxClasses["app.project.ProjectListView"] = function(c) {
 	dtx.widget.Widget.call(this);
 	this.controller = c;
-	dtx.collection.ElementManipulation.addClass(dtx.collection.ElementManipulation.addClass(this,"controller"),"project");
+	dtx.collection.ElementManipulation.addClass(this,"controller project");
 };
 app.project.ProjectListView.__name__ = ["app","project","ProjectListView"];
 app.project.ProjectListView.__super__ = dtx.widget.Widget;
@@ -1572,7 +1600,7 @@ app.project.ProjectListView.prototype = $extend(dtx.widget.Widget.prototype,{
 app.project.ProjectView = $hxClasses["app.project.ProjectView"] = function(c) {
 	dtx.widget.Widget.call(this);
 	this.controller = c;
-	dtx.collection.ElementManipulation.addClass(dtx.collection.ElementManipulation.addClass(this,"controller"),"project");
+	dtx.collection.ElementManipulation.addClass(this,"controller project");
 };
 app.project.ProjectView.__name__ = ["app","project","ProjectView"];
 app.project.ProjectView.__super__ = dtx.widget.Widget;
@@ -2121,6 +2149,7 @@ client.Interface.prototype = {
 	,drawMenu: function() {
 		var nav = new client.ui.menu.NavBar("Vose Video");
 		var menu = nav.menu;
+		menu.addMenuItem("playground/","Playground");
 		menu.addMenuItem("projects/","List Projects");
 		menu.addMenuItem("videos/","Video");
 		menu.addMenuItem("copy","Copy Clips");
@@ -8464,6 +8493,7 @@ js.XMLHttpRequest = window.XMLHttpRequest?XMLHttpRequest:window.ActiveXObject?fu
 	return $r;
 }(this));
 AppConfig.projectDir = "/home/jason/VoseProjects/";
+app.playground.PlayGroundController.__meta__ = { fields : { playground : { route : ["playground/"]}}};
 client.Client.conn = haxe.remoting.HttpAsyncConnection.urlConnect("http://localhost:1337");
 app.project.ProjectController.__meta__ = { fields : { archive : { route : ["projects/{}/archive/"]}, update : { route : ["projects/{}/edit/"]}, create : { route : ["projects/new/"]}, read : { route : ["projects/{}/"]}, list : { route : ["projects/"]}}};
 app.project.ProjectController.projectAPI = new app.project.ProjectAPIProxy(client.Client.conn);
