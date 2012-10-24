@@ -16,8 +16,6 @@ class ProjectController
 
 	public function new() 
 	{
-		// Default action
-		//list();
 	}
 
 	@route("projects/")

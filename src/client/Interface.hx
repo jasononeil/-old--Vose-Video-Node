@@ -46,7 +46,7 @@ class Interface
 
 		// add menu items
 		menu.addMenuItem("projects/", "List Projects");
-		menu.addMenuItem("video", "Video");
+		menu.addMenuItem("videos/", "Video");
 		menu.addMenuItem("copy", "Copy Clips");
 		menu.addMenuItem("edit", "Edit Video");
 		menu.addMenuItem("slide", "Create Slides");

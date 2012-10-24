@@ -1503,16 +1503,18 @@ client.Client["goto"] = function(path) {
 client.Client.ready = function(e) {
 	client.Client.ui = new client.Interface();
 	client.Client.projectController = new app.project.ProjectController();
+	client.Client.videoController = new app.video.VideoController();
 	client.Client.copyController = new app.copy.CopyController();
 	client.Client.editController = new app.edit.EditController();
 	client.Client.slideController = new app.slide.SlideController();
 	client.Client.authorController = new app.author.AuthorController();
 	client.Client.routing.addRoutesFromMetaData(client.Client.projectController);
+	client.Client.routing.addRoutesFromMetaData(client.Client.videoController);
 	client.Client.routing.route(client.Client.currentPath);
 }
 client.Client.initialiseAPI = function() {
 	client.Client.conn.setErrorHandler(function(err) {
-		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 93, className : "client.Client", methodName : "initialiseAPI"});
+		haxe.Log.trace("Error : " + err,{ fileName : "Client.hx", lineNumber : 94, className : "client.Client", methodName : "initialiseAPI"});
 	});
 	client.Client.notifications = new server.api.NotificationsProxy(client.Client.conn);
 	client.Client.scheduler = new server.api.SchedulerProxy(client.Client.conn);
@@ -1522,10 +1524,10 @@ app.project.ProjectController = $hxClasses["app.project.ProjectController"] = fu
 app.project.ProjectController.__name__ = ["app","project","ProjectController"];
 app.project.ProjectController.prototype = {
 	archive: function(id) {
-		haxe.Log.trace("archive " + id,{ fileName : "ProjectController.hx", lineNumber : 94, className : "app.project.ProjectController", methodName : "archive"});
+		haxe.Log.trace("archive " + id,{ fileName : "ProjectController.hx", lineNumber : 92, className : "app.project.ProjectController", methodName : "archive"});
 	}
 	,update: function(id) {
-		haxe.Log.trace("update " + id,{ fileName : "ProjectController.hx", lineNumber : 63, className : "app.project.ProjectController", methodName : "update"});
+		haxe.Log.trace("update " + id,{ fileName : "ProjectController.hx", lineNumber : 61, className : "app.project.ProjectController", methodName : "update"});
 	}
 	,create: function() {
 		var _g = this;
@@ -1535,7 +1537,7 @@ app.project.ProjectController.prototype = {
 			e.preventDefault();
 			var newProject = form.readForm();
 			app.project.ProjectController.projectAPI.create(newProject,function(e1) {
-				haxe.Log.trace("Added new project!",{ fileName : "ProjectController.hx", lineNumber : 54, className : "app.project.ProjectController", methodName : "create"});
+				haxe.Log.trace("Added new project!",{ fileName : "ProjectController.hx", lineNumber : 52, className : "app.project.ProjectController", methodName : "create"});
 				_g.list();
 			});
 		});
@@ -1648,51 +1650,21 @@ app.video.VideoAPIProxy.prototype = {
 	,__class__: app.video.VideoAPIProxy
 }
 app.video.VideoController = $hxClasses["app.video.VideoController"] = function() {
-	this.view = new app.video.VideoView(this);
-	this.create();
 };
 app.video.VideoController.__name__ = ["app","video","VideoController"];
 app.video.VideoController.prototype = {
 	archive: function(id) {
 	}
 	,update: function(name) {
-		var _g = this;
-		app.video.VideoController.videoAPI.read(name,function(video) {
-			var oldProjectID = video.projectID;
-			var oldName = video.name;
-			_g.view.renderForm();
-			_g.view.form.populateForm(video);
-			dtx.collection.EventManagement.on(_g.view.form,"submit",function(e) {
-				e.preventDefault();
-				var updatedVideo = _g.view.form.readForm();
-				app.video.VideoController.videoAPI.update(oldName,updatedVideo,function(e1) {
-					_g.list();
-				});
-			});
-		});
 	}
 	,create: function() {
-		var _g = this;
-		this.view.renderForm();
-		dtx.collection.EventManagement.on(this.view.form,"submit",function(e) {
-			e.preventDefault();
-			var newVideo = _g.view.form.readForm();
-			app.video.VideoController.videoAPI.create(newVideo,function(e1) {
-				haxe.Log.trace("Added new video!",{ fileName : "VideoController.hx", lineNumber : 49, className : "app.video.VideoController", methodName : "create"});
-				_g.list();
-			});
-		});
 	}
 	,read: function(id) {
 	}
 	,list: function(projectID) {
-		var _g = this;
-		app.video.VideoController.videoAPI.setCurrentProject(projectID,null);
-		app.video.VideoController.videoAPI.list(function(a) {
-			_g.view.list(a);
-		});
+		var view = new app.video.VideoView(this);
+		client.Client.showView(view);
 	}
-	,view: null
 	,__class__: app.video.VideoController
 }
 app.video.VideoView = $hxClasses["app.video.VideoView"] = function(c) {
@@ -1705,7 +1677,7 @@ app.video.VideoView.__name__ = ["app","video","VideoView"];
 app.video.VideoView.__super__ = dtx.widget.Widget;
 app.video.VideoView.prototype = $extend(dtx.widget.Widget.prototype,{
 	get_template: function() {
-		return "<div>This is my copy template!</div>";
+		return "<div>This is my video template!</div>";
 	}
 	,renderForm: function() {
 		dtx.collection.DOMManipulation.empty(this);
@@ -2150,7 +2122,7 @@ client.Interface.prototype = {
 		var nav = new client.ui.menu.NavBar("Vose Video");
 		var menu = nav.menu;
 		menu.addMenuItem("projects/","List Projects");
-		menu.addMenuItem("video","Video");
+		menu.addMenuItem("videos/","Video");
 		menu.addMenuItem("copy","Copy Clips");
 		menu.addMenuItem("edit","Edit Video");
 		menu.addMenuItem("slide","Create Slides");
@@ -8497,7 +8469,7 @@ app.project.ProjectController.__meta__ = { fields : { archive : { route : ["proj
 app.project.ProjectController.projectAPI = new app.project.ProjectAPIProxy(client.Client.conn);
 app.project.model.Project.__meta__ = { fields : { notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}, semester : { autoform : [{ required : true, title : "Semester", placeholder : "eg. 1 or 2"}]}, year : { autoform : [{ required : true, title : "Year", placeholder : "eg. 2012"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}}};
 app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Unit Code,display:text,placeholder:eg. PC301}</e></m></meta>\n\t</id>\n\t<title public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Unit Title,display:text,placeholder:eg. Ministry Formation,description:The full title, not including the code}</e></m></meta>\n\t</title>\n\t<lecturer public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Lecturer Name,placeholder:eg. Brian Harris}</e></m></meta>\n\t</lecturer>\n\t<year public=\"1\">\n\t\t<c path=\"Int\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Year,placeholder:eg. 2012}</e></m></meta>\n\t</year>\n\t<semester public=\"1\">\n\t\t<c path=\"Int\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Semester,placeholder:eg. 1 or 2}</e></m></meta>\n\t</semester>\n\t<notes public=\"1\">\n\t\t<c path=\"Array\"><c path=\"String\"/></c>\n\t\t<meta><m n=\"autoform\"><e>{required:false,title:Notes for this unit,display:textarea,description:You can enter any notes related to this project.,placeholder:eg. This is the VET level version of the unit recorded in 2009.}</e></m></meta>\n\t</notes>\n\t<new public=\"1\" set=\"method\" line=\"47\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
-app.video.VideoController.__meta__ = { fields : { archive : { route : ["videos/archive/{}/"]}, update : { route : ["videos/edit/{}/"]}, create : { route : ["videos/new/"]}, read : { route : ["videos/{}/"]}, list : { route : ["videos"]}}};
+app.video.VideoController.__meta__ = { fields : { archive : { route : ["videos/archive/{}/"]}, update : { route : ["videos/edit/{}/"]}, create : { route : ["videos/new/"]}, read : { route : ["videos/{}/"]}, list : { route : ["videos/"]}}};
 app.video.VideoController.videoAPI = new app.video.VideoAPIProxy(client.Client.conn);
 app.video.model.Video.__meta__ = { fields : { notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}}};
 app.video.model.Video.__rtti = "<class path=\"app.video.model.Video\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<projectID public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Project ID,display:text,placeholder:eg. PC301}</e></m></meta>\n\t</projectID>\n\t<name public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Video Name,display:text,placeholder:eg. Week01}</e></m></meta>\n\t</name>\n\t<lecturer public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Lecturer Name,placeholder:eg. Brian Harris}</e></m></meta>\n\t</lecturer>\n\t<notes public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:false,title:Notes for this unit,display:textarea,description:You can enter any notes related to this video.,placeholder:eg. Only 1st hour recorded.  The rest was a group discussion.}</e></m></meta>\n\t</notes>\n\t<new public=\"1\" set=\"method\" line=\"34\"><f a=\"project\">\n\t<c path=\"app.project.model.Project\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
