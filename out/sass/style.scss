@@ -1,0 +1,82 @@
+/*-------------------*/
+/* Imports           */
+/*-------------------*/
+
+@import "bootstrap";
+
+/*-------------------*/
+/* Basic Definitions */
+/*-------------------*/
+
+$gutter: 10px;
+
+/*-------------------*/
+/* Rules             */
+/*-------------------*/
+
+html body
+{
+	padding-top: 40px + $gutter;
+}
+
+body
+{
+	padding: 0;
+	margin: 0;
+}
+
+#title
+{
+	margin: $gutter;
+	text-align: center;
+}
+
+.controller
+{
+	background: rgb(230,230,230);
+	border-radius: 20px;
+	padding: 20px 20px;
+
+	&.project
+	{
+		table
+		{
+			background: white;
+			
+			tr td.actions .btn
+			{
+				visibility: hidden
+			}
+
+			tr:hover td.actions .btn
+			{
+				visibility: visible;
+			}
+		}
+
+		ul
+		{
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			li
+			{
+				.unitCode
+				{
+					font-weight: bold;
+				}
+
+				.unitTitle
+				{
+					
+				}
+
+				.unitLecturer
+				{
+					
+				}
+			}
+		}
+	}
+}
