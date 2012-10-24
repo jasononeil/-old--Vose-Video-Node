@@ -1,0 +1,9 @@
+#!/bin/sh
+
+haxe server.hxml
+haxe client.hxml
+
+killall sass > /dev/null
+sass --watch out/sass:out/static/css &
+
+node out/node.js
