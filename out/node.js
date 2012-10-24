@@ -1,41 +1,24 @@
-var $_, $hxClasses = $hxClasses || {}, $estr = function() { return js.Boot.__string_rec(this,''); }
-function $extend(from, fields) {
-	function inherit() {}; inherit.prototype = from; var proto = new inherit();
-	for (var name in fields) proto[name] = fields[name];
-	return proto;
-}
+var $hxClasses = $hxClasses || {},$estr = function() { return js.Boot.__string_rec(this,''); };
 var AppConfig = $hxClasses["AppConfig"] = function() { }
 AppConfig.__name__ = ["AppConfig"];
-AppConfig.prototype = {
-	__class__: AppConfig
-}
 var Hash = $hxClasses["Hash"] = function() {
 	this.h = { };
 };
 Hash.__name__ = ["Hash"];
 Hash.prototype = {
-	h: null
-	,set: function(key,value) {
-		this.h["$" + key] = value;
-	}
-	,get: function(key) {
-		return this.h["$" + key];
-	}
-	,exists: function(key) {
-		return this.h.hasOwnProperty("$" + key);
-	}
-	,remove: function(key) {
-		key = "$" + key;
-		if(!this.h.hasOwnProperty(key)) return false;
-		delete(this.h[key]);
-		return true;
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h ) {
-		if(this.h.hasOwnProperty(key)) a.push(key.substr(1));
+	toString: function() {
+		var s = new StringBuf();
+		s.b += Std.string("{");
+		var it = this.keys();
+		while( it.hasNext() ) {
+			var i = it.next();
+			s.b += Std.string(i);
+			s.b += Std.string(" => ");
+			s.b += Std.string(Std.string(this.get(i)));
+			if(it.hasNext()) s.b += Std.string(", ");
 		}
-		return a.iterator();
+		s.b += Std.string("}");
+		return s.b;
 	}
 	,iterator: function() {
 		return { ref : this.h, it : this.keys(), hasNext : function() {
@@ -45,48 +28,114 @@ Hash.prototype = {
 			return this.ref["$" + i];
 		}};
 	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b[s.b.length] = "{";
-		var it = this.keys();
-		while( it.hasNext() ) {
-			var i = it.next();
-			s.b[s.b.length] = i == null?"null":i;
-			s.b[s.b.length] = " => ";
-			s.add(Std.string(this.get(i)));
-			if(it.hasNext()) s.b[s.b.length] = ", ";
+	,keys: function() {
+		var a = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) a.push(key.substr(1));
 		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
+		return HxOverrides.iter(a);
 	}
+	,remove: function(key) {
+		key = "$" + key;
+		if(!this.h.hasOwnProperty(key)) return false;
+		delete(this.h[key]);
+		return true;
+	}
+	,exists: function(key) {
+		return this.h.hasOwnProperty("$" + key);
+	}
+	,get: function(key) {
+		return this.h["$" + key];
+	}
+	,set: function(key,value) {
+		this.h["$" + key] = value;
+	}
+	,h: null
 	,__class__: Hash
+}
+var HxOverrides = $hxClasses["HxOverrides"] = function() { }
+HxOverrides.__name__ = ["HxOverrides"];
+HxOverrides.dateStr = function(date) {
+	var m = date.getMonth() + 1;
+	var d = date.getDate();
+	var h = date.getHours();
+	var mi = date.getMinutes();
+	var s = date.getSeconds();
+	return date.getFullYear() + "-" + (m < 10?"0" + m:"" + m) + "-" + (d < 10?"0" + d:"" + d) + " " + (h < 10?"0" + h:"" + h) + ":" + (mi < 10?"0" + mi:"" + mi) + ":" + (s < 10?"0" + s:"" + s);
+}
+HxOverrides.strDate = function(s) {
+	switch(s.length) {
+	case 8:
+		var k = s.split(":");
+		var d = new Date();
+		d.setTime(0);
+		d.setUTCHours(k[0]);
+		d.setUTCMinutes(k[1]);
+		d.setUTCSeconds(k[2]);
+		return d;
+	case 10:
+		var k = s.split("-");
+		return new Date(k[0],k[1] - 1,k[2],0,0,0);
+	case 19:
+		var k = s.split(" ");
+		var y = k[0].split("-");
+		var t = k[1].split(":");
+		return new Date(y[0],y[1] - 1,y[2],t[0],t[1],t[2]);
+	default:
+		throw "Invalid date format : " + s;
+	}
+}
+HxOverrides.cca = function(s,index) {
+	var x = s.charCodeAt(index);
+	if(x != x) return undefined;
+	return x;
+}
+HxOverrides.substr = function(s,pos,len) {
+	if(pos != null && pos != 0 && len != null && len < 0) return "";
+	if(len == null) len = s.length;
+	if(pos < 0) {
+		pos = s.length + pos;
+		if(pos < 0) pos = 0;
+	} else if(len < 0) len = s.length + len - pos;
+	return s.substr(pos,len);
+}
+HxOverrides.remove = function(a,obj) {
+	var i = 0;
+	var l = a.length;
+	while(i < l) {
+		if(a[i] == obj) {
+			a.splice(i,1);
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+HxOverrides.iter = function(a) {
+	return { cur : 0, arr : a, hasNext : function() {
+		return this.cur < this.arr.length;
+	}, next : function() {
+		return this.arr[this.cur++];
+	}};
 }
 var IntHash = $hxClasses["IntHash"] = function() {
 	this.h = { };
 };
 IntHash.__name__ = ["IntHash"];
 IntHash.prototype = {
-	h: null
-	,set: function(key,value) {
-		this.h[key] = value;
-	}
-	,get: function(key) {
-		return this.h[key];
-	}
-	,exists: function(key) {
-		return this.h.hasOwnProperty(key);
-	}
-	,remove: function(key) {
-		if(!this.h.hasOwnProperty(key)) return false;
-		delete(this.h[key]);
-		return true;
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h ) {
-		if(this.h.hasOwnProperty(key)) a.push(key | 0);
+	toString: function() {
+		var s = new StringBuf();
+		s.b += Std.string("{");
+		var it = this.keys();
+		while( it.hasNext() ) {
+			var i = it.next();
+			s.b += Std.string(i);
+			s.b += Std.string(" => ");
+			s.b += Std.string(Std.string(this.get(i)));
+			if(it.hasNext()) s.b += Std.string(", ");
 		}
-		return a.iterator();
+		s.b += Std.string("}");
+		return s.b;
 	}
 	,iterator: function() {
 		return { ref : this.h, it : this.keys(), hasNext : function() {
@@ -96,20 +145,28 @@ IntHash.prototype = {
 			return this.ref[i];
 		}};
 	}
-	,toString: function() {
-		var s = new StringBuf();
-		s.b[s.b.length] = "{";
-		var it = this.keys();
-		while( it.hasNext() ) {
-			var i = it.next();
-			s.b[s.b.length] = i == null?"null":i;
-			s.b[s.b.length] = " => ";
-			s.add(Std.string(this.get(i)));
-			if(it.hasNext()) s.b[s.b.length] = ", ";
+	,keys: function() {
+		var a = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) a.push(key | 0);
 		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
+		return HxOverrides.iter(a);
 	}
+	,remove: function(key) {
+		if(!this.h.hasOwnProperty(key)) return false;
+		delete(this.h[key]);
+		return true;
+	}
+	,exists: function(key) {
+		return this.h.hasOwnProperty(key);
+	}
+	,get: function(key) {
+		return this.h[key];
+	}
+	,set: function(key,value) {
+		this.h[key] = value;
+	}
+	,h: null
 	,__class__: IntHash
 }
 var IntIter = $hxClasses["IntIter"] = function(min,max) {
@@ -118,21 +175,21 @@ var IntIter = $hxClasses["IntIter"] = function(min,max) {
 };
 IntIter.__name__ = ["IntIter"];
 IntIter.prototype = {
-	min: null
-	,max: null
+	next: function() {
+		return this.min++;
+	}
 	,hasNext: function() {
 		return this.min < this.max;
 	}
-	,next: function() {
-		return this.min++;
-	}
+	,max: null
+	,min: null
 	,__class__: IntIter
 }
 var Lambda = $hxClasses["Lambda"] = function() { }
 Lambda.__name__ = ["Lambda"];
 Lambda.array = function(it) {
 	var a = new Array();
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var i = $it0.next();
 		a.push(i);
@@ -141,7 +198,7 @@ Lambda.array = function(it) {
 }
 Lambda.list = function(it) {
 	var l = new List();
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var i = $it0.next();
 		l.add(i);
@@ -150,7 +207,7 @@ Lambda.list = function(it) {
 }
 Lambda.map = function(it,f) {
 	var l = new List();
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		l.add(f(x));
@@ -160,7 +217,7 @@ Lambda.map = function(it,f) {
 Lambda.mapi = function(it,f) {
 	var l = new List();
 	var i = 0;
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		l.add(f(i++,x));
@@ -169,13 +226,13 @@ Lambda.mapi = function(it,f) {
 }
 Lambda.has = function(it,elt,cmp) {
 	if(cmp == null) {
-		var $it0 = it.iterator();
+		var $it0 = $iterator(it)();
 		while( $it0.hasNext() ) {
 			var x = $it0.next();
 			if(x == elt) return true;
 		}
 	} else {
-		var $it1 = it.iterator();
+		var $it1 = $iterator(it)();
 		while( $it1.hasNext() ) {
 			var x = $it1.next();
 			if(cmp(x,elt)) return true;
@@ -184,7 +241,7 @@ Lambda.has = function(it,elt,cmp) {
 	return false;
 }
 Lambda.exists = function(it,f) {
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		if(f(x)) return true;
@@ -192,7 +249,7 @@ Lambda.exists = function(it,f) {
 	return false;
 }
 Lambda.foreach = function(it,f) {
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		if(!f(x)) return false;
@@ -200,7 +257,7 @@ Lambda.foreach = function(it,f) {
 	return true;
 }
 Lambda.iter = function(it,f) {
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		f(x);
@@ -208,7 +265,7 @@ Lambda.iter = function(it,f) {
 }
 Lambda.filter = function(it,f) {
 	var l = new List();
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		if(f(x)) l.add(x);
@@ -216,7 +273,7 @@ Lambda.filter = function(it,f) {
 	return l;
 }
 Lambda.fold = function(it,f,first) {
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		first = f(x,first);
@@ -226,13 +283,13 @@ Lambda.fold = function(it,f,first) {
 Lambda.count = function(it,pred) {
 	var n = 0;
 	if(pred == null) {
-		var $it0 = it.iterator();
+		var $it0 = $iterator(it)();
 		while( $it0.hasNext() ) {
 			var _ = $it0.next();
 			n++;
 		}
 	} else {
-		var $it1 = it.iterator();
+		var $it1 = $iterator(it)();
 		while( $it1.hasNext() ) {
 			var x = $it1.next();
 			if(pred(x)) n++;
@@ -241,11 +298,11 @@ Lambda.count = function(it,pred) {
 	return n;
 }
 Lambda.empty = function(it) {
-	return !it.iterator().hasNext();
+	return !$iterator(it)().hasNext();
 }
 Lambda.indexOf = function(it,v) {
 	var i = 0;
-	var $it0 = it.iterator();
+	var $it0 = $iterator(it)();
 	while( $it0.hasNext() ) {
 		var v2 = $it0.next();
 		if(v == v2) return i;
@@ -255,62 +312,76 @@ Lambda.indexOf = function(it,v) {
 }
 Lambda.concat = function(a,b) {
 	var l = new List();
-	var $it0 = a.iterator();
+	var $it0 = $iterator(a)();
 	while( $it0.hasNext() ) {
 		var x = $it0.next();
 		l.add(x);
 	}
-	var $it1 = b.iterator();
+	var $it1 = $iterator(b)();
 	while( $it1.hasNext() ) {
 		var x = $it1.next();
 		l.add(x);
 	}
 	return l;
 }
-Lambda.prototype = {
-	__class__: Lambda
-}
 var List = $hxClasses["List"] = function() {
 	this.length = 0;
 };
 List.__name__ = ["List"];
 List.prototype = {
-	h: null
-	,q: null
-	,length: null
-	,add: function(item) {
-		var x = [item];
-		if(this.h == null) this.h = x; else this.q[1] = x;
-		this.q = x;
-		this.length++;
+	map: function(f) {
+		var b = new List();
+		var l = this.h;
+		while(l != null) {
+			var v = l[0];
+			l = l[1];
+			b.add(f(v));
+		}
+		return b;
 	}
-	,push: function(item) {
-		var x = [item,this.h];
-		this.h = x;
-		if(this.q == null) this.q = x;
-		this.length++;
+	,filter: function(f) {
+		var l2 = new List();
+		var l = this.h;
+		while(l != null) {
+			var v = l[0];
+			l = l[1];
+			if(f(v)) l2.add(v);
+		}
+		return l2;
 	}
-	,first: function() {
-		return this.h == null?null:this.h[0];
+	,join: function(sep) {
+		var s = new StringBuf();
+		var first = true;
+		var l = this.h;
+		while(l != null) {
+			if(first) first = false; else s.b += Std.string(sep);
+			s.b += Std.string(l[0]);
+			l = l[1];
+		}
+		return s.b;
 	}
-	,last: function() {
-		return this.q == null?null:this.q[0];
+	,toString: function() {
+		var s = new StringBuf();
+		var first = true;
+		var l = this.h;
+		s.b += Std.string("{");
+		while(l != null) {
+			if(first) first = false; else s.b += Std.string(", ");
+			s.b += Std.string(Std.string(l[0]));
+			l = l[1];
+		}
+		s.b += Std.string("}");
+		return s.b;
 	}
-	,pop: function() {
-		if(this.h == null) return null;
-		var x = this.h[0];
-		this.h = this.h[1];
-		if(this.h == null) this.q = null;
-		this.length--;
-		return x;
-	}
-	,isEmpty: function() {
-		return this.h == null;
-	}
-	,clear: function() {
-		this.h = null;
-		this.q = null;
-		this.length = 0;
+	,iterator: function() {
+		return { h : this.h, hasNext : function() {
+			return this.h != null;
+		}, next : function() {
+			if(this.h == null) return null;
+			var x = this.h[0];
+			this.h = this.h[1];
+			return x;
+		}};
 	}
 	,remove: function(v) {
 		var prev = null;
@@ -327,60 +398,43 @@ List.prototype = {
 		}
 		return false;
 	}
-	,iterator: function() {
-		return { h : this.h, hasNext : function() {
-			return this.h != null;
-		}, next : function() {
-			if(this.h == null) return null;
-			var x = this.h[0];
-			this.h = this.h[1];
-			return x;
-		}};
+	,clear: function() {
+		this.h = null;
+		this.q = null;
+		this.length = 0;
 	}
-	,toString: function() {
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		s.b[s.b.length] = "{";
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = ", ";
-			s.add(Std.string(l[0]));
-			l = l[1];
-		}
-		s.b[s.b.length] = "}";
-		return s.b.join("");
+	,isEmpty: function() {
+		return this.h == null;
 	}
-	,join: function(sep) {
-		var s = new StringBuf();
-		var first = true;
-		var l = this.h;
-		while(l != null) {
-			if(first) first = false; else s.b[s.b.length] = sep == null?"null":sep;
-			s.add(l[0]);
-			l = l[1];
-		}
-		return s.b.join("");
+	,pop: function() {
+		if(this.h == null) return null;
+		var x = this.h[0];
+		this.h = this.h[1];
+		if(this.h == null) this.q = null;
+		this.length--;
+		return x;
 	}
-	,filter: function(f) {
-		var l2 = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			if(f(v)) l2.add(v);
-		}
-		return l2;
+	,last: function() {
+		return this.q == null?null:this.q[0];
 	}
-	,map: function(f) {
-		var b = new List();
-		var l = this.h;
-		while(l != null) {
-			var v = l[0];
-			l = l[1];
-			b.add(f(v));
-		}
-		return b;
+	,first: function() {
+		return this.h == null?null:this.h[0];
 	}
+	,push: function(item) {
+		var x = [item,this.h];
+		this.h = x;
+		if(this.q == null) this.q = x;
+		this.length++;
+	}
+	,add: function(item) {
+		var x = [item];
+		if(this.h == null) this.h = x; else this.q[1] = x;
+		this.q = x;
+		this.length++;
+	}
+	,length: null
+	,q: null
+	,h: null
 	,__class__: List
 }
 var Reflect = $hxClasses["Reflect"] = function() { }
@@ -421,7 +475,7 @@ Reflect.fields = function(o) {
 	return a;
 }
 Reflect.isFunction = function(f) {
-	return typeof(f) == "function" && f.__name__ == null;
+	return typeof(f) == "function" && !(f.__name__ || f.__ename__);
 }
 Reflect.compare = function(a,b) {
 	return a == b?0:a > b?1:-1;
@@ -434,7 +488,7 @@ Reflect.compareMethods = function(f1,f2) {
 Reflect.isObject = function(v) {
 	if(v == null) return false;
 	var t = typeof(v);
-	return t == "string" || t == "object" && !v.__enum__ || t == "function" && v.__name__ != null;
+	return t == "string" || t == "object" && !v.__enum__ || t == "function" && (v.__name__ || v.__ename__);
 }
 Reflect.deleteField = function(o,f) {
 	if(!Reflect.hasField(o,f)) return false;
@@ -457,9 +511,6 @@ Reflect.makeVarArgs = function(f) {
 		return f(a);
 	};
 }
-Reflect.prototype = {
-	__class__: Reflect
-}
 var Std = $hxClasses["Std"] = function() { }
 Std.__name__ = ["Std"];
 Std["is"] = function(v,t) {
@@ -473,7 +524,7 @@ Std["int"] = function(x) {
 }
 Std.parseInt = function(x) {
 	var v = parseInt(x,10);
-	if(v == 0 && x.charCodeAt(1) == 120) v = parseInt(x);
+	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) v = parseInt(x);
 	if(isNaN(v)) return null;
 	return v;
 }
@@ -483,25 +534,22 @@ Std.parseFloat = function(x) {
 Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
-Std.prototype = {
-	__class__: Std
-}
 var StringBuf = $hxClasses["StringBuf"] = function() {
-	this.b = new Array();
+	this.b = "";
 };
 StringBuf.__name__ = ["StringBuf"];
 StringBuf.prototype = {
-	add: function(x) {
-		this.b[this.b.length] = x == null?"null":x;
+	toString: function() {
+		return this.b;
 	}
 	,addSub: function(s,pos,len) {
-		this.b[this.b.length] = s.substr(pos,len);
+		this.b += HxOverrides.substr(s,pos,len);
 	}
 	,addChar: function(c) {
-		this.b[this.b.length] = String.fromCharCode(c);
+		this.b += String.fromCharCode(c);
 	}
-	,toString: function() {
-		return this.b.join("");
+	,add: function(x) {
+		this.b += Std.string(x);
 	}
 	,b: null
 	,__class__: StringBuf
@@ -521,28 +569,28 @@ StringTools.htmlUnescape = function(s) {
 	return s.split("&gt;").join(">").split("&lt;").join("<").split("&amp;").join("&");
 }
 StringTools.startsWith = function(s,start) {
-	return s.length >= start.length && s.substr(0,start.length) == start;
+	return s.length >= start.length && HxOverrides.substr(s,0,start.length) == start;
 }
 StringTools.endsWith = function(s,end) {
 	var elen = end.length;
 	var slen = s.length;
-	return slen >= elen && s.substr(slen - elen,elen) == end;
+	return slen >= elen && HxOverrides.substr(s,slen - elen,elen) == end;
 }
 StringTools.isSpace = function(s,pos) {
-	var c = s.charCodeAt(pos);
+	var c = HxOverrides.cca(s,pos);
 	return c >= 9 && c <= 13 || c == 32;
 }
 StringTools.ltrim = function(s) {
 	var l = s.length;
 	var r = 0;
 	while(r < l && StringTools.isSpace(s,r)) r++;
-	if(r > 0) return s.substr(r,l - r); else return s;
+	if(r > 0) return HxOverrides.substr(s,r,l - r); else return s;
 }
 StringTools.rtrim = function(s) {
 	var l = s.length;
 	var r = 0;
 	while(r < l && StringTools.isSpace(s,l - r - 1)) r++;
-	if(r > 0) return s.substr(0,l - r); else return s;
+	if(r > 0) return HxOverrides.substr(s,0,l - r); else return s;
 }
 StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
@@ -551,7 +599,7 @@ StringTools.rpad = function(s,c,l) {
 	var sl = s.length;
 	var cl = c.length;
 	while(sl < l) if(l - sl < cl) {
-		s += c.substr(0,l - sl);
+		s += HxOverrides.substr(c,0,l - sl);
 		sl = l;
 	} else {
 		s += c;
@@ -565,7 +613,7 @@ StringTools.lpad = function(s,c,l) {
 	if(sl >= l) return s;
 	var cl = c.length;
 	while(sl < l) if(l - sl < cl) {
-		ns += c.substr(0,l - sl);
+		ns += HxOverrides.substr(c,0,l - sl);
 		sl = l;
 	} else {
 		ns += c;
@@ -587,13 +635,10 @@ StringTools.hex = function(n,digits) {
 	return s;
 }
 StringTools.fastCodeAt = function(s,index) {
-	return s.cca(index);
+	return s.charCodeAt(index);
 }
 StringTools.isEOF = function(c) {
 	return c != c;
-}
-StringTools.prototype = {
-	__class__: StringTools
 }
 var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
@@ -623,7 +668,6 @@ var Type = $hxClasses["Type"] = function() { }
 Type.__name__ = ["Type"];
 Type.getClass = function(o) {
 	if(o == null) return null;
-	if(o.__enum__ != null) return null;
 	return o.__class__;
 }
 Type.getEnum = function(o) {
@@ -643,12 +687,12 @@ Type.getEnumName = function(e) {
 }
 Type.resolveClass = function(name) {
 	var cl = $hxClasses[name];
-	if(cl == null || cl.__name__ == null) return null;
+	if(cl == null || !cl.__name__) return null;
 	return cl;
 }
 Type.resolveEnum = function(name) {
 	var e = $hxClasses[name];
-	if(e == null || e.__ename__ == null) return null;
+	if(e == null || !e.__ename__) return null;
 	return e;
 }
 Type.createInstance = function(cl,args) {
@@ -698,22 +742,22 @@ Type.createEnumIndex = function(e,index,params) {
 Type.getInstanceFields = function(c) {
 	var a = [];
 	for(var i in c.prototype) a.push(i);
-	a.remove("__class__");
-	a.remove("__properties__");
+	HxOverrides.remove(a,"__class__");
+	HxOverrides.remove(a,"__properties__");
 	return a;
 }
 Type.getClassFields = function(c) {
 	var a = Reflect.fields(c);
-	a.remove("__name__");
-	a.remove("__interfaces__");
-	a.remove("__properties__");
-	a.remove("__super__");
-	a.remove("prototype");
+	HxOverrides.remove(a,"__name__");
+	HxOverrides.remove(a,"__interfaces__");
+	HxOverrides.remove(a,"__properties__");
+	HxOverrides.remove(a,"__super__");
+	HxOverrides.remove(a,"prototype");
 	return a;
 }
 Type.getEnumConstructs = function(e) {
 	var a = e.__constructs__;
-	return a.copy();
+	return a.slice();
 }
 Type["typeof"] = function(v) {
 	switch(typeof(v)) {
@@ -732,7 +776,7 @@ Type["typeof"] = function(v) {
 		if(c != null) return ValueType.TClass(c);
 		return ValueType.TObject;
 	case "function":
-		if(v.__name__ != null) return ValueType.TObject;
+		if(v.__name__ || v.__ename__) return ValueType.TObject;
 		return ValueType.TFunction;
 	case "undefined":
 		return ValueType.TNull;
@@ -777,9 +821,6 @@ Type.allEnums = function(e) {
 	}
 	return all;
 }
-Type.prototype = {
-	__class__: Type
-}
 var app = app || {}
 if(!app.author) app.author = {}
 app.author.AuthorAPI = $hxClasses["app.author.AuthorAPI"] = function() {
@@ -807,7 +848,48 @@ app.project.ProjectAPI = $hxClasses["app.project.ProjectAPI"] = function() {
 };
 app.project.ProjectAPI.__name__ = ["app","project","ProjectAPI"];
 app.project.ProjectAPI.prototype = {
-	list: function(cb) {
+	view: function(projectName,cb) {
+		var videos = new Array();
+		cb(videos);
+	}
+	,archive: function(projectName,cb) {
+		cb(true);
+	}
+	,update: function(oldName,project,cb) {
+		var oldProjectDir = AppConfig.projectDir + oldName;
+		var newProjectDir = AppConfig.projectDir + project.id;
+		if(oldProjectDir != newProjectDir) js.Node.fs.renameSync(oldProjectDir,newProjectDir);
+		var fileString = haxe.Serializer.run(project);
+		var filename = newProjectDir + "/project.xml";
+		js.Node.fs.writeFileSync(filename,fileString,"utf8");
+		console.log("Just created: " + newProjectDir);
+		cb(true);
+	}
+	,read: function(id,cb) {
+		var filename = AppConfig.projectDir + "/" + id + "/project.xml";
+		var project;
+		if(server.api.FileSystem.existsSync(filename)) {
+			var fileString = js.Node.fs.readFileSync(filename,"utf8");
+			project = haxe.Unserializer.run(fileString);
+		} else project = null;
+		cb(project);
+	}
+	,create: function(p,cb) {
+		var projectDir = AppConfig.projectDir + p.id;
+		js.Node.fs.mkdirSync(projectDir,null);
+		var fileString = haxe.Serializer.run(p);
+		var filename = projectDir + "/project.xml";
+		js.Node.fs.writeFileSync(filename,fileString,"utf8");
+		console.log("Just created: " + projectDir);
+		console.log(p.id);
+		console.log(p.title);
+		console.log(p.lecturer);
+		console.log(p.notes);
+		console.log(filename);
+		console.log(fileString);
+		cb(true);
+	}
+	,list: function(cb) {
 		var projects = new Array();
 		var folders = js.Node.fs.readdirSync(AppConfig.projectDir);
 		var _g = 0;
@@ -824,68 +906,24 @@ app.project.ProjectAPI.prototype = {
 		}
 		cb(projects);
 	}
-	,create: function(p,cb) {
-		var projectDir = AppConfig.projectDir + p.id;
-		js.Node.fs.mkdirSync(projectDir,null);
-		var fileString = haxe.Serializer.run(p);
-		var filename = projectDir + "/project.xml";
-		js.Node.fs.writeFileSync(filename,fileString,"utf8");
-		haxe.Log.trace("Just created: " + projectDir,{ fileName : "ProjectAPI.hx", lineNumber : 54, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(p.id,{ fileName : "ProjectAPI.hx", lineNumber : 55, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(p.title,{ fileName : "ProjectAPI.hx", lineNumber : 56, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(p.lecturer,{ fileName : "ProjectAPI.hx", lineNumber : 57, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(p.notes,{ fileName : "ProjectAPI.hx", lineNumber : 58, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(filename,{ fileName : "ProjectAPI.hx", lineNumber : 59, className : "app.project.ProjectAPI", methodName : "create"});
-		haxe.Log.trace(fileString,{ fileName : "ProjectAPI.hx", lineNumber : 60, className : "app.project.ProjectAPI", methodName : "create"});
-		cb(true);
-	}
-	,read: function(id,cb) {
-		var filename = AppConfig.projectDir + "/" + id + "/project.xml";
-		var project;
-		if(server.api.FileSystem.existsSync(filename)) {
-			var fileString = js.Node.fs.readFileSync(filename,"utf8");
-			project = haxe.Unserializer.run(fileString);
-		} else project = null;
-		cb(project);
-	}
-	,update: function(oldName,project,cb) {
-		var oldProjectDir = AppConfig.projectDir + oldName;
-		var newProjectDir = AppConfig.projectDir + project.id;
-		if(oldProjectDir != newProjectDir) js.Node.fs.renameSync(oldProjectDir,newProjectDir);
-		var fileString = haxe.Serializer.run(project);
-		var filename = newProjectDir + "/project.xml";
-		js.Node.fs.writeFileSync(filename,fileString,"utf8");
-		haxe.Log.trace("Just created: " + newProjectDir,{ fileName : "ProjectAPI.hx", lineNumber : 97, className : "app.project.ProjectAPI", methodName : "update"});
-		cb(true);
-	}
-	,archive: function(projectName,cb) {
-		cb(true);
-	}
-	,view: function(projectName,cb) {
-		var videos = new Array();
-		cb(videos);
-	}
 	,__class__: app.project.ProjectAPI
 }
 var haxe = haxe || {}
 if(!haxe.rtti) haxe.rtti = {}
 haxe.rtti.Infos = $hxClasses["haxe.rtti.Infos"] = function() { }
 haxe.rtti.Infos.__name__ = ["haxe","rtti","Infos"];
-haxe.rtti.Infos.prototype = {
-	__class__: haxe.rtti.Infos
-}
 if(!app.project.model) app.project.model = {}
 app.project.model.Project = $hxClasses["app.project.model.Project"] = function() {
 };
 app.project.model.Project.__name__ = ["app","project","model","Project"];
 app.project.model.Project.__interfaces__ = [haxe.rtti.Infos];
 app.project.model.Project.prototype = {
-	id: null
-	,title: null
-	,lecturer: null
-	,year: null
+	notes: null
 	,semester: null
-	,notes: null
+	,year: null
+	,lecturer: null
+	,title: null
+	,id: null
 	,__class__: app.project.model.Project
 }
 if(!app.slide) app.slide = {}
@@ -893,12 +931,12 @@ app.slide.SlideAPI = $hxClasses["app.slide.SlideAPI"] = function() {
 };
 app.slide.SlideAPI.__name__ = ["app","slide","SlideAPI"];
 app.slide.SlideAPI.prototype = {
-	slideTemplates: function(p) {
+	singleTemplate: function(p,templateName) {
+		return "";
+	}
+	,slideTemplates: function(p) {
 		var templates = new Hash();
 		return templates;
-	}
-	,singleTemplate: function(p,templateName) {
-		return "";
 	}
 	,__class__: app.slide.SlideAPI
 }
@@ -908,9 +946,43 @@ app.video.VideoAPI = $hxClasses["app.video.VideoAPI"] = function() {
 };
 app.video.VideoAPI.__name__ = ["app","video","VideoAPI"];
 app.video.VideoAPI.prototype = {
-	currentProjectID: null
-	,setCurrentProject: function(id,cb) {
-		this.currentProjectID = id;
+	view: function(cb) {
+		var videos = new Array();
+		cb(videos);
+	}
+	,archive: function(videoName,cb) {
+		cb(true);
+	}
+	,update: function(oldName,video,cb) {
+		var oldVideoDir = AppConfig.projectDir + this.currentProjectID + "/" + oldName;
+		var newVideoDir = AppConfig.projectDir + video.projectID + "/" + video.name;
+		if(oldVideoDir != newVideoDir) {
+			js.Node.fs.renameSync(oldVideoDir,newVideoDir);
+			this.currentProjectID = video.projectID;
+		}
+		var fileString = haxe.Serializer.run(video);
+		var filename = newVideoDir + "/video.xml";
+		js.Node.fs.writeFileSync(filename,fileString,"utf8");
+		console.log("Just created: " + newVideoDir);
+		cb(true);
+	}
+	,read: function(videoName,cb) {
+		var filename = AppConfig.projectDir + "/" + this.currentProjectID + "/" + videoName + "/video.xml";
+		var video;
+		if(server.api.FileSystem.existsSync(filename)) {
+			var fileString = js.Node.fs.readFileSync(filename,"utf8");
+			video = haxe.Unserializer.run(fileString);
+		} else video = null;
+		cb(video);
+	}
+	,create: function(v,cb) {
+		var videoDir = AppConfig.projectDir + v.projectID + "/" + v.name;
+		js.Node.fs.mkdirSync(videoDir,null);
+		var fileString = haxe.Serializer.run(v);
+		var filename = videoDir + "/video.xml";
+		js.Node.fs.writeFileSync(filename,fileString,"utf8");
+		console.log("Just created: " + videoDir);
+		cb(true);
 	}
 	,list: function(cb) {
 		var videos = new Array();
@@ -941,44 +1013,10 @@ app.video.VideoAPI.prototype = {
 		}
 		cb(videos);
 	}
-	,create: function(v,cb) {
-		var videoDir = AppConfig.projectDir + v.projectID + "/" + v.name;
-		js.Node.fs.mkdirSync(videoDir,null);
-		var fileString = haxe.Serializer.run(v);
-		var filename = videoDir + "/video.xml";
-		js.Node.fs.writeFileSync(filename,fileString,"utf8");
-		haxe.Log.trace("Just created: " + videoDir,{ fileName : "VideoAPI.hx", lineNumber : 85, className : "app.video.VideoAPI", methodName : "create"});
-		cb(true);
+	,setCurrentProject: function(id,cb) {
+		this.currentProjectID = id;
 	}
-	,read: function(videoName,cb) {
-		var filename = AppConfig.projectDir + "/" + this.currentProjectID + "/" + videoName + "/video.xml";
-		var video;
-		if(server.api.FileSystem.existsSync(filename)) {
-			var fileString = js.Node.fs.readFileSync(filename,"utf8");
-			video = haxe.Unserializer.run(fileString);
-		} else video = null;
-		cb(video);
-	}
-	,update: function(oldName,video,cb) {
-		var oldVideoDir = AppConfig.projectDir + this.currentProjectID + "/" + oldName;
-		var newVideoDir = AppConfig.projectDir + video.projectID + "/" + video.name;
-		if(oldVideoDir != newVideoDir) {
-			js.Node.fs.renameSync(oldVideoDir,newVideoDir);
-			this.currentProjectID = video.projectID;
-		}
-		var fileString = haxe.Serializer.run(video);
-		var filename = newVideoDir + "/video.xml";
-		js.Node.fs.writeFileSync(filename,fileString,"utf8");
-		haxe.Log.trace("Just created: " + newVideoDir,{ fileName : "VideoAPI.hx", lineNumber : 123, className : "app.video.VideoAPI", methodName : "update"});
-		cb(true);
-	}
-	,archive: function(videoName,cb) {
-		cb(true);
-	}
-	,view: function(cb) {
-		var videos = new Array();
-		cb(videos);
-	}
+	,currentProjectID: null
 	,__class__: app.video.VideoAPI
 }
 if(!app.video.model) app.video.model = {}
@@ -991,22 +1029,11 @@ app.video.model.Video = $hxClasses["app.video.model.Video"] = function(project) 
 app.video.model.Video.__name__ = ["app","video","model","Video"];
 app.video.model.Video.__interfaces__ = [haxe.rtti.Infos];
 app.video.model.Video.prototype = {
-	projectID: null
-	,name: null
+	notes: null
 	,lecturer: null
-	,notes: null
+	,name: null
+	,projectID: null
 	,__class__: app.video.model.Video
-}
-haxe.Log = $hxClasses["haxe.Log"] = function() { }
-haxe.Log.__name__ = ["haxe","Log"];
-haxe.Log.trace = function(v,infos) {
-	js.Boot.__trace(v,infos);
-}
-haxe.Log.clear = function() {
-	js.Boot.__clear_trace();
-}
-haxe.Log.prototype = {
-	__class__: haxe.Log
 }
 haxe.Resource = $hxClasses["haxe.Resource"] = function() { }
 haxe.Resource.__name__ = ["haxe","Resource"];
@@ -1046,9 +1073,6 @@ haxe.Resource.getBytes = function(name) {
 	}
 	return null;
 }
-haxe.Resource.prototype = {
-	__class__: haxe.Resource
-}
 haxe.Serializer = $hxClasses["haxe.Serializer"] = function() {
 	this.buf = new StringBuf();
 	this.cache = new Array();
@@ -1064,76 +1088,32 @@ haxe.Serializer.run = function(v) {
 	return s.toString();
 }
 haxe.Serializer.prototype = {
-	buf: null
-	,cache: null
-	,shash: null
-	,scount: null
-	,useCache: null
-	,useEnumIndex: null
-	,toString: function() {
-		return this.buf.b.join("");
-	}
-	,serializeString: function(s) {
-		var x = this.shash.get(s);
-		if(x != null) {
-			this.buf.add("R");
-			this.buf.add(x);
-			return;
-		}
-		this.shash.set(s,this.scount++);
-		this.buf.add("y");
-		s = StringTools.urlEncode(s);
-		this.buf.add(s.length);
-		this.buf.add(":");
-		this.buf.add(s);
-	}
-	,serializeRef: function(v) {
-		var vt = typeof(v);
-		var _g1 = 0, _g = this.cache.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var ci = this.cache[i];
-			if(typeof(ci) == vt && ci == v) {
-				this.buf.add("r");
-				this.buf.add(i);
-				return true;
-			}
-		}
-		this.cache.push(v);
-		return false;
-	}
-	,serializeFields: function(v) {
-		var _g = 0, _g1 = Reflect.fields(v);
-		while(_g < _g1.length) {
-			var f = _g1[_g];
-			++_g;
-			this.serializeString(f);
-			this.serialize(Reflect.field(v,f));
-		}
-		this.buf.add("g");
+	serializeException: function(e) {
+		this.buf.b += Std.string("x");
+		this.serialize(e);
 	}
 	,serialize: function(v) {
 		var $e = (Type["typeof"](v));
 		switch( $e[1] ) {
 		case 0:
-			this.buf.add("n");
+			this.buf.b += Std.string("n");
 			break;
 		case 1:
 			if(v == 0) {
-				this.buf.add("z");
+				this.buf.b += Std.string("z");
 				return;
 			}
-			this.buf.add("i");
-			this.buf.add(v);
+			this.buf.b += Std.string("i");
+			this.buf.b += Std.string(v);
 			break;
 		case 2:
-			if(Math.isNaN(v)) this.buf.add("k"); else if(!Math.isFinite(v)) this.buf.add(v < 0?"m":"p"); else {
-				this.buf.add("d");
-				this.buf.add(v);
+			if(Math.isNaN(v)) this.buf.b += Std.string("k"); else if(!Math.isFinite(v)) this.buf.b += Std.string(v < 0?"m":"p"); else {
+				this.buf.b += Std.string("d");
+				this.buf.b += Std.string(v);
 			}
 			break;
 		case 3:
-			this.buf.add(v?"t":"f");
+			this.buf.b += Std.string(v?"t":"f");
 			break;
 		case 6:
 			var c = $e[2];
@@ -1145,16 +1125,16 @@ haxe.Serializer.prototype = {
 			switch(c) {
 			case Array:
 				var ucount = 0;
-				this.buf.add("a");
-				var l = v["length"];
+				this.buf.b += Std.string("a");
+				var l = v.length;
 				var _g = 0;
 				while(_g < l) {
 					var i = _g++;
 					if(v[i] == null) ucount++; else {
 						if(ucount > 0) {
-							if(ucount == 1) this.buf.add("n"); else {
-								this.buf.add("u");
-								this.buf.add(ucount);
+							if(ucount == 1) this.buf.b += Std.string("n"); else {
+								this.buf.b += Std.string("u");
+								this.buf.b += Std.string(ucount);
 							}
 							ucount = 0;
 						}
@@ -1162,30 +1142,30 @@ haxe.Serializer.prototype = {
 					}
 				}
 				if(ucount > 0) {
-					if(ucount == 1) this.buf.add("n"); else {
-						this.buf.add("u");
-						this.buf.add(ucount);
+					if(ucount == 1) this.buf.b += Std.string("n"); else {
+						this.buf.b += Std.string("u");
+						this.buf.b += Std.string(ucount);
 					}
 				}
-				this.buf.add("h");
+				this.buf.b += Std.string("h");
 				break;
 			case List:
-				this.buf.add("l");
+				this.buf.b += Std.string("l");
 				var v1 = v;
 				var $it0 = v1.iterator();
 				while( $it0.hasNext() ) {
 					var i = $it0.next();
 					this.serialize(i);
 				}
-				this.buf.add("h");
+				this.buf.b += Std.string("h");
 				break;
 			case Date:
 				var d = v;
-				this.buf.add("v");
-				this.buf.add(d.toString());
+				this.buf.b += Std.string("v");
+				this.buf.b += Std.string(HxOverrides.dateStr(d));
 				break;
 			case Hash:
-				this.buf.add("b");
+				this.buf.b += Std.string("b");
 				var v1 = v;
 				var $it1 = v1.keys();
 				while( $it1.hasNext() ) {
@@ -1193,55 +1173,62 @@ haxe.Serializer.prototype = {
 					this.serializeString(k);
 					this.serialize(v1.get(k));
 				}
-				this.buf.add("h");
+				this.buf.b += Std.string("h");
 				break;
 			case IntHash:
-				this.buf.add("q");
+				this.buf.b += Std.string("q");
 				var v1 = v;
 				var $it2 = v1.keys();
 				while( $it2.hasNext() ) {
 					var k = $it2.next();
-					this.buf.add(":");
-					this.buf.add(k);
+					this.buf.b += Std.string(":");
+					this.buf.b += Std.string(k);
 					this.serialize(v1.get(k));
 				}
-				this.buf.add("h");
+				this.buf.b += Std.string("h");
 				break;
 			case haxe.io.Bytes:
 				var v1 = v;
 				var i = 0;
 				var max = v1.length - 2;
-				var chars = "";
+				var charsBuf = new StringBuf();
 				var b64 = haxe.Serializer.BASE64;
 				while(i < max) {
 					var b1 = v1.b[i++];
 					var b2 = v1.b[i++];
 					var b3 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt((b2 << 2 | b3 >> 6) & 63) + b64.charAt(b3 & 63);
+					charsBuf.b += Std.string(b64.charAt(b1 >> 2));
+					charsBuf.b += Std.string(b64.charAt((b1 << 4 | b2 >> 4) & 63));
+					charsBuf.b += Std.string(b64.charAt((b2 << 2 | b3 >> 6) & 63));
+					charsBuf.b += Std.string(b64.charAt(b3 & 63));
 				}
 				if(i == max) {
 					var b1 = v1.b[i++];
 					var b2 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt((b1 << 4 | b2 >> 4) & 63) + b64.charAt(b2 << 2 & 63);
+					charsBuf.b += Std.string(b64.charAt(b1 >> 2));
+					charsBuf.b += Std.string(b64.charAt((b1 << 4 | b2 >> 4) & 63));
+					charsBuf.b += Std.string(b64.charAt(b2 << 2 & 63));
 				} else if(i == max + 1) {
 					var b1 = v1.b[i++];
-					chars += b64.charAt(b1 >> 2) + b64.charAt(b1 << 4 & 63);
+					charsBuf.b += Std.string(b64.charAt(b1 >> 2));
+					charsBuf.b += Std.string(b64.charAt(b1 << 4 & 63));
 				}
-				this.buf.add("s");
-				this.buf.add(chars.length);
-				this.buf.add(":");
-				this.buf.add(chars);
+				var chars = charsBuf.b;
+				this.buf.b += Std.string("s");
+				this.buf.b += Std.string(chars.length);
+				this.buf.b += Std.string(":");
+				this.buf.b += Std.string(chars);
 				break;
 			default:
 				this.cache.pop();
 				if(v.hxSerialize != null) {
-					this.buf.add("C");
+					this.buf.b += Std.string("C");
 					this.serializeString(Type.getClassName(c));
 					this.cache.push(v);
 					v.hxSerialize(this);
-					this.buf.add("g");
+					this.buf.b += Std.string("g");
 				} else {
-					this.buf.add("c");
+					this.buf.b += Std.string("c");
 					this.serializeString(Type.getClassName(c));
 					this.cache.push(v);
 					this.serializeFields(v);
@@ -1250,22 +1237,22 @@ haxe.Serializer.prototype = {
 			break;
 		case 4:
 			if(this.useCache && this.serializeRef(v)) return;
-			this.buf.add("o");
+			this.buf.b += Std.string("o");
 			this.serializeFields(v);
 			break;
 		case 7:
 			var e = $e[2];
 			if(this.useCache && this.serializeRef(v)) return;
 			this.cache.pop();
-			this.buf.add(this.useEnumIndex?"j":"w");
+			this.buf.b += Std.string(this.useEnumIndex?"j":"w");
 			this.serializeString(Type.getEnumName(e));
 			if(this.useEnumIndex) {
-				this.buf.add(":");
-				this.buf.add(v[1]);
+				this.buf.b += Std.string(":");
+				this.buf.b += Std.string(v[1]);
 			} else this.serializeString(v[0]);
-			this.buf.add(":");
-			var l = v["length"];
-			this.buf.add(l - 2);
+			this.buf.b += Std.string(":");
+			var l = v.length;
+			this.buf.b += Std.string(l - 2);
 			var _g = 2;
 			while(_g < l) {
 				var i = _g++;
@@ -1280,10 +1267,54 @@ haxe.Serializer.prototype = {
 			throw "Cannot serialize " + Std.string(v);
 		}
 	}
-	,serializeException: function(e) {
-		this.buf.add("x");
-		this.serialize(e);
+	,serializeFields: function(v) {
+		var _g = 0, _g1 = Reflect.fields(v);
+		while(_g < _g1.length) {
+			var f = _g1[_g];
+			++_g;
+			this.serializeString(f);
+			this.serialize(Reflect.field(v,f));
+		}
+		this.buf.b += Std.string("g");
 	}
+	,serializeRef: function(v) {
+		var vt = typeof(v);
+		var _g1 = 0, _g = this.cache.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var ci = this.cache[i];
+			if(typeof(ci) == vt && ci == v) {
+				this.buf.b += Std.string("r");
+				this.buf.b += Std.string(i);
+				return true;
+			}
+		}
+		this.cache.push(v);
+		return false;
+	}
+	,serializeString: function(s) {
+		var x = this.shash.get(s);
+		if(x != null) {
+			this.buf.b += Std.string("R");
+			this.buf.b += Std.string(x);
+			return;
+		}
+		this.shash.set(s,this.scount++);
+		this.buf.b += Std.string("y");
+		s = StringTools.urlEncode(s);
+		this.buf.b += Std.string(s.length);
+		this.buf.b += Std.string(":");
+		this.buf.b += Std.string(s);
+	}
+	,toString: function() {
+		return this.buf.b;
+	}
+	,useEnumIndex: null
+	,useCache: null
+	,scount: null
+	,shash: null
+	,cache: null
+	,buf: null
 	,__class__: haxe.Serializer
 }
 haxe.Unserializer = $hxClasses["haxe.Unserializer"] = function(buf) {
@@ -1305,7 +1336,7 @@ haxe.Unserializer.initCodes = function() {
 	var _g1 = 0, _g = haxe.Unserializer.BASE64.length;
 	while(_g1 < _g) {
 		var i = _g1++;
-		codes[haxe.Unserializer.BASE64.cca(i)] = i;
+		codes[haxe.Unserializer.BASE64.charCodeAt(i)] = i;
 	}
 	return codes;
 }
@@ -1313,66 +1344,8 @@ haxe.Unserializer.run = function(v) {
 	return new haxe.Unserializer(v).unserialize();
 }
 haxe.Unserializer.prototype = {
-	buf: null
-	,pos: null
-	,length: null
-	,cache: null
-	,scache: null
-	,resolver: null
-	,setResolver: function(r) {
-		if(r == null) this.resolver = { resolveClass : function(_) {
-			return null;
-		}, resolveEnum : function(_) {
-			return null;
-		}}; else this.resolver = r;
-	}
-	,getResolver: function() {
-		return this.resolver;
-	}
-	,get: function(p) {
-		return this.buf.cca(p);
-	}
-	,readDigits: function() {
-		var k = 0;
-		var s = false;
-		var fpos = this.pos;
-		while(true) {
-			var c = this.buf.cca(this.pos);
-			if(c != c) break;
-			if(c == 45) {
-				if(this.pos != fpos) break;
-				s = true;
-				this.pos++;
-				continue;
-			}
-			if(c < 48 || c > 57) break;
-			k = k * 10 + (c - 48);
-			this.pos++;
-		}
-		if(s) k *= -1;
-		return k;
-	}
-	,unserializeObject: function(o) {
-		while(true) {
-			if(this.pos >= this.length) throw "Invalid object";
-			if(this.buf.cca(this.pos) == 103) break;
-			var k = this.unserialize();
-			if(!Std["is"](k,String)) throw "Invalid object key";
-			var v = this.unserialize();
-			o[k] = v;
-		}
-		this.pos++;
-	}
-	,unserializeEnum: function(edecl,tag) {
-		if(this.buf.cca(this.pos++) != 58) throw "Invalid enum format";
-		var nargs = this.readDigits();
-		if(nargs == 0) return Type.createEnum(edecl,tag);
-		var args = new Array();
-		while(nargs-- > 0) args.push(this.unserialize());
-		return Type.createEnum(edecl,tag,args);
-	}
-	,unserialize: function() {
-		switch(this.buf.cca(this.pos++)) {
+	unserialize: function() {
+		switch(this.buf.charCodeAt(this.pos++)) {
 		case 110:
 			return null;
 		case 116:
@@ -1386,14 +1359,14 @@ haxe.Unserializer.prototype = {
 		case 100:
 			var p1 = this.pos;
 			while(true) {
-				var c = this.buf.cca(this.pos);
+				var c = this.buf.charCodeAt(this.pos);
 				if(c >= 43 && c < 58 || c == 101 || c == 69) this.pos++; else break;
 			}
-			return Std.parseFloat(this.buf.substr(p1,this.pos - p1));
+			return Std.parseFloat(HxOverrides.substr(this.buf,p1,this.pos - p1));
 		case 121:
 			var len = this.readDigits();
-			if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid string length";
-			var s = this.buf.substr(this.pos,len);
+			if(this.buf.charCodeAt(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid string length";
+			var s = HxOverrides.substr(this.buf,this.pos,len);
 			this.pos += len;
 			s = StringTools.urlDecode(s);
 			this.scache.push(s);
@@ -1409,7 +1382,7 @@ haxe.Unserializer.prototype = {
 			var a = new Array();
 			this.cache.push(a);
 			while(true) {
-				var c = this.buf.cca(this.pos);
+				var c = this.buf.charCodeAt(this.pos);
 				if(c == 104) {
 					this.pos++;
 					break;
@@ -1467,14 +1440,14 @@ haxe.Unserializer.prototype = {
 			var l = new List();
 			this.cache.push(l);
 			var buf = this.buf;
-			while(this.buf.cca(this.pos) != 104) l.add(this.unserialize());
+			while(this.buf.charCodeAt(this.pos) != 104) l.add(this.unserialize());
 			this.pos++;
 			return l;
 		case 98:
 			var h = new Hash();
 			this.cache.push(h);
 			var buf = this.buf;
-			while(this.buf.cca(this.pos) != 104) {
+			while(this.buf.charCodeAt(this.pos) != 104) {
 				var s = this.unserialize();
 				h.set(s,this.unserialize());
 			}
@@ -1484,23 +1457,23 @@ haxe.Unserializer.prototype = {
 			var h = new IntHash();
 			this.cache.push(h);
 			var buf = this.buf;
-			var c = this.buf.cca(this.pos++);
+			var c = this.buf.charCodeAt(this.pos++);
 			while(c == 58) {
 				var i = this.readDigits();
 				h.set(i,this.unserialize());
-				c = this.buf.cca(this.pos++);
+				c = this.buf.charCodeAt(this.pos++);
 			}
 			if(c != 104) throw "Invalid IntHash format";
 			return h;
 		case 118:
-			var d = Date.fromString(this.buf.substr(this.pos,19));
+			var d = HxOverrides.strDate(HxOverrides.substr(this.buf,this.pos,19));
 			this.cache.push(d);
 			this.pos += 19;
 			return d;
 		case 115:
 			var len = this.readDigits();
 			var buf = this.buf;
-			if(this.buf.cca(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid bytes length";
+			if(this.buf.charCodeAt(this.pos++) != 58 || this.length - this.pos < len) throw "Invalid bytes length";
 			var codes = haxe.Unserializer.CODES;
 			if(codes == null) {
 				codes = haxe.Unserializer.initCodes();
@@ -1513,20 +1486,20 @@ haxe.Unserializer.prototype = {
 			var bytes = haxe.io.Bytes.alloc(size);
 			var bpos = 0;
 			while(i < max) {
-				var c1 = codes[buf.cca(i++)];
-				var c2 = codes[buf.cca(i++)];
+				var c1 = codes[buf.charCodeAt(i++)];
+				var c2 = codes[buf.charCodeAt(i++)];
 				bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
-				var c3 = codes[buf.cca(i++)];
+				var c3 = codes[buf.charCodeAt(i++)];
 				bytes.b[bpos++] = (c2 << 4 | c3 >> 2) & 255;
-				var c4 = codes[buf.cca(i++)];
+				var c4 = codes[buf.charCodeAt(i++)];
 				bytes.b[bpos++] = (c3 << 6 | c4) & 255;
 			}
 			if(rest >= 2) {
-				var c1 = codes[buf.cca(i++)];
-				var c2 = codes[buf.cca(i++)];
+				var c1 = codes[buf.charCodeAt(i++)];
+				var c2 = codes[buf.charCodeAt(i++)];
 				bytes.b[bpos++] = (c1 << 2 | c2 >> 4) & 255;
 				if(rest == 3) {
-					var c3 = codes[buf.cca(i++)];
+					var c3 = codes[buf.charCodeAt(i++)];
 					bytes.b[bpos++] = (c2 << 4 | c3 >> 2) & 255;
 				}
 			}
@@ -1540,13 +1513,71 @@ haxe.Unserializer.prototype = {
 			var o = Type.createEmptyInstance(cl);
 			this.cache.push(o);
 			o.hxUnserialize(this);
-			if(this.buf.cca(this.pos++) != 103) throw "Invalid custom data";
+			if(this.buf.charCodeAt(this.pos++) != 103) throw "Invalid custom data";
 			return o;
 		default:
 		}
 		this.pos--;
 		throw "Invalid char " + this.buf.charAt(this.pos) + " at position " + this.pos;
 	}
+	,unserializeEnum: function(edecl,tag) {
+		if(this.buf.charCodeAt(this.pos++) != 58) throw "Invalid enum format";
+		var nargs = this.readDigits();
+		if(nargs == 0) return Type.createEnum(edecl,tag);
+		var args = new Array();
+		while(nargs-- > 0) args.push(this.unserialize());
+		return Type.createEnum(edecl,tag,args);
+	}
+	,unserializeObject: function(o) {
+		while(true) {
+			if(this.pos >= this.length) throw "Invalid object";
+			if(this.buf.charCodeAt(this.pos) == 103) break;
+			var k = this.unserialize();
+			if(!js.Boot.__instanceof(k,String)) throw "Invalid object key";
+			var v = this.unserialize();
+			o[k] = v;
+		}
+		this.pos++;
+	}
+	,readDigits: function() {
+		var k = 0;
+		var s = false;
+		var fpos = this.pos;
+		while(true) {
+			var c = this.buf.charCodeAt(this.pos);
+			if(c != c) break;
+			if(c == 45) {
+				if(this.pos != fpos) break;
+				s = true;
+				this.pos++;
+				continue;
+			}
+			if(c < 48 || c > 57) break;
+			k = k * 10 + (c - 48);
+			this.pos++;
+		}
+		if(s) k *= -1;
+		return k;
+	}
+	,get: function(p) {
+		return this.buf.charCodeAt(p);
+	}
+	,getResolver: function() {
+		return this.resolver;
+	}
+	,setResolver: function(r) {
+		if(r == null) this.resolver = { resolveClass : function(_) {
+			return null;
+		}, resolveEnum : function(_) {
+			return null;
+		}}; else this.resolver = r;
+	}
+	,resolver: null
+	,scache: null
+	,cache: null
+	,length: null
+	,pos: null
+	,buf: null
 	,__class__: haxe.Unserializer
 }
 if(!haxe.io) haxe.io = {}
@@ -1569,7 +1600,7 @@ haxe.io.Bytes.ofString = function(s) {
 	var _g1 = 0, _g = s.length;
 	while(_g1 < _g) {
 		var i = _g1++;
-		var c = s.cca(i);
+		var c = s.charCodeAt(i);
 		if(c <= 127) a.push(c); else if(c <= 2047) {
 			a.push(192 | c >> 6);
 			a.push(128 | c & 63);
@@ -1590,46 +1621,29 @@ haxe.io.Bytes.ofData = function(b) {
 	return new haxe.io.Bytes(b.length,b);
 }
 haxe.io.Bytes.prototype = {
-	length: null
-	,b: null
-	,get: function(pos) {
-		return this.b[pos];
+	getData: function() {
+		return this.b;
 	}
-	,set: function(pos,v) {
-		this.b[pos] = v & 255;
-	}
-	,blit: function(pos,src,srcpos,len) {
-		if(pos < 0 || srcpos < 0 || len < 0 || pos + len > this.length || srcpos + len > src.length) throw haxe.io.Error.OutsideBounds;
-		var b1 = this.b;
-		var b2 = src.b;
-		if(b1 == b2 && pos > srcpos) {
-			var i = len;
-			while(i > 0) {
-				i--;
-				b1[i + pos] = b2[i + srcpos];
-			}
-			return;
+	,toHex: function() {
+		var s = new StringBuf();
+		var chars = [];
+		var str = "0123456789abcdef";
+		var _g1 = 0, _g = str.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			chars.push(HxOverrides.cca(str,i));
 		}
-		var _g = 0;
-		while(_g < len) {
-			var i = _g++;
-			b1[i + pos] = b2[i + srcpos];
+		var _g1 = 0, _g = this.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var c = this.b[i];
+			s.b += String.fromCharCode(chars[c >> 4]);
+			s.b += String.fromCharCode(chars[c & 15]);
 		}
+		return s.b;
 	}
-	,sub: function(pos,len) {
-		if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
-		return new haxe.io.Bytes(len,this.b.slice(pos,pos + len));
-	}
-	,compare: function(other) {
-		var b1 = this.b;
-		var b2 = other.b;
-		var len = this.length < other.length?this.length:other.length;
-		var _g = 0;
-		while(_g < len) {
-			var i = _g++;
-			if(b1[i] != b2[i]) return b1[i] - b2[i];
-		}
-		return this.length - other.length;
+	,toString: function() {
+		return this.readString(0,this.length);
 	}
 	,readString: function(pos,len) {
 		if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
@@ -1654,30 +1668,47 @@ haxe.io.Bytes.prototype = {
 		}
 		return s;
 	}
-	,toString: function() {
-		return this.readString(0,this.length);
-	}
-	,toHex: function() {
-		var s = new StringBuf();
-		var chars = [];
-		var str = "0123456789abcdef";
-		var _g1 = 0, _g = str.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			chars.push(str.charCodeAt(i));
+	,compare: function(other) {
+		var b1 = this.b;
+		var b2 = other.b;
+		var len = this.length < other.length?this.length:other.length;
+		var _g = 0;
+		while(_g < len) {
+			var i = _g++;
+			if(b1[i] != b2[i]) return b1[i] - b2[i];
 		}
-		var _g1 = 0, _g = this.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var c = this.b[i];
-			s.b[s.b.length] = String.fromCharCode(chars[c >> 4]);
-			s.b[s.b.length] = String.fromCharCode(chars[c & 15]);
+		return this.length - other.length;
+	}
+	,sub: function(pos,len) {
+		if(pos < 0 || len < 0 || pos + len > this.length) throw haxe.io.Error.OutsideBounds;
+		return new haxe.io.Bytes(len,this.b.slice(pos,pos + len));
+	}
+	,blit: function(pos,src,srcpos,len) {
+		if(pos < 0 || srcpos < 0 || len < 0 || pos + len > this.length || srcpos + len > src.length) throw haxe.io.Error.OutsideBounds;
+		var b1 = this.b;
+		var b2 = src.b;
+		if(b1 == b2 && pos > srcpos) {
+			var i = len;
+			while(i > 0) {
+				i--;
+				b1[i + pos] = b2[i + srcpos];
+			}
+			return;
 		}
-		return s.b.join("");
+		var _g = 0;
+		while(_g < len) {
+			var i = _g++;
+			b1[i + pos] = b2[i + srcpos];
+		}
 	}
-	,getData: function() {
-		return this.b;
+	,set: function(pos,v) {
+		this.b[pos] = v & 255;
 	}
+	,get: function(pos) {
+		return this.b[pos];
+	}
+	,b: null
+	,length: null
 	,__class__: haxe.io.Bytes
 }
 haxe.io.Error = $hxClasses["haxe.io.Error"] = { __ename__ : ["haxe","io","Error"], __constructs__ : ["Blocked","Overflow","OutsideBounds","Custom"] }
@@ -1702,11 +1733,7 @@ haxe.remoting.Context.share = function(name,obj) {
 	return ctx;
 }
 haxe.remoting.Context.prototype = {
-	objects: null
-	,addObject: function(name,obj,recursive) {
-		this.objects.set(name,{ obj : obj, rec : recursive});
-	}
-	,call: function(path,params) {
+	call: function(path,params) {
 		if(path.length < 2) throw "Invalid path '" + path.join(".") + "'";
 		var inf = this.objects.get(path[0]);
 		if(inf == null) throw "No such object " + path[0];
@@ -1724,13 +1751,14 @@ haxe.remoting.Context.prototype = {
 		if(!Reflect.isFunction(m)) throw "No such method " + path.join(".");
 		return m.apply(o,params);
 	}
+	,addObject: function(name,obj,recursive) {
+		this.objects.set(name,{ obj : obj, rec : recursive});
+	}
+	,objects: null
 	,__class__: haxe.remoting.Context
 }
 haxe.remoting.Macros = $hxClasses["haxe.remoting.Macros"] = function() { }
 haxe.remoting.Macros.__name__ = ["haxe","remoting","Macros"];
-haxe.remoting.Macros.prototype = {
-	__class__: haxe.remoting.Macros
-}
 var js = js || {}
 js.Node = $hxClasses["js.Node"] = function() { }
 js.Node.__name__ = ["js","Node"];
@@ -1770,21 +1798,13 @@ js.Node.queryString = null;
 js.Node.newSocket = function(options) {
 	return new js.Node.net.Socket(options);
 }
-js.Node.prototype = {
-	__class__: js.Node
-}
 haxe.remoting.NodeJsHtmlConnection = $hxClasses["haxe.remoting.NodeJsHtmlConnection"] = function(ctx) {
 	this._context = ctx;
 };
 haxe.remoting.NodeJsHtmlConnection.__name__ = ["haxe","remoting","NodeJsHtmlConnection"];
 haxe.remoting.NodeJsHtmlConnection.prototype = {
-	_context: null
-	,connect: function(ctx) {
-		if(this._context != null) throw "Context is already set";
-		this._context = ctx;
-	}
-	,handleRequest: function(req,res) {
-		var me = this;
+	handleRequest: function(req,res) {
+		var _g = this;
 		if(req.method != "POST" || req.headers["x-haxe-remoting"] != "1") return false;
 		req.setEncoding("utf8");
 		var content = "";
@@ -1807,7 +1827,7 @@ haxe.remoting.NodeJsHtmlConnection.prototype = {
 				var path = u.unserialize();
 				var args = u.unserialize();
 				args.push(cb);
-				me._context.call(path,args);
+				_g._context.call(path,args);
 			} catch( e ) {
 				var message = e.message != null?e.message:e;
 				var stack = e.stack;
@@ -1819,6 +1839,11 @@ haxe.remoting.NodeJsHtmlConnection.prototype = {
 		});
 		return true;
 	}
+	,connect: function(ctx) {
+		if(this._context != null) throw "Context is already set";
+		this._context = ctx;
+	}
+	,_context: null
 	,__class__: haxe.remoting.NodeJsHtmlConnection
 }
 js.Boot = $hxClasses["js.Boot"] = function() { }
@@ -1829,31 +1854,31 @@ js.Boot.__unhtml = function(s) {
 js.Boot.__trace = function(v,i) {
 	var msg = i != null?i.fileName + ":" + i.lineNumber + ": ":"";
 	msg += js.Boot.__string_rec(v,"");
-	js.Node.console.log(msg);
+	var d;
+	if(typeof(document) != "undefined" && (d = document.getElementById("haxe:trace")) != null) d.innerHTML += js.Boot.__unhtml(msg) + "<br/>"; else if(typeof(console) != "undefined" && console.log != null) console.log(msg);
 }
 js.Boot.__clear_trace = function() {
 	var d = document.getElementById("haxe:trace");
 	if(d != null) d.innerHTML = "";
 }
-js.Boot.__closure = function(o,f) {
-	var m = o[f];
-	if(m == null) return null;
-	var f1 = function() {
-		return m.apply(o,arguments);
-	};
-	f1.scope = o;
-	f1.method = m;
-	return f1;
+js.Boot.isClass = function(o) {
+	return o.__name__;
+}
+js.Boot.isEnum = function(e) {
+	return e.__ename__;
+}
+js.Boot.getClass = function(o) {
+	return o.__class__;
 }
 js.Boot.__string_rec = function(o,s) {
 	if(o == null) return "null";
 	if(s.length >= 5) return "<...>";
 	var t = typeof(o);
-	if(t == "function" && (o.__name__ != null || o.__ename__ != null)) t = "object";
+	if(t == "function" && (o.__name__ || o.__ename__)) t = "object";
 	switch(t) {
 	case "object":
 		if(o instanceof Array) {
-			if(o.__enum__ != null) {
+			if(o.__enum__) {
 				if(o.length == 2) return o[0];
 				var str = o[0] + "(";
 				s += "\t";
@@ -1894,7 +1919,7 @@ js.Boot.__string_rec = function(o,s) {
 		if(hasp && !o.hasOwnProperty(k)) {
 			continue;
 		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") {
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
 			continue;
 		}
 		if(str.length != 2) str += ", \n";
@@ -1948,80 +1973,21 @@ js.Boot.__instanceof = function(o,cl) {
 		return true;
 	default:
 		if(o == null) return false;
-		return o.__enum__ == cl || cl == Class && o.__name__ != null || cl == Enum && o.__ename__ != null;
+		if(cl == Class && o.__name__ != null) return true; else null;
+		if(cl == Enum && o.__ename__ != null) return true; else null;
+		return o.__enum__ == cl;
 	}
 }
-js.Boot.__init = function() {
-	Array.prototype.copy = Array.prototype.slice;
-	Array.prototype.insert = function(i,x) {
-		this.splice(i,0,x);
-	};
-	Array.prototype.remove = Array.prototype.indexOf?function(obj) {
-		var idx = this.indexOf(obj);
-		if(idx == -1) return false;
-		this.splice(idx,1);
-		return true;
-	}:function(obj) {
-		var i = 0;
-		var l = this.length;
-		while(i < l) {
-			if(this[i] == obj) {
-				this.splice(i,1);
-				return true;
-			}
-			i++;
-		}
-		return false;
-	};
-	Array.prototype.iterator = function() {
-		return { cur : 0, arr : this, hasNext : function() {
-			return this.cur < this.arr.length;
-		}, next : function() {
-			return this.arr[this.cur++];
-		}};
-	};
-	if(String.prototype.cca == null) String.prototype.cca = String.prototype.charCodeAt;
-	String.prototype.charCodeAt = function(i) {
-		var x = this.cca(i);
-		if(x != x) return null;
-		return x;
-	};
-	var oldsub = String.prototype.substr;
-	String.prototype.substr = function(pos,len) {
-		if(pos != null && pos != 0 && len != null && len < 0) return "";
-		if(len == null) len = this.length;
-		if(pos < 0) {
-			pos = this.length + pos;
-			if(pos < 0) pos = 0;
-		} else if(len < 0) len = this.length + len - pos;
-		return oldsub.apply(this,[pos,len]);
-	};
-	Function.prototype["$bind"] = function(o) {
-		var f = function() {
-			return f.method.apply(f.scope,arguments);
-		};
-		f.scope = o;
-		f.method = this;
-		return f;
-	};
-	$closure = js.Boot.__closure;
-}
-js.Boot.prototype = {
-	__class__: js.Boot
+js.Boot.__cast = function(o,t) {
+	if(js.Boot.__instanceof(o,t)) return o; else throw "Cannot cast " + Std.string(o) + " to " + Std.string(t);
 }
 js.NodeC = $hxClasses["js.NodeC"] = function() { }
 js.NodeC.__name__ = ["js","NodeC"];
-js.NodeC.prototype = {
-	__class__: js.NodeC
-}
 if(!js.node) js.node = {}
 js.node.JsHelper = $hxClasses["js.node.JsHelper"] = function() { }
 js.node.JsHelper.__name__ = ["js","node","JsHelper"];
 js.node.JsHelper.ifNull = function(alt,v) {
 	return v == null?alt:v;
-}
-js.node.JsHelper.prototype = {
-	__class__: js.node.JsHelper
 }
 var server = server || {}
 server.Server = $hxClasses["server.Server"] = function(address,port) {
@@ -2040,35 +2006,7 @@ server.Server.main = function() {
 	new server.Server("127.0.0.1",1337);
 }
 server.Server.prototype = {
-	address: null
-	,port: null
-	,context: null
-	,fileSystemAPI: null
-	,launcherAPI: null
-	,notificationsAPI: null
-	,schedulerAPI: null
-	,projectAPI: null
-	,videoAPI: null
-	,copyAPI: null
-	,editAPI: null
-	,slideAPI: null
-	,authorAPI: null
-	,createServer: function() {
-		var remotingHandler = new haxe.remoting.NodeJsHtmlConnection(this.context);
-		var remotingMiddleWare = function(req,res,next) {
-			var result = remotingHandler.handleRequest(req,res);
-			if(result == false) next();
-		};
-		var connect = js.Node.require("connect");
-		haxe.Log.trace(js.Node.__dirname,{ fileName : "Server.hx", lineNumber : 104, className : "server.Server", methodName : "createServer"});
-		var server = connect.createServer(connect.errorHandler({ showStack : true, showMessage : true, dumpExceptions : true}),connect.logger(),remotingMiddleWare,(Reflect.field(connect,"static"))(js.Node.__dirname + "/static/",{ redirect : true}),function(req,res) {
-			res.writeHead(200,null,{ 'Content-Type' : "text/plain"});
-			res.end(haxe.Resource.getString("index"));
-		});
-		server.listen(this.port,this.address);
-		haxe.Log.trace("Listening on " + this.address + ": " + this.port,{ fileName : "Server.hx", lineNumber : 130, className : "server.Server", methodName : "createServer"});
-	}
-	,setupAPIContext: function() {
+	setupAPIContext: function() {
 		this.context = new haxe.remoting.Context();
 		this.notificationsAPI = new server.api.Notifications();
 		this.context.addObject("server.api.NotificationsService",this.notificationsAPI);
@@ -2079,6 +2017,33 @@ server.Server.prototype = {
 		this.videoAPI = new app.video.VideoAPI();
 		this.context.addObject("app.video.VideoAPIService",this.videoAPI);
 	}
+	,createServer: function() {
+		var remotingHandler = new haxe.remoting.NodeJsHtmlConnection(this.context);
+		var remotingMiddleWare = function(req,res,next) {
+			var result = remotingHandler.handleRequest(req,res);
+			if(result == false) next();
+		};
+		var connect = js.Node.require("connect");
+		var server = connect.createServer(connect.errorHandler({ showStack : true, showMessage : true, dumpExceptions : true}),connect.logger(),remotingMiddleWare,(Reflect.field(connect,"static"))(js.Node.__dirname + "/static",{ redirect : true}),function(req,res) {
+			res.writeHead(200,{ 'Content-Type' : "text/plain"});
+			res.end(haxe.Resource.getString("index"));
+		});
+		server.listen(this.port,this.address);
+		console.log("Listening on " + this.address + ": " + this.port);
+	}
+	,authorAPI: null
+	,slideAPI: null
+	,editAPI: null
+	,copyAPI: null
+	,videoAPI: null
+	,projectAPI: null
+	,schedulerAPI: null
+	,notificationsAPI: null
+	,launcherAPI: null
+	,fileSystemAPI: null
+	,context: null
+	,port: null
+	,address: null
 	,__class__: server.Server
 }
 if(!server.api) server.api = {}
@@ -2137,124 +2102,83 @@ server.api.Scheduler.prototype = {
 	}
 	,__class__: server.api.Scheduler
 }
-js.Boot.__res = {}
-js.Boot.__init();
-{
-	var d = Date;
-	d.now = function() {
-		return new Date();
-	};
-	d.fromTime = function(t) {
-		var d1 = new Date();
-		d1["setTime"](t);
-		return d1;
-	};
-	d.fromString = function(s) {
-		switch(s.length) {
-		case 8:
-			var k = s.split(":");
-			var d1 = new Date();
-			d1["setTime"](0);
-			d1["setUTCHours"](k[0]);
-			d1["setUTCMinutes"](k[1]);
-			d1["setUTCSeconds"](k[2]);
-			return d1;
-		case 10:
-			var k = s.split("-");
-			return new Date(k[0],k[1] - 1,k[2],0,0,0);
-		case 19:
-			var k = s.split(" ");
-			var y = k[0].split("-");
-			var t = k[1].split(":");
-			return new Date(y[0],y[1] - 1,y[2],t[0],t[1],t[2]);
-		default:
-			throw "Invalid date format : " + s;
-		}
-	};
-	d.prototype["toString"] = function() {
-		var date = this;
-		var m = date.getMonth() + 1;
-		var d1 = date.getDate();
-		var h = date.getHours();
-		var mi = date.getMinutes();
-		var s = date.getSeconds();
-		return date.getFullYear() + "-" + (m < 10?"0" + m:"" + m) + "-" + (d1 < 10?"0" + d1:"" + d1) + " " + (h < 10?"0" + h:"" + h) + ":" + (mi < 10?"0" + mi:"" + mi) + ":" + (s < 10?"0" + s:"" + s);
-	};
-	d.prototype.__class__ = $hxClasses["Date"] = d;
-	d.__name__ = ["Date"];
-}
-{
-	Math.__name__ = ["Math"];
-	Math.NaN = Number["NaN"];
-	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
-	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-	$hxClasses["Math"] = Math;
-	Math.isFinite = function(i) {
-		return isFinite(i);
-	};
-	Math.isNaN = function(i) {
-		return isNaN(i);
-	};
-}
-{
-	String.prototype.__class__ = $hxClasses["String"] = String;
-	String.__name__ = ["String"];
-	Array.prototype.__class__ = $hxClasses["Array"] = Array;
-	Array.__name__ = ["Array"];
-	var Int = $hxClasses["Int"] = { __name__ : ["Int"]};
-	var Dynamic = $hxClasses["Dynamic"] = { __name__ : ["Dynamic"]};
-	var Float = $hxClasses["Float"] = Number;
-	Float.__name__ = ["Float"];
-	var Bool = $hxClasses["Bool"] = Boolean;
-	Bool.__ename__ = ["Bool"];
-	var Class = $hxClasses["Class"] = { __name__ : ["Class"]};
-	var Enum = { };
-	var Void = $hxClasses["Void"] = { __ename__ : ["Void"]};
-}
-haxe.Resource.content = [{ name : "index", data : "s2062:PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgU3RyaWN0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXN0cmljdC5kdGQiPgo8aHRtbD4KCTxoZWFkPgoJICAgIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KCSAgICA8dGl0bGU%TG9hZGluZy4uLjwvdGl0bGU%CgkgICAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgoJICAgIDxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSIiPgoJICAgIDxtZXRhIG5hbWU9ImF1dGhvciIgY29udGVudD0iIj4KCgkgICAgPCEtLSBMZSBzdHlsZXMgLS0%CgoJICAgIDxsaW5rIGhyZWY9Ii9jc3MvYm9vdHN0cmFwL2Jvb3RzdHJhcC5jc3MiIHJlbD0ic3R5bGVzaGVldCI%CgkgICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0L2xlc3MiIHR5cGU9InRleHQvY3NzIiBocmVmPSIvY3NzL3N0eWxlLmxlc3MiPgoJICAgIDxsaW5rIGhyZWY9Ii9jc3MvYm9vdHN0cmFwL2Jvb3RzdHJhcC1yZXNwb25zaXZlLmNzcyIgcmVsPSJzdHlsZXNoZWV0Ij4KCSAgICA8bGluayBocmVmPSIvY3NzL2Jvb3RzdHJhcC9ib290c3RyYXAtcmVzcG9uc2l2ZS5jc3MiIHJlbD0ic3R5bGVzaGVldCI%CgoKCSAgICA8IS0tIExlIEhUTUw1IHNoaW0sIGZvciBJRTYtOCBzdXBwb3J0IG9mIEhUTUw1IGVsZW1lbnRzIC0tPgoJICAgIDwhLS1baWYgbHQgSUUgOV0%CgkgICAgICA8c2NyaXB0IHNyYz0iaHR0cDovL2h0bWw1c2hpbS5nb29nbGVjb2RlLmNvbS9zdm4vdHJ1bmsvaHRtbDUuanMiPjwvc2NyaXB0PgoJICAgIDwhW2VuZGlmXS0tPgoKCSAgICA8IS0tIExlIGZhdiBhbmQgdG91Y2ggaWNvbnMgLS0%CgkgICAgPCEtLTxsaW5rIHJlbD0ic2hvcnRjdXQgaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9mYXZpY29uLmljbyI%CgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9hcHBsZS10b3VjaC1pY29uLnBuZyI%CgkgICAgPGxpbmsgcmVsPSJhcHBsZS10b3VjaC1pY29uIiBzaXplcz0iNzJ4NzIiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi03Mng3Mi5wbmciPgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgc2l6ZXM9IjExNHgxMTQiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi0xMTR4MTE0LnBuZyI%LS0%CgkJCgkJPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiIHNyYz0iL2pzL2NsaWVudC5qcyI%IDwvc2NyaXB0PgkKCQk8c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCIgc3JjPSIvanMvbGVzcy5qcyI%IDwvc2NyaXB0PgkKCTwvaGVhZD4KCTxib2R5PgoJCSAgICA8ZGl2IGNsYXNzPSJjb250YWluZXIiPgoJCQkgICAgPGRpdiBjbGFzcz0icm93LWZsdWlkIj4KCQkJCSAgICA8ZGl2IGlkPSJ2aWV3LWNvbnRhaW5lciIgY2xhc3M9InNwYW4xMiI%CgkJCQkgICAgCQoJCQkJICAgIDwvZGl2PgoJCQkgICAgPC9kaXY%CgkJICAgIDwvZGl2PgoJPC9ib2R5Pgo8L2h0bWw%Cg"}];
-{
-	js.Node.__filename = __filename;
-	js.Node.__dirname = __dirname;
-	js.Node.setTimeout = setTimeout;
-	js.Node.clearTimeout = clearTimeout;
-	js.Node.setInterval = setInterval;
-	js.Node.clearInterval = clearInterval;
-	js.Node.global = global;
-	js.Node.process = process;
-	js.Node.require = require;
-	js.Node.console = console;
-	js.Node.module = module;
-	js.Node.stringify = JSON.stringify;
-	js.Node.parse = JSON.parse;
-	js.Node.util = js.Node.require("util");
-	js.Node.fs = js.Node.require("fs");
-	js.Node.net = js.Node.require("net");
-	js.Node.http = js.Node.require("http");
-	js.Node.https = js.Node.require("https");
-	js.Node.path = js.Node.require("path");
-	js.Node.url = js.Node.require("url");
-	js.Node.os = js.Node.require("os");
-	js.Node.crypto = js.Node.require("crypto");
-	js.Node.dns = js.Node.require("dns");
-	js.Node.queryString = js.Node.require("querystring");
-	js.Node.assert = js.Node.require("assert");
-	js.Node.childProcess = js.Node.require("child_process");
-	js.Node.vm = js.Node.require("vm");
-	js.Node.tls = js.Node.require("tls");
-	js.Node.dgram = js.Node.require("dgram");
-	js.Node.assert = js.Node.require("assert");
-	js.Node.repl = js.Node.require("repl");
-	js.Node.cluster = js.Node.require("cluster");
-}
+function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; };
+var $_;
+function $bind(o,m) { var f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; return f; };
+if(Array.prototype.indexOf) HxOverrides.remove = function(a,o) {
+	var i = a.indexOf(o);
+	if(i == -1) return false;
+	a.splice(i,1);
+	return true;
+}; else null;
+Math.__name__ = ["Math"];
+Math.NaN = Number.NaN;
+Math.NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
+Math.POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
+$hxClasses.Math = Math;
+Math.isFinite = function(i) {
+	return isFinite(i);
+};
+Math.isNaN = function(i) {
+	return isNaN(i);
+};
+String.prototype.__class__ = $hxClasses.String = String;
+String.__name__ = ["String"];
+Array.prototype.__class__ = $hxClasses.Array = Array;
+Array.__name__ = ["Array"];
+Date.prototype.__class__ = $hxClasses.Date = Date;
+Date.__name__ = ["Date"];
+var Int = $hxClasses.Int = { __name__ : ["Int"]};
+var Dynamic = $hxClasses.Dynamic = { __name__ : ["Dynamic"]};
+var Float = $hxClasses.Float = Number;
+Float.__name__ = ["Float"];
+var Bool = $hxClasses.Bool = Boolean;
+Bool.__ename__ = ["Bool"];
+var Class = $hxClasses.Class = { __name__ : ["Class"]};
+var Enum = { };
+var Void = $hxClasses.Void = { __ename__ : ["Void"]};
+haxe.Resource.content = [{ name : "index", data : "s1658:PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgU3RyaWN0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXN0cmljdC5kdGQiPgo8aHRtbD4KCTxoZWFkPgoJICAgIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KCSAgICA8dGl0bGU%TG9hZGluZy4uLjwvdGl0bGU%CgkgICAgPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPgoJICAgIDxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSIiPgoJICAgIDxtZXRhIG5hbWU9ImF1dGhvciIgY29udGVudD0iIj4KCgkgICAgPCEtLSBMZSBzdHlsZXMgLS0%CgoJICAgIDxsaW5rIGhyZWY9Ii9jc3Mvc3R5bGUuY3NzIiByZWw9InN0eWxlc2hlZXQiPgoKCSAgICA8IS0tIExlIEhUTUw1IHNoaW0sIGZvciBJRTYtOCBzdXBwb3J0IG9mIEhUTUw1IGVsZW1lbnRzIC0tPgoJICAgIDwhLS1baWYgbHQgSUUgOV0%CgkgICAgICA8c2NyaXB0IHNyYz0iaHR0cDovL2h0bWw1c2hpbS5nb29nbGVjb2RlLmNvbS9zdm4vdHJ1bmsvaHRtbDUuanMiPjwvc2NyaXB0PgoJICAgIDwhW2VuZGlmXS0tPgoKCSAgICA8IS0tIExlIGZhdiBhbmQgdG91Y2ggaWNvbnMgLS0%CgkgICAgPCEtLTxsaW5rIHJlbD0ic2hvcnRjdXQgaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9mYXZpY29uLmljbyI%CgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgaHJlZj0iYXNzZXRzL2ljby9hcHBsZS10b3VjaC1pY29uLnBuZyI%CgkgICAgPGxpbmsgcmVsPSJhcHBsZS10b3VjaC1pY29uIiBzaXplcz0iNzJ4NzIiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi03Mng3Mi5wbmciPgoJICAgIDxsaW5rIHJlbD0iYXBwbGUtdG91Y2gtaWNvbiIgc2l6ZXM9IjExNHgxMTQiIGhyZWY9ImFzc2V0cy9pY28vYXBwbGUtdG91Y2gtaWNvbi0xMTR4MTE0LnBuZyI%LS0%CgkJCgkJPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiIHNyYz0iL2pzL2NsaWVudC5qcyI%IDwvc2NyaXB0PgkKCTwvaGVhZD4KCTxib2R5PgoJCSAgICA8ZGl2IGNsYXNzPSJjb250YWluZXIiPgoJCQkgICAgPGRpdiBjbGFzcz0icm93LWZsdWlkIj4KCQkJCSAgICA8ZGl2IGlkPSJ2aWV3LWNvbnRhaW5lciIgY2xhc3M9InNwYW4xMiI%CgkJCQkgICAgCQoJCQkJICAgIDwvZGl2PgoJCQkgICAgPC9kaXY%CgkJICAgIDwvZGl2PgoJPC9ib2R5Pgo8L2h0bWw%Cg"}];
+js.Node.__filename = __filename;
+js.Node.__dirname = __dirname;
+js.Node.setTimeout = setTimeout;
+js.Node.clearTimeout = clearTimeout;
+js.Node.setInterval = setInterval;
+js.Node.clearInterval = clearInterval;
+js.Node.global = global;
+js.Node.process = process;
+js.Node.require = require;
+js.Node.console = console;
+js.Node.module = module;
+js.Node.stringify = JSON.stringify;
+js.Node.parse = JSON.parse;
+js.Node.util = js.Node.require("util");
+js.Node.fs = js.Node.require("fs");
+js.Node.net = js.Node.require("net");
+js.Node.http = js.Node.require("http");
+js.Node.https = js.Node.require("https");
+js.Node.path = js.Node.require("path");
+js.Node.url = js.Node.require("url");
+js.Node.os = js.Node.require("os");
+js.Node.crypto = js.Node.require("crypto");
+js.Node.dns = js.Node.require("dns");
+js.Node.queryString = js.Node.require("querystring");
+js.Node.assert = js.Node.require("assert");
+js.Node.childProcess = js.Node.require("child_process");
+js.Node.vm = js.Node.require("vm");
+js.Node.tls = js.Node.require("tls");
+js.Node.dgram = js.Node.require("dgram");
+js.Node.assert = js.Node.require("assert");
+js.Node.repl = js.Node.require("repl");
+js.Node.cluster = js.Node.require("cluster");
 AppConfig.projectDir = "/home/jason/VoseProjects/";
-app.project.ProjectAPI.__meta__ = { fields : { list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
+app.project.ProjectAPI.__meta__ = { fields : { update : { remote : null}, read : { remote : null}, create : { remote : null}, list : { remote : null}}};
 app.project.ProjectAPI.api = new app.project.ProjectAPI();
-app.project.model.Project.__meta__ = { fields : { id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, year : { autoform : [{ required : true, title : "Year", placeholder : "eg. 2012"}]}, semester : { autoform : [{ required : true, title : "Semester", placeholder : "eg. 1 or 2"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}}};
-app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\"><c path=\"String\"/></id>\n\t<title public=\"1\"><c path=\"String\"/></title>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<year public=\"1\"><c path=\"Int\"/></year>\n\t<semester public=\"1\"><c path=\"Int\"/></semester>\n\t<notes public=\"1\"><c path=\"Array\"><c path=\"String\"/></c></notes>\n\t<new public=\"1\" set=\"method\" line=\"47\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
-app.video.VideoAPI.__meta__ = { fields : { setCurrentProject : { remote : null}, list : { remote : null}, create : { remote : null}, read : { remote : null}, update : { remote : null}}};
+app.project.model.Project.__meta__ = { fields : { notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this project.", placeholder : "eg. This is the VET level version of the unit recorded in 2009."}]}, semester : { autoform : [{ required : true, title : "Semester", placeholder : "eg. 1 or 2"}]}, year : { autoform : [{ required : true, title : "Year", placeholder : "eg. 2012"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, title : { autoform : [{ required : true, title : "Unit Title", display : "text", placeholder : "eg. Ministry Formation", description : "The full title, not including the code"}]}, id : { autoform : [{ required : true, title : "Unit Code", display : "text", placeholder : "eg. PC301"}]}}};
+app.project.model.Project.__rtti = "<class path=\"app.project.model.Project\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<id public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Unit Code,display:text,placeholder:eg. PC301}</e></m></meta>\n\t</id>\n\t<title public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Unit Title,display:text,placeholder:eg. Ministry Formation,description:The full title, not including the code}</e></m></meta>\n\t</title>\n\t<lecturer public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Lecturer Name,placeholder:eg. Brian Harris}</e></m></meta>\n\t</lecturer>\n\t<year public=\"1\">\n\t\t<c path=\"Int\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Year,placeholder:eg. 2012}</e></m></meta>\n\t</year>\n\t<semester public=\"1\">\n\t\t<c path=\"Int\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Semester,placeholder:eg. 1 or 2}</e></m></meta>\n\t</semester>\n\t<notes public=\"1\">\n\t\t<c path=\"Array\"><c path=\"String\"/></c>\n\t\t<meta><m n=\"autoform\"><e>{required:false,title:Notes for this unit,display:textarea,description:You can enter any notes related to this project.,placeholder:eg. This is the VET level version of the unit recorded in 2009.}</e></m></meta>\n\t</notes>\n\t<new public=\"1\" set=\"method\" line=\"47\"><f a=\"\"><e path=\"Void\"/></f></new>\n</class>";
+app.video.VideoAPI.__meta__ = { fields : { update : { remote : null}, read : { remote : null}, create : { remote : null}, list : { remote : null}, setCurrentProject : { remote : null}}};
 app.video.VideoAPI.api = new app.video.VideoAPI();
-app.video.model.Video.__meta__ = { fields : { projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}}};
-app.video.model.Video.__rtti = "<class path=\"app.video.model.Video\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<projectID public=\"1\"><c path=\"String\"/></projectID>\n\t<name public=\"1\"><c path=\"String\"/></name>\n\t<lecturer public=\"1\"><c path=\"String\"/></lecturer>\n\t<notes public=\"1\"><c path=\"String\"/></notes>\n\t<new public=\"1\" set=\"method\" line=\"34\"><f a=\"project\">\n\t<c path=\"app.project.model.Project\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
+app.video.model.Video.__meta__ = { fields : { notes : { autoform : [{ required : false, title : "Notes for this unit", display : "textarea", description : "You can enter any notes related to this video.", placeholder : "eg. Only 1st hour recorded.  The rest was a group discussion."}]}, lecturer : { autoform : [{ required : true, title : "Lecturer Name", placeholder : "eg. Brian Harris"}]}, name : { autoform : [{ required : true, title : "Video Name", display : "text", placeholder : "eg. Week01"}]}, projectID : { autoform : [{ required : true, title : "Project ID", display : "text", placeholder : "eg. PC301"}]}}};
+app.video.model.Video.__rtti = "<class path=\"app.video.model.Video\" params=\"\">\n\t<implements path=\"haxe.rtti.Infos\"/>\n\t<projectID public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Project ID,display:text,placeholder:eg. PC301}</e></m></meta>\n\t</projectID>\n\t<name public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Video Name,display:text,placeholder:eg. Week01}</e></m></meta>\n\t</name>\n\t<lecturer public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:true,title:Lecturer Name,placeholder:eg. Brian Harris}</e></m></meta>\n\t</lecturer>\n\t<notes public=\"1\">\n\t\t<c path=\"String\"/>\n\t\t<meta><m n=\"autoform\"><e>{required:false,title:Notes for this unit,display:textarea,description:You can enter any notes related to this video.,placeholder:eg. Only 1st hour recorded.  The rest was a group discussion.}</e></m></meta>\n\t</notes>\n\t<new public=\"1\" set=\"method\" line=\"34\"><f a=\"project\">\n\t<c path=\"app.project.model.Project\"/>\n\t<e path=\"Void\"/>\n</f></new>\n</class>";
 haxe.Serializer.USE_CACHE = false;
 haxe.Serializer.USE_ENUM_INDEX = false;
 haxe.Serializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
@@ -2305,4 +2229,4 @@ server.Server.inst = null;
 server.api.Launcher.__meta__ = { fields : { launch : { remote : null}}};
 server.api.Notifications.__meta__ = { fields : { getTheFoo : { remote : null}}};
 server.api.Scheduler.__meta__ = { fields : { getTheFoo : { remote : null}}};
-server.Server.main()
+server.Server.main();

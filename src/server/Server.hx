@@ -101,7 +101,6 @@ class Server
 		// Now we use connect.createServer(), which is an extension of http.createServer() from haxenode.org's example.
 		// The advantage here is that connect() includes all the middleware support we need to get remoting to work.
 		var connect:Connect = Node.require('connect');
-		trace (js.Node.__dirname);
 		var server = connect.createServer(
 			// Middleware1: errorhandler, Set to a pre-built one from the "connect" library
 			connect.errorHandler({showStack:true, showMessage:true, dumpExceptions:true}), 
@@ -116,7 +115,7 @@ class Server
 			// There's an error in the nodejs_externs typedef where it looks for connect.Static not connect.static.
 			// I might ask the mailing list if there's a clean way to make "Static" a function that points to "static"
 			//connect.Static(Node.__dirname + "/public/", {redirect:true})
-			Reflect.field(connect, "static")(Node.__dirname + "/static/", {redirect:true}),
+			Reflect.field(connect, "static")(Node.__dirname + "/static", {redirect:true}),
 
 			// Default redirect to index.html
 			function (req :NodeHttpServerReq, res :NodeHttpServerResp) { 
