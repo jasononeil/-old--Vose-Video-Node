@@ -10,8 +10,8 @@
 #-lib bindable
 -lib hsl-pico-1
 -lib pushstate
+-lib remoting
 -cp /home/jason/workspace/autoform/
--cp lib/haxe_remoting/src/
 -cp src/
 
 # Compile flags
